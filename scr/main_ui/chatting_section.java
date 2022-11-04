@@ -91,7 +91,7 @@ public class chatting_section {
 			public void mouseClicked(MouseEvent e) {
 			}
 		});
-		searchButton.setIcon(new ImageIcon("D:\\scr\\Java_Eclipse\\img\\icons8-search-32.png"));
+		searchButton.setIcon(new ImageIcon("./img\\icons8-search-32.png"));
 		searchButton.setBounds(189, 0, 45, 44);
 		panel_4.add(searchButton);
 		
@@ -122,7 +122,7 @@ public class chatting_section {
 		panel_2.setLayout(null);
 		
 		JLabel homeNav = new JLabel("");
-		homeNav.setIcon(new ImageIcon("D:\\scr\\Java_Eclipse\\img\\icons8-home-32.png"));
+		homeNav.setIcon(new ImageIcon("./img\\icons8-home-32.png"));
 		homeNav.setHorizontalAlignment(SwingConstants.CENTER);
 		homeNav.setBounds(0, 158, 84, 82);
 		panel_2.add(homeNav);
@@ -137,7 +137,7 @@ public class chatting_section {
 		chatNav.setOpaque(true);
 		chatNav.setBackground(new Color(5, 100, 153));
 		chatNav.setBorder(new MatteBorder(0, 4, 0, 0, (Color) new Color(255, 255, 255)));
-		chatNav.setIcon(new ImageIcon("D:\\scr\\Java_Eclipse\\img\\icons8-chat-room-32.png"));
+		chatNav.setIcon(new ImageIcon("./img\\icons8-chat-room-32.png"));
 		chatNav.setHorizontalAlignment(SwingConstants.CENTER);
 		chatNav.setBounds(0, 337, 84, 82);
 		panel_2.add(chatNav);
@@ -147,7 +147,7 @@ public class chatting_section {
 		panel_2.add(friendListNav);
 		friendListNav.setHorizontalTextPosition(SwingConstants.RIGHT);
 		friendListNav.setIconTextGap(3);
-		friendListNav.setIcon(new ImageIcon("D:\\scr\\Java_Eclipse\\img\\icons8-friend-32.png"));
+		friendListNav.setIcon(new ImageIcon("./img\\icons8-friend-32.png"));
 		friendListNav.setHorizontalAlignment(SwingConstants.CENTER);
 	}
 }

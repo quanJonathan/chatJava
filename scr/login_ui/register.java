@@ -60,7 +60,7 @@ public class register {
 		frame.getContentPane().add(panel);
 		
 		JLabel lblUserRegisterPage = new JLabel("User register page");
-		lblUserRegisterPage.setIcon(new ImageIcon("D:\\scr\\Java_Eclipse\\img\\icons8-sign-up-96.png"));
+		lblUserRegisterPage.setIcon(new ImageIcon("./img\\icons8-sign-up-96.png"));
 		lblUserRegisterPage.setSize(new Dimension(100, 100));
 		lblUserRegisterPage.setIconTextGap(5);
 		lblUserRegisterPage.setAlignmentX(0.5f);

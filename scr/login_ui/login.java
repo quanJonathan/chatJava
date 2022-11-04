@@ -62,7 +62,7 @@ public class login {
 		lblNewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblNewLabel.setIconTextGap(5);
 		lblNewLabel.setSize(new Dimension(100, 100));
-		lblNewLabel.setIcon(new ImageIcon("D:\\scr\\Java_Eclipse\\img\\icons8-account-96.png"));
+		lblNewLabel.setIcon(new ImageIcon("./img\\icons8-account-96.png"));
 		lblNewLabel.setBounds(0, 0, 196, 432);
 		panel.add(lblNewLabel);
 		
