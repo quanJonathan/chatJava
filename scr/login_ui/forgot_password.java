@@ -73,7 +73,7 @@ public class forgot_password {
 		frame.getContentPane().add(btnNewButton_1);
 		
 		JLabel lblForgotPasswordPage = new JLabel("Forgot password page");
-		lblForgotPasswordPage.setIcon(new ImageIcon("./img\\icons8-forgot-password-96.png"));
+		lblForgotPasswordPage.setIcon(new ImageIcon(forgot_password.class.getResource("/resources/icons8-forgot-password-96.png")));
 		lblForgotPasswordPage.setBounds(41, 15, 251, 320);
 		frame.getContentPane().add(lblForgotPasswordPage);
 		lblForgotPasswordPage.setIconTextGap(5);
