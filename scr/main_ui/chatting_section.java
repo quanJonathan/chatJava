@@ -23,6 +23,7 @@ import java.awt.CardLayout;
 import java.awt.FlowLayout;
 import javax.swing.JList;
 import java.awt.List;
+import java.awt.GridLayout;
 
 public class chatting_section {
 
@@ -81,7 +82,7 @@ public class chatting_section {
 		panel.add(panel_3);
 		panel_3.setLayout(null);
 		panel_4.setBackground(new Color(0, 128, 255));
-		panel_4.setBounds(10, 40, 234, 44);
+		panel_4.setBounds(10, 40, 252, 44);
 		panel_3.add(panel_4);
 		panel_4.setLayout(null);
 		
@@ -92,13 +93,13 @@ public class chatting_section {
 			}
 		});
 		searchButton.setIcon(new ImageIcon(chatting_section.class.getResource("/resources/icons8-search-32.png")));
-		searchButton.setBounds(189, 0, 45, 44);
+		searchButton.setBounds(207, 0, 45, 44);
 		panel_4.add(searchButton);
 		
 		txtSearch = new JTextField();
 		txtSearch.setBackground(new Color(0, 128, 255));
 		txtSearch.setText("Search");
-		txtSearch.setBounds(0, 0, 179, 44);
+		txtSearch.setBounds(0, 0, 199, 44);
 		panel_4.add(txtSearch);
 		txtSearch.setColumns(10);
 		
@@ -108,7 +109,7 @@ public class chatting_section {
 		AvailableChatUserList.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		JPanel onlineUserList = new JPanel();
-		onlineUserList.setBounds(10, 94, 244, 62);
+		onlineUserList.setBounds(10, 94, 252, 62);
 		panel_3.add(onlineUserList);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -116,15 +117,14 @@ public class chatting_section {
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setVerifyInputWhenFocusTarget(false);
-		panel_2.setBackground(new Color(0, 128, 255));
-		panel_2.setBounds(0, 0, 84, 741);
+		panel_2.setBackground(new Color(0, 0, 0, 0));
+		panel_2.setBounds(0, 150, 84, 441);
 		panel.add(panel_2);
-		panel_2.setLayout(null);
+		panel_2.setLayout(new GridLayout(5, 1, 0, 0));
 		
 		JLabel homeNav = new JLabel("");
 		homeNav.setIcon(new ImageIcon(chatting_section.class.getResource("/resources/icons8-home-32.png")));
 		homeNav.setHorizontalAlignment(SwingConstants.CENTER);
-		homeNav.setBounds(0, 158, 84, 82);
 		panel_2.add(homeNav);
 		
 		JLabel chatNav = new JLabel("");
@@ -134,20 +134,23 @@ public class chatting_section {
 				
 			}
 		});
-		chatNav.setOpaque(true);
-		chatNav.setBackground(new Color(5, 100, 153));
-		chatNav.setBorder(new MatteBorder(0, 4, 0, 0, (Color) new Color(255, 255, 255)));
-		chatNav.setIcon(new ImageIcon(chatting_section.class.getResource("/resources/icons8-chat-room-32.png")));
-		chatNav.setHorizontalAlignment(SwingConstants.CENTER);
-		chatNav.setBounds(0, 337, 84, 82);
-		panel_2.add(chatNav);
 		
 		JLabel friendListNav = new JLabel("");
-		friendListNav.setBounds(0, 255, 84, 82);
 		panel_2.add(friendListNav);
 		friendListNav.setHorizontalTextPosition(SwingConstants.RIGHT);
 		friendListNav.setIconTextGap(3);
 		friendListNav.setIcon(new ImageIcon(chatting_section.class.getResource("/resources/icons8-friend-32.png")));
 		friendListNav.setHorizontalAlignment(SwingConstants.CENTER);
+		chatNav.setOpaque(true);
+		chatNav.setBackground(new Color(5, 100, 153));
+		chatNav.setBorder(new MatteBorder(0, 4, 0, 0, (Color) new Color(255, 255, 255)));
+		chatNav.setIcon(new ImageIcon(chatting_section.class.getResource("/resources/icons8-chat-room-32.png")));
+		chatNav.setHorizontalAlignment(SwingConstants.CENTER);
+		panel_2.add(chatNav);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBounds(0, 0, 84, 741);
+		panel_1.setBackground(new Color(0, 128, 255));
+		panel.add(panel_1);
 	}
 }
