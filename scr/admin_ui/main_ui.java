@@ -4,7 +4,6 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -14,9 +13,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 import javax.swing.ImageIcon;
 import java.awt.GridLayout;
-import javax.swing.JTabbedPane;
 
-public class main_ui {
+public class main_ui extends javax.swing.JFrame{
 
 	private JFrame frame;
 	private JTextField textField;

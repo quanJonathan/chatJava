@@ -24,12 +24,15 @@ import java.awt.FlowLayout;
 import javax.swing.JList;
 import java.awt.List;
 import java.awt.GridLayout;
+import javax.swing.JSplitPane;
+import javax.swing.JMenuBar;
 
 public class chatting_section {
 
 	private JFrame frame;
-	private final JPanel panel_4 = new JPanel();
+	private final JPanel searchbar_chatPage = new JPanel();
 	private JTextField txtSearch;
+	private JTextField textField;
 
 	/**
 	 * Launch the application.
@@ -67,9 +70,20 @@ public class chatting_section {
 		chatDetail.setBorder(null);
 		chatDetail.setMaximumSize(new Dimension(32, 32));
 		chatDetail.setForeground(new Color(255, 255, 255));
-		chatDetail.setBounds(353, 0, 638, 741);
+		chatDetail.setBounds(363, 0, 638, 741);
 		frame.getContentPane().add(chatDetail);
 		chatDetail.setLayout(null);
+		
+		textField = new JTextField();
+		textField.setBounds(10, 688, 517, 43);
+		chatDetail.add(textField);
+		textField.setColumns(10);
+		
+		JButton btnNewButton = new JButton("Send");
+		btnNewButton.setForeground(new Color(0, 128, 255));
+		btnNewButton.setBackground(new Color(255, 255, 255));
+		btnNewButton.setBounds(521, 688, 107, 43);
+		chatDetail.add(btnNewButton);
 		
 		JPanel panel = new JPanel();
 		panel.setBounds(0, 0, 355, 741);
@@ -81,10 +95,10 @@ public class chatting_section {
 		panel_3.setBounds(83, 0, 272, 741);
 		panel.add(panel_3);
 		panel_3.setLayout(null);
-		panel_4.setBackground(new Color(0, 128, 255));
-		panel_4.setBounds(10, 40, 252, 44);
-		panel_3.add(panel_4);
-		panel_4.setLayout(null);
+		searchbar_chatPage.setBackground(new Color(0, 128, 255));
+		searchbar_chatPage.setBounds(10, 40, 252, 44);
+		panel_3.add(searchbar_chatPage);
+		searchbar_chatPage.setLayout(null);
 		
 		JLabel searchButton = new JLabel("");
 		searchButton.addMouseListener(new MouseAdapter() {
@@ -94,19 +108,22 @@ public class chatting_section {
 		});
 		searchButton.setIcon(new ImageIcon(chatting_section.class.getResource("/resources/icons8-search-32.png")));
 		searchButton.setBounds(207, 0, 45, 44);
-		panel_4.add(searchButton);
+		searchbar_chatPage.add(searchButton);
 		
 		txtSearch = new JTextField();
 		txtSearch.setBackground(new Color(0, 128, 255));
 		txtSearch.setText("Search");
 		txtSearch.setBounds(0, 0, 199, 44);
-		panel_4.add(txtSearch);
+		searchbar_chatPage.add(txtSearch);
 		txtSearch.setColumns(10);
 		
 		JPanel AvailableChatUserList = new JPanel();
 		AvailableChatUserList.setBounds(10, 177, 252, 554);
 		panel_3.add(AvailableChatUserList);
 		AvailableChatUserList.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		AvailableChatUserList.add(scrollPane_1);
 		
 		JPanel onlineUserList = new JPanel();
 		onlineUserList.setBounds(10, 94, 252, 62);
