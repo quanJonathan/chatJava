@@ -52,9 +52,8 @@ public class database_helper {
             // Retrieve the generated key from the insert.
             ResultSet resultSet = prepsInsertProduct.getGeneratedKeys();
             return resultSet;
-            
+
             // if size = 0  => error
-            
             // Print the ID of the inserted row.
 //            while (resultSet.next()) {
 //                System.out.println("Generated: " + resultSet.getString(1));
@@ -64,21 +63,20 @@ public class database_helper {
             return null;
         }
     }
-    
+
     public int delete(String queryString) {
         try {
             Statement stmt = conn.createStatement();
-         
+
             return stmt.executeUpdate(queryString);
-            
+
 //            if (x > 0)           
 //                System.out.println("Password Successfully delete");           
 //            else           
 //                System.out.println("ERROR OCCURRED :(");
-             
         } catch (Exception ex) {
             ex.printStackTrace();
-            return null;
+            return 0;
         }
     }
 }
