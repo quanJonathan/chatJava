@@ -1,5 +1,6 @@
 package login_ui;
 
+import database.database_helper;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -14,6 +15,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
+import java.sql.SQLException;
 
 public class login {
 
@@ -91,6 +93,18 @@ public class login {
 		JButton btnNewButton_1 = new JButton("Sign up");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+                            var db = new database_helper();
+                            var rs = db.select("select * from TaiKhoan");
+                            try {
+                                while (rs.next()) {
+                                    System.out.println(rs.getString(1) + "  " + rs.getString(2)
+                                            + "  " + rs.getString(3));
+                                }
+                            }
+                            catch(SQLException ex) {
+                                ex.printStackTrace();
+                            }
+                            
 			}
 		});
 		btnNewButton_1.setBounds(415, 252, 85, 21);
