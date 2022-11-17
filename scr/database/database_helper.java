@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
@@ -16,14 +17,13 @@ import java.sql.Statement;
  */
 public class database_helper {
 
-    private String DB_URL = "jdbc:sqlserver://localhost:1433;"
+    private static String DB_URL = "jdbc:sqlserver://localhost:1433;"
             + "databaseName=ChatJava;encrypt=true;trustServerCertificate=true;";
-    private String USER_NAME = "root";
-    private String PASSWORD = "root";
-    private Connection conn = null;
+    private static String USER_NAME = "root";
+    private static String PASSWORD = "root";
+    private static Connection conn = null;
 
     public database_helper() {
-
         try {
             //Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             conn = DriverManager.getConnection(DB_URL, USER_NAME, PASSWORD);
@@ -34,8 +34,11 @@ public class database_helper {
         }
     }
 
-    public ResultSet select(String queryString) {
+    public static ResultSet select(String queryString) {
         try {
+            System.out.println("");
+            System.out.println(queryString);
+
             Statement stmt = conn.createStatement(); // get data from table 'student'
             ResultSet rs = stmt.executeQuery(queryString); // show data
             return rs;
@@ -45,8 +48,10 @@ public class database_helper {
         }
     }
 
-    public ResultSet insert(String queryString) {
+    public static ResultSet insert(String queryString) {
         try {
+            System.out.println("");
+            System.out.println(queryString);
             PreparedStatement prepsInsertProduct = conn.prepareStatement(queryString, Statement.RETURN_GENERATED_KEYS);
             prepsInsertProduct.execute();
             // Retrieve the generated key from the insert.
@@ -64,8 +69,10 @@ public class database_helper {
         }
     }
 
-    public int delete(String queryString) {
+    public static int delete(String queryString) {
         try {
+            System.out.println("");
+            System.out.println(queryString);
             Statement stmt = conn.createStatement();
 
             return stmt.executeUpdate(queryString);
@@ -77,6 +84,15 @@ public class database_helper {
         } catch (Exception ex) {
             ex.printStackTrace();
             return 0;
+        }
+    }
+
+    public static String getColumnName(ResultSet rs, int index) {
+        try {
+            return rs.getMetaData().getColumnName(index);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
         }
     }
 }

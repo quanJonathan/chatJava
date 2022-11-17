@@ -3,3 +3,4 @@
 /build/
 *.properties
 nbproject/project.properties
+/dist/
