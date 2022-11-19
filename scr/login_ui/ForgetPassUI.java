@@ -4,17 +4,35 @@
  */
 package login_ui;
 
+import event.EventForgetPass;
+import event.PublicEvent;
+
 /**
  *
  * @author ADMIN
  */
-public class forgot_password extends javax.swing.JFrame {
+public class ForgetPassUI extends javax.swing.JFrame {
 
     /**
      * Creates new form forgot_password_1
      */
-    public forgot_password() {
+    public ForgetPassUI() {
         initComponents();
+        init();
+    }
+    
+    public void init(){
+        PublicEvent.getInstance().addEventForgetPass(new EventForgetPass(){
+            @Override
+            public void sendPasswordResetMail(String email, String username) {
+                // ToDo add func to send password
+            }
+
+            @Override
+            public void goback() {
+               new LoginUI().setVisible(true);
+            }  
+        });
     }
 
     /**
@@ -29,10 +47,11 @@ public class forgot_password extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        emailText = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        usernameText = new javax.swing.JTextField();
+        emailSendingButton = new javax.swing.JButton();
+        goback = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -58,14 +77,26 @@ public class forgot_password extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         jLabel2.setText("Email");
 
-        jTextField1.setText("jTextField1");
+        emailText.setToolTipText("Enter email");
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         jLabel3.setText("User name");
 
-        jTextField2.setText("jTextField2");
+        usernameText.setToolTipText("Enter username");
 
-        jButton1.setText("Send password recovery email");
+        emailSendingButton.setText("Send password recovery email");
+        emailSendingButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                emailSendingButtonActionPerformed(evt);
+            }
+        });
+
+        goback.setText("Go back");
+        goback.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                gobackActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -73,13 +104,18 @@ public class forgot_password extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(42, 42, 42)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel2)
-                    .addComponent(jTextField1)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField2)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 222, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(42, 42, 42)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel2)
+                            .addComponent(emailText)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(usernameText)
+                            .addComponent(emailSendingButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(110, 110, 110)
+                        .addComponent(goback, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 53, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -89,18 +125,31 @@ public class forgot_password extends javax.swing.JFrame {
                 .addGap(107, 107, 107)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(emailText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(usernameText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(40, 40, 40)
-                .addComponent(jButton1)
-                .addContainerGap(93, Short.MAX_VALUE))
+                .addComponent(emailSendingButton)
+                .addGap(18, 18, 18)
+                .addComponent(goback)
+                .addContainerGap(49, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void gobackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gobackActionPerformed
+       this.dispose();
+       PublicEvent.getInstance().getEventForgetPass().goback();
+    }//GEN-LAST:event_gobackActionPerformed
+
+    private void emailSendingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailSendingButtonActionPerformed
+        var email = emailText.getText();
+        var username = usernameText.getText();
+        PublicEvent.getInstance().getEventForgetPass().sendPasswordResetMail(email, username);
+    }//GEN-LAST:event_emailSendingButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -119,32 +168,35 @@ public class forgot_password extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(forgot_password.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ForgetPassUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(forgot_password.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ForgetPassUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(forgot_password.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ForgetPassUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(forgot_password.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ForgetPassUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new forgot_password().setVisible(true);
+                new ForgetPassUI().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton emailSendingButton;
+    private javax.swing.JTextField emailText;
+    private javax.swing.JButton goback;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField usernameText;
     // End of variables declaration//GEN-END:variables
 }
