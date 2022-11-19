@@ -45,10 +45,7 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <Component id="jSplitPane1" max="32767" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-          </Group>
+          <Component id="jSplitPane1" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
@@ -76,7 +73,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="friendListTab" alignment="1" max="32767" attributes="0"/>
-                          <Component id="homeTab" alignment="0" max="32767" attributes="0"/>
+                          <Component id="homeTab" alignment="0" max="-2" attributes="0"/>
                           <Component id="groupTab" alignment="0" max="32767" attributes="0"/>
                           <Component id="onlineUserTab" alignment="0" max="32767" attributes="0"/>
                           <Component id="chatTab" alignment="0" max="32767" attributes="0"/>
@@ -98,7 +95,7 @@
                       <Component id="groupTab" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
                       <Component id="onlineUserTab" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="166" max="32767" attributes="0"/>
+                      <EmptySpace pref="228" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -186,7 +183,7 @@
                               <Component id="jTextField7" pref="331" max="32767" attributes="0"/>
                               <Component id="jScrollPane6" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="348" max="32767" attributes="0"/>
+                          <EmptySpace pref="463" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -197,7 +194,7 @@
                           <Component id="jTextField7" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
                           <Component id="jScrollPane6" min="-2" pref="342" max="-2" attributes="0"/>
-                          <EmptySpace pref="115" max="32767" attributes="0"/>
+                          <EmptySpace pref="177" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -256,7 +253,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jSplitPane2" min="-2" pref="547" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="6" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -478,7 +475,7 @@
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace pref="227" max="32767" attributes="0"/>
+                          <EmptySpace pref="342" max="32767" attributes="0"/>
                           <Component id="jTextField4" min="-2" pref="110" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
@@ -504,7 +501,7 @@
                                   <Component id="jTextField4" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace pref="60" max="32767" attributes="0"/>
+                          <EmptySpace pref="122" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -567,7 +564,7 @@
                               <Component id="jButton3" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="jButton2" alignment="0" min="-2" pref="152" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="509" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="624" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -580,7 +577,7 @@
                           <Component id="jButton3" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="66" max="-2" attributes="0"/>
                           <Component id="jButton4" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="151" max="32767" attributes="0"/>
+                          <EmptySpace pref="213" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -624,140 +621,14 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout"/>
               <SubComponents>
-                <Container class="javax.swing.JPanel" name="jPanel3">
+                <Container class="javax.swing.JPanel" name="chat">
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
                       <JSplitPaneConstraints position="right"/>
                     </Constraint>
                   </Constraints>
 
-                  <Layout>
-                    <DimensionLayout dim="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jPanel4" max="32767" attributes="0"/>
-                          <Component id="jPanel5" alignment="0" max="32767" attributes="0"/>
-                      </Group>
-                    </DimensionLayout>
-                    <DimensionLayout dim="1">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jPanel5" max="32767" attributes="0"/>
-                          </Group>
-                      </Group>
-                    </DimensionLayout>
-                  </Layout>
-                  <SubComponents>
-                    <Container class="javax.swing.JPanel" name="jPanel4">
-                      <Properties>
-                        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="ff" green="cc" red="66" type="rgb"/>
-                        </Property>
-                      </Properties>
-
-                      <Layout>
-                        <DimensionLayout dim="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jLabel1" min="-2" pref="52" max="-2" attributes="0"/>
-                                  <EmptySpace max="32767" attributes="0"/>
-                                  <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
-                        </DimensionLayout>
-                        <DimensionLayout dim="1">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <EmptySpace pref="14" max="32767" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jLabel1" alignment="1" min="-2" max="-2" attributes="0"/>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <Component id="jLabel2" min="-2" pref="18" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
-                                      </Group>
-                                  </Group>
-                              </Group>
-                          </Group>
-                        </DimensionLayout>
-                      </Layout>
-                      <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jLabel1">
-                          <Properties>
-                            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                              <Image iconType="3" name="/resources/icons8-user-50.png"/>
-                            </Property>
-                            <Property name="text" type="java.lang.String" value="jLabel1"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="jLabel2">
-                          <Properties>
-                            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                              <Image iconType="3" name="/resources/icons8-ellipsis-50.png"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                      </SubComponents>
-                    </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel5">
-
-                      <Layout>
-                        <DimensionLayout dim="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jScrollPane2" max="32767" attributes="0"/>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jTextField2" min="-2" pref="426" max="-2" attributes="0"/>
-                                  <EmptySpace max="32767" attributes="0"/>
-                                  <Component id="jButton1" min="-2" pref="92" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
-                        </DimensionLayout>
-                        <DimensionLayout dim="1">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jScrollPane2" min="-2" pref="418" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="jTextField2" pref="36" max="32767" attributes="0"/>
-                                      <Component id="jButton1" max="32767" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace max="32767" attributes="0"/>
-                              </Group>
-                          </Group>
-                        </DimensionLayout>
-                      </Layout>
-                      <SubComponents>
-                        <Container class="javax.swing.JScrollPane" name="jScrollPane2">
-                          <AuxValues>
-                            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-                          </AuxValues>
-
-                          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-                          <SubComponents>
-                            <Component class="javax.swing.JTextArea" name="jTextArea1">
-                              <Properties>
-                                <Property name="columns" type="int" value="20"/>
-                                <Property name="rows" type="int" value="5"/>
-                              </Properties>
-                            </Component>
-                          </SubComponents>
-                        </Container>
-                        <Component class="javax.swing.JTextField" name="jTextField2">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="jTextField2"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JButton" name="jButton1">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="jButton1"/>
-                          </Properties>
-                        </Component>
-                      </SubComponents>
-                    </Container>
-                  </SubComponents>
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
                 </Container>
                 <Container class="javax.swing.JPanel" name="jPanel2">
                   <Properties>
@@ -777,8 +648,9 @@
                           <Group type="102" attributes="0">
                               <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
                               <Component id="jTextField1" min="-2" pref="200" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                           </Group>
-                          <Component id="jScrollPane1" min="-2" pref="200" max="-2" attributes="0"/>
+                          <Component id="sp" alignment="0" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
@@ -786,8 +658,8 @@
                           <Group type="102" attributes="0">
                               <EmptySpace min="28" pref="28" max="-2" attributes="0"/>
                               <Component id="jTextField1" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="26" pref="26" max="-2" attributes="0"/>
-                              <Component id="jScrollPane1" min="-2" pref="432" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="sp" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -801,29 +673,25 @@
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField1ActionPerformed"/>
                       </Events>
                     </Component>
-                    <Container class="javax.swing.JScrollPane" name="jScrollPane1">
-                      <AuxValues>
-                        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-                      </AuxValues>
+                    <Container class="javax.swing.JScrollPane" name="sp">
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                       <SubComponents>
-                        <Component class="javax.swing.JList" name="jList1">
-                          <Properties>
-                            <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
-                              <StringArray count="5">
-                                <StringItem index="0" value="Item 1"/>
-                                <StringItem index="1" value="Item 2"/>
-                                <StringItem index="2" value="Item 3"/>
-                                <StringItem index="3" value="Item 4"/>
-                                <StringItem index="4" value="Item 5"/>
-                              </StringArray>
-                            </Property>
-                          </Properties>
-                          <AuxValues>
-                            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-                          </AuxValues>
-                        </Component>
+                        <Container class="javax.swing.JPanel" name="chatListPanel">
+
+                          <Layout>
+                            <DimensionLayout dim="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <EmptySpace min="0" pref="210" max="32767" attributes="0"/>
+                              </Group>
+                            </DimensionLayout>
+                            <DimensionLayout dim="1">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <EmptySpace min="0" pref="553" max="32767" attributes="0"/>
+                              </Group>
+                            </DimensionLayout>
+                          </Layout>
+                        </Container>
                       </SubComponents>
                     </Container>
                   </SubComponents>

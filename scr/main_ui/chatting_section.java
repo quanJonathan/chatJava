@@ -4,28 +4,19 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
-import javax.swing.JToolBar;
 import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.Dimension;
 import javax.swing.border.MatteBorder;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.CardLayout;
 import java.awt.FlowLayout;
-import javax.swing.JList;
-import java.awt.List;
 import java.awt.GridLayout;
-import javax.swing.JSplitPane;
-import javax.swing.JMenuBar;
 
 public class chatting_section {
 
