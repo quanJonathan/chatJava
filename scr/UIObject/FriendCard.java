@@ -77,7 +77,6 @@ public class FriendCard extends javax.swing.JPanel {
 
     private void btnUnfriendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnfriendActionPerformed
         DAO_FriendList dao_friend = new DAO_FriendList();
-        dao_friend.delete(t)
     }//GEN-LAST:event_btnUnfriendActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
