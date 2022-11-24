@@ -23,6 +23,7 @@ public class database_helper {
     private static String PASSWORD = "root";
     private static Connection conn = null;
 
+    
     public database_helper() {
         try {
             //Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");

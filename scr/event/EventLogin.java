@@ -3,7 +3,7 @@ package event;
 
 public interface EventLogin {
 
-    public void login();
+    public int login();
 
     public void goRegister();
     

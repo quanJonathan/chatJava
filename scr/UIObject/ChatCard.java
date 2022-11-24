@@ -1,4 +1,4 @@
-package main_ui;
+package UIObject;
 
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
