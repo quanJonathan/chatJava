@@ -27,19 +27,19 @@ public class database_query_builder {
         return query;
     }
 
-    
     public static String get(String tableName, String conditions, String... tableColumn) {
         String query;
-        query = String.join(" ", SELECT, String.join(",", tableColumn), "from", tableName , conditions);
+        query = String.join(" ", SELECT, (tableColumn.length > 0 && !tableColumn[0].isEmpty()) ? String.join(",", tableColumn) : "*", "from", tableName, conditions);
         return query;
     }
-    
-    public static void delete(String tableName, String conditions){
+
+    public static String delete(String tableName, String conditions) {
         String query;
-        query = String.join(" ", DELETE, " from ", tableName, conditions);
+        query = String.join(" ", DELETE, "from", tableName, conditions);
+        return query;
     }
-    
-    public static void update(){
+
+    public static void update() {
         // To Do
     }
 }

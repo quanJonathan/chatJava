@@ -512,13 +512,16 @@
               <SubComponents>
                 <Component class="javax.swing.JTextField" name="jTextField3">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Type friend user name"/>
+                    <Property name="text" type="java.lang.String" value="bebaoboy"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButton1">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Search"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+                  </Events>
                 </Component>
                 <Container class="javax.swing.JScrollPane" name="spFriendList">
 

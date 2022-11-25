@@ -8,7 +8,6 @@ import database.DAO_Account;
 import entity.TaiKhoan;
 import event.EventLogin;
 import event.PublicEvent;
-import java.util.ArrayList;
 import java.util.List;
 import main_ui.main_user_ui;
 import org.json.JSONObject;
@@ -28,25 +27,22 @@ public class LoginUI extends javax.swing.JFrame {
         init();
     }
 
-    public final void init(){
-        
+    public final void init() {
+
         Service.getInstance().run();
-        
-        PublicEvent.getInstance().addEventLogin(new EventLogin(){
+
+        PublicEvent.getInstance().addEventLogin(new EventLogin() {
             @Override
             public int login() {
-                
-                 var username = usernameTextField.getText();
+
+                var username = usernameTextField.getText();
                 String password = String.valueOf(passwordTextField.getPassword());
-                
+
 //                Service.getInstance().sendCommand('\login', );
-                
                 var dbh = new database.database_helper();
 
                 var daoAcc = new DAO_Account();
-                
-               
-                
+
                 daoAcc.selectAll().forEach((account) -> {
                     System.out.println(account);
                 });
@@ -67,7 +63,7 @@ public class LoginUI extends javax.swing.JFrame {
 
             @Override
             public void goRegister() {
-               new RegisterUI().setVisible(true);
+                new RegisterUI().setVisible(true);
             }
 
             @Override
@@ -76,6 +72,7 @@ public class LoginUI extends javax.swing.JFrame {
             }
         });
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -215,13 +212,13 @@ public class LoginUI extends javax.swing.JFrame {
 
     private void logInButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logInButtonMouseClicked
         int result = PublicEvent.getInstance().getEventLogin().login();
-        if(result == 1){
+        if (result == 1) {
             var email = usernameTextField.getText();
             DAO_Account dao_acc = new DAO_Account();
             List<TaiKhoan> listAcc = dao_acc.select(" where '" + email + "' = Email");
-            
+
             var name = listAcc.get(0).getUsername();
-            
+
             this.dispose();
             new main_user_ui(name, Service.getInstance()).setVisible(true);
         }
@@ -236,8 +233,8 @@ public class LoginUI extends javax.swing.JFrame {
     }//GEN-LAST:event_signUpButtonActionPerformed
 
     private void forgetPassButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_forgetPassButtonMouseClicked
-       this.dispose();
-       PublicEvent.getInstance().getEventLogin().forgetPass();
+        this.dispose();
+        PublicEvent.getInstance().getEventLogin().forgetPass();
     }//GEN-LAST:event_forgetPassButtonMouseClicked
 
     private void passwordTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordTextFieldActionPerformed
@@ -278,7 +275,7 @@ public class LoginUI extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new LoginUI().setVisible(true);
-                
+
             }
         });
     }

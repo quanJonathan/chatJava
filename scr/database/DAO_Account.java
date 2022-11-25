@@ -82,6 +82,14 @@ public class DAO_Account implements DAO<TaiKhoan> {
 
     @Override
     public int delete(TaiKhoan t) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return -1;
     }
+
+    public int delete(String conditions) {
+        var rs = database_helper.delete(database_query_builder.delete(tableName,
+                conditions
+        ));
+        return rs;
+    }
+
 }

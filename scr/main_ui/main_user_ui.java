@@ -3,7 +3,7 @@ package main_ui;
 import UIObject.ChatCard;
 import UIObject.FriendCard;
 import database.DAO_FriendList;
-import entity.TaiKhoan;
+import entity.BanBe;
 import event.EventChat;
 import event.PublicEvent;
 import swing.ModifiedScrollBar;
@@ -18,28 +18,29 @@ public class main_user_ui extends javax.swing.JFrame {
 
     CardLayout cardLayout;
     private static String currentUser;
-    
+
     private static Service client;
-    
+
     public main_user_ui(String username, Service socket) {
         initComponents();
-        cardLayout = (CardLayout)pnlCard.getLayout();
-        
+        cardLayout = (CardLayout) pnlCard.getLayout();
+
         //Get current user name
         currentUser = username;
-        
+        //currentUser = jTextField3.getText();
+
         //set current socket
         client = socket;
-        
+
         init();
     }
-    
-    public final void init(){
-           
+
+    public final void init() {
+
         // UI for chat page
         chatListPanel.setLayout(new MigLayout());
         showPersonalChat();
-        
+
         chat.setLayout(new MigLayout("fillx", "0[fill]0", "0[]0[100%, bottom]0[shrink 0]0"));
         ChatTitle chatTitle = new ChatTitle();
         ChatBody chatBody = new ChatBody();
@@ -53,61 +54,63 @@ public class main_user_ui extends javax.swing.JFrame {
         chat.add(chatTitle, "wrap");
         chat.add(chatBody, "wrap");
         chat.add(chatBottom, "h ::50%");
-        
-        
+
         // UI for friend list page
         friendListPanel.setLayout(new MigLayout());
         var friendList = readFriendList();
         showFriendList(friendList);
-        
+
     }
-    
-    
-    public void getPersonalChat(){
-        
-        SwingUtilities.invokeLater( new Runnable() {
+
+    public void getPersonalChat() {
+
+        SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                ArrayList<TaiKhoan> usersChat = new ArrayList<>();
+                ArrayList<BanBe> usersChat = new ArrayList<>();
             }
         });
-        
+
     }
-    
-    public void showPersonalChat(){
+
+    public void showPersonalChat() {
         sp.setVerticalScrollBar(new ModifiedScrollBar());
         sp.setHorizontalScrollBar(new ModifiedScrollBar());
         chatListPanel.removeAll();
-        for(int i=0;i<40;i++){
+        for (int i = 0; i < 40; i++) {
             chatListPanel.add(new ChatCard("People" + i), "wrap");
         }
         chatListPanel.revalidate();
         chatListPanel.repaint();
     }
-   
-    public void showFriendList(ArrayList<TaiKhoan> friendList){
+
+    public void showFriendList(ArrayList<BanBe> friendList) {
         spFriendList.setVerticalScrollBar(new ModifiedScrollBar());
         spFriendList.setHorizontalScrollBar(new ModifiedScrollBar());
         friendListPanel.removeAll();
-        for(int i=0;i<friendList.size();i++){
-            friendListPanel.add(new FriendCard(friendList.get(i).getUsername()), "wrap");
+        for (int i = 0; i < friendList.size(); i++) {
+            friendListPanel.add(new FriendCard(friendList.get(i).getUsernameBanBe()), "wrap");
         }
         friendListPanel.revalidate();
         friendListPanel.repaint();
     }
-    
-    public ArrayList<TaiKhoan> readFriendList(){
-        ArrayList<TaiKhoan> friendList = new ArrayList<>();
-        
+
+    public ArrayList<BanBe> readFriendList() {
+        ArrayList<BanBe> friendList = new ArrayList<>();
+
         var dbh = new database.database_helper();
 
         var daoFriend = new DAO_FriendList();
-         
+
         friendList = daoFriend.select(" where usernamechinh = '" + currentUser + "'");
-        
-        return friendList; 
-    }   
-    
+
+        friendList.forEach((account) -> {
+            System.out.println(account);
+        });
+
+        return friendList;
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -408,9 +411,14 @@ public class main_user_ui extends javax.swing.JFrame {
 
         friendListPage.setBackground(new java.awt.Color(204, 204, 204));
 
-        jTextField3.setText("Type friend user name");
+        jTextField3.setText("bebaoboy");
 
         jButton1.setText("Search");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         friendListPanel.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -587,6 +595,10 @@ public class main_user_ui extends javax.swing.JFrame {
     private void onlineUserTabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_onlineUserTabMouseClicked
         cardLayout.show(pnlCard, "onlineUserCard");
     }//GEN-LAST:event_onlineUserTabMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
