@@ -5,4 +5,5 @@ module chats {
     requires java.sql;
     requires com.miglayout.swing;
     requires com.miglayout.core;
+    requires json;
 }

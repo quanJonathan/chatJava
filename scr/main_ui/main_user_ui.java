@@ -8,21 +8,29 @@ import event.EventChat;
 import event.PublicEvent;
 import swing.ModifiedScrollBar;
 import java.awt.CardLayout;
+import java.net.Socket;
 import java.util.ArrayList;
-import java.util.List;
-import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
+import service_client.Service;
 
 public class main_user_ui extends javax.swing.JFrame {
 
     CardLayout cardLayout;
-    static String currentUser;
-    public main_user_ui(String username) {
+    private static String currentUser;
+    
+    private static Service client;
+    
+    public main_user_ui(String username, Service socket) {
         initComponents();
         cardLayout = (CardLayout)pnlCard.getLayout();
         
         //Get current user name
         currentUser = username;
+        
+        //set current socket
+        client = socket;
+        
         init();
     }
     
@@ -51,6 +59,18 @@ public class main_user_ui extends javax.swing.JFrame {
         friendListPanel.setLayout(new MigLayout());
         var friendList = readFriendList();
         showFriendList(friendList);
+        
+    }
+    
+    
+    public void getPersonalChat(){
+        
+        SwingUtilities.invokeLater( new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<TaiKhoan> usersChat = new ArrayList<>();
+            }
+        });
         
     }
     
@@ -218,7 +238,7 @@ public class main_user_ui extends javax.swing.JFrame {
                 .addComponent(groupTab)
                 .addGap(62, 62, 62)
                 .addComponent(onlineUserTab)
-                .addContainerGap(127, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jSplitPane1.setLeftComponent(jPanel1);
@@ -598,7 +618,7 @@ public class main_user_ui extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new main_user_ui(currentUser).setVisible(true);
+                new main_user_ui(currentUser, client).setVisible(true);
             }
         });
     }

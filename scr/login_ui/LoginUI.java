@@ -11,6 +11,8 @@ import event.PublicEvent;
 import java.util.ArrayList;
 import java.util.List;
 import main_ui.main_user_ui;
+import org.json.JSONObject;
+import service_client.Service;
 
 /**
  *
@@ -27,15 +29,23 @@ public class LoginUI extends javax.swing.JFrame {
     }
 
     public final void init(){
+        
+        Service.getInstance().run();
+        
         PublicEvent.getInstance().addEventLogin(new EventLogin(){
             @Override
             public int login() {
+                
+                 var username = usernameTextField.getText();
+                String password = String.valueOf(passwordTextField.getPassword());
+                
+//                Service.getInstance().sendCommand('\login', );
+                
                 var dbh = new database.database_helper();
 
                 var daoAcc = new DAO_Account();
                 
-                var username = usernameTextField.getText();
-                var password = passwordTextField.getText();
+               
                 
                 daoAcc.selectAll().forEach((account) -> {
                     System.out.println(account);
@@ -213,7 +223,7 @@ public class LoginUI extends javax.swing.JFrame {
             var name = listAcc.get(0).getUsername();
             
             this.dispose();
-            new main_user_ui(name).setVisible(true);
+            new main_user_ui(name, Service.getInstance()).setVisible(true);
         }
     }//GEN-LAST:event_logInButtonMouseClicked
 
@@ -268,6 +278,7 @@ public class LoginUI extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new LoginUI().setVisible(true);
+                
             }
         });
     }
