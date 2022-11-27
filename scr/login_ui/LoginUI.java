@@ -1,15 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package login_ui;
 
-import database.DAO_Account;
 import entity.TaiKhoan;
 import event.EventLogin;
 import event.PublicEvent;
-import java.util.List;
 import main_ui.main_user_ui;
+import org.json.JSONException;
 import org.json.JSONObject;
 import service_client.Service;
 
@@ -22,10 +17,12 @@ public class LoginUI extends javax.swing.JFrame {
     /**
      * Creates new form login_1
      */
+    private String username;
     public LoginUI() {
         initComponents();
         init();
     }
+    
 
     public final void init() {
 
@@ -35,30 +32,35 @@ public class LoginUI extends javax.swing.JFrame {
             @Override
             public int login() {
 
-                var username = usernameTextField.getText();
+                var email = usernameTextField.getText();
                 String password = String.valueOf(passwordTextField.getPassword());
 
-//                Service.getInstance().sendCommand('\login', );
-                var dbh = new database.database_helper();
+                TaiKhoan acc = new TaiKhoan("", password, email.toLowerCase());
+                var object = acc.JSONify();
 
-                var daoAcc = new DAO_Account();
+                Service.getInstance().al.sendCommand("login", object);
 
-                daoAcc.selectAll().forEach((account) -> {
-                    System.out.println(account);
-                });
+                String results = Service.getInstance().al.getCommand();
 
-                daoAcc.select("where Username='" + username + "'").forEach((account) -> {
-                    System.out.println(account);
-                });
-
-                var queryResult = daoAcc.select("where Email='" + username + "'" + " and password='" + password + "'");
-                if (!queryResult.isEmpty()) {
-                    System.out.println("login succesfully");
-                    return 1;
-                } else {
-                    System.out.println("Wrong username/password");
-                    return 0;
+                int result = 0;
+                try {
+                    JSONObject resultSet = new JSONObject(results);
+                    result = resultSet.getInt("result");
+                    
+                    if(result == 0){
+                        var error = resultSet.getJSONObject("object").getString("error");
+                        System.out.println("error" + error);
+                    }else{
+//                        System.out.println(resultSet.get("object").getClass());
+                          JSONObject subObject = new JSONObject(resultSet.get("object").toString());
+                
+                          username = subObject.getString("username");
+                    }
+                } catch (JSONException ex) {
+                
                 }
+                
+                return result;
             }
 
             @Override
@@ -213,14 +215,8 @@ public class LoginUI extends javax.swing.JFrame {
     private void logInButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logInButtonMouseClicked
         int result = PublicEvent.getInstance().getEventLogin().login();
         if (result == 1) {
-            var email = usernameTextField.getText();
-            DAO_Account dao_acc = new DAO_Account();
-            List<TaiKhoan> listAcc = dao_acc.select(" where '" + email + "' = Email");
-
-            var name = listAcc.get(0).getUsername();
-
             this.dispose();
-            new main_user_ui(name, Service.getInstance()).setVisible(true);
+            new main_user_ui(username, Service.getInstance()).setVisible(true);
         }
     }//GEN-LAST:event_logInButtonMouseClicked
 

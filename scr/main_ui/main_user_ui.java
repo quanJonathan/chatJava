@@ -18,7 +18,6 @@ public class main_user_ui extends javax.swing.JFrame {
 
     CardLayout cardLayout;
     private static String currentUser;
-
     private static Service client;
 
     public main_user_ui(String username, Service socket) {
