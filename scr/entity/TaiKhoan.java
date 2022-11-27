@@ -4,7 +4,10 @@
  */
 package entity;
 
+import java.lang.reflect.Field;
 import java.sql.Date;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -24,6 +27,10 @@ public class TaiKhoan {
         username = name;
         password = pass;
         this.email = email;
+    }
+
+    public TaiKhoan() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     public TaiKhoan setNgaySinh(Date d) {
@@ -92,5 +99,22 @@ public class TaiKhoan {
                 username, password, email, ngaySinh != null ? ngaySinh.toString() : "",
                 gioiTinh ? "Female" : "Male", diaChi, trangThai ? "Online" : "Offline");
 
+    }
+    
+    public JSONObject JSONify() {
+        try {
+            JSONObject object = new JSONObject();
+            Field[] fields = this.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                try {
+                    object.put(field.getName(), field.get(this));
+                } catch (IllegalAccessException ex) {
+                    System.out.println(ex);
+                }
+            }
+            return object;
+        } catch (JSONException ex) {
+            return null;
+        }
     }
 }
