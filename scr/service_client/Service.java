@@ -8,13 +8,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONObject;
 
 
 public class Service implements Runnable{
@@ -24,7 +24,7 @@ public class Service implements Runnable{
     static final String HOST = "127.0.0.1";
     private BufferedReader in;
     private PrintWriter out;
-    private ExecutorService pool;
+    public ActionListener al;
     
     public static Service getInstance(){
         if(instance == null){
@@ -38,27 +38,30 @@ public class Service implements Runnable{
     public void run() {
         try {
             client = new Socket(HOST, PORT_NUMBER);
-            pool = Executors.newCachedThreadPool();
             
-            ActionListener al = new ActionListener(client);
-            pool.execute(al);
+            al = new ActionListener(client);
+            
+            Thread t = new Thread(al);
+            t.start();
            
         } catch (IOException ex) {
            shutDown();
-        }
-        
+        }    
     }
     
     public void shutDown(){
         try{
-            in.close();
-            out.close();
             if(!client.isClosed()){
                 client.close();
+                al.shutDown();
             }
         }catch(IOException e){
             
         }
+    }
+    
+    public Socket getSocket(){
+        return this.client;
     }
     
     public class ActionListener implements Runnable{
@@ -70,6 +73,7 @@ public class Service implements Runnable{
         public ActionListener(Socket client){
             this.client = client;
         }        
+            
         @Override
         public void run() {
             try {
@@ -84,8 +88,32 @@ public class Service implements Runnable{
 //                System.out.println(in.readLine());
                 
             } catch (IOException ex) {
+                
+            }
+        }
+        
+        public void shutDown(){
+            try{
+                in.close();
+                out.close();
+            }catch(IOException e){
+                
+            }
+        }
+        
+        public void sendCommand(String command, JSONObject object){
+            out.println("/login " + object.toString());
+        }
+        
+        public String getCommand(){
+            try {
+                String readCommand = in.readLine();
+                
+                return readCommand;
+            } catch (IOException ex) {
                 Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
             }
+            return "";
         }
     }
 }
