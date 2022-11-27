@@ -39,7 +39,9 @@ public class database_query_builder {
         return query;
     }
 
-    public static void update() {
-        // To Do
+    public static String update(String tableName, String updateValues, String conditions) {
+        String query;
+        query = String.join(" ", UPDATE, tableName, "\n", "SET", updateValues, "\n", conditions);
+        return query;
     }
 }

@@ -1,8 +1,8 @@
 package event;
 
-import entity.Message;
+import entity.TinNhan;
 
 public interface EventMessage {
 
-    public void callMessage(Message message);
+    public void callMessage(TinNhan message);
 }

@@ -5,7 +5,6 @@
 package entity;
 
 import java.lang.reflect.Field;
-import java.sql.Date;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,43 +12,51 @@ import org.json.JSONObject;
  *
  * @author HMBAO
  */
-public class BanBe {
+public class DanhSachTinNhan {
 
-    String usernameChinh;
-    String usernameBanBe;
-    Date ngayKetBan;
+    String ID;
+    String nguoiGui;
+    String nguoiNhan;
+    String IDNhom;
 
-    public BanBe(String me, String them, Date d) {
-        usernameChinh = me;
-        usernameBanBe = them;
-        ngayKetBan = d;
+    public DanhSachTinNhan(String ID, String nguoiGui, String nguoiNhan, String IDNhom) {
+        this.ID = ID;
+        this.nguoiGui = nguoiGui;
+        this.nguoiNhan = nguoiNhan;
+        this.IDNhom = IDNhom;
     }
 
-    public String getUsernameChinh() {
-        return usernameChinh;
+    public String getID() {
+        return ID;
     }
 
-    public String getUsernameBanBe() {
-        return usernameBanBe;
+    public String getNguoiGui() {
+        return nguoiGui;
     }
 
-    public Date getNgayKetBan() {
-        return ngayKetBan;
+    public String getNguoiNhan() {
+        return nguoiNhan;
+    }
+
+    public String getIDNhom() {
+        return IDNhom;
     }
 
     public String toDelimitedList() {
-        return String.format("N'%s', N'%s', '%s'",
-                usernameChinh,
-                usernameBanBe,
-                ngayKetBan.toString());
+        return String.format("N'%s', N'%s', N'%s', '%s",
+                IDNhom,
+                nguoiGui,
+                nguoiNhan,
+                IDNhom);
     }
 
     @Override
     public String toString() {
-        return String.format("%-15s %-15s %-20s",
-                usernameChinh,
-                usernameBanBe,
-                ngayKetBan.toString());
+        return String.format("%-15s %-15s %-10s %-10s",
+                IDNhom,
+                nguoiGui,
+                nguoiNhan,
+                IDNhom);
 
     }
 
@@ -69,5 +76,4 @@ public class BanBe {
             return null;
         }
     }
-
 }

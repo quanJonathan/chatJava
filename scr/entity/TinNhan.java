@@ -11,45 +11,45 @@ import org.json.JSONObject;
 
 /**
  *
- * @author HMBAO
+ * @author ADMIN
  */
-public class BanBe {
+public class TinNhan {
 
-    String usernameChinh;
-    String usernameBanBe;
-    Date ngayKetBan;
+    String ID;
+    Date thoiGian;
+    String noiDung;
 
-    public BanBe(String me, String them, Date d) {
-        usernameChinh = me;
-        usernameBanBe = them;
-        ngayKetBan = d;
+    public TinNhan(String ID, Date thoiGian, String noiDung) {
+        this.ID = ID;
+        this.thoiGian = thoiGian;
+        this.noiDung = noiDung;
     }
 
-    public String getUsernameChinh() {
-        return usernameChinh;
+    public String getID() {
+        return ID;
     }
 
-    public String getUsernameBanBe() {
-        return usernameBanBe;
+    public String getNoiDung() {
+        return noiDung;
     }
 
-    public Date getNgayKetBan() {
-        return ngayKetBan;
+    public Date getThoiGian() {
+        return thoiGian;
     }
 
     public String toDelimitedList() {
-        return String.format("N'%s', N'%s', '%s'",
-                usernameChinh,
-                usernameBanBe,
-                ngayKetBan.toString());
+        return String.format("'%s', '%s', N'%s'",
+                ID,
+                thoiGian,
+                noiDung);
     }
 
     @Override
     public String toString() {
-        return String.format("%-15s %-15s %-20s",
-                usernameChinh,
-                usernameBanBe,
-                ngayKetBan.toString());
+        return String.format("%-15s %-15s %200s",
+                ID,
+                thoiGian,
+                noiDung);
 
     }
 
@@ -69,5 +69,4 @@ public class BanBe {
             return null;
         }
     }
-
 }

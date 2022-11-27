@@ -13,43 +13,43 @@ import org.json.JSONObject;
  *
  * @author HMBAO
  */
-public class BanBe {
+public class NhomChat {
 
-    String usernameChinh;
-    String usernameBanBe;
-    Date ngayKetBan;
+    String IDNhom;
+    String tenNhom;
+    Date ngayTao;
 
-    public BanBe(String me, String them, Date d) {
-        usernameChinh = me;
-        usernameBanBe = them;
-        ngayKetBan = d;
+    public NhomChat(String IDNhom, String tenNhom, Date ngayTao) {
+        this.IDNhom = IDNhom;
+        this.tenNhom = tenNhom;
+        this.ngayTao = ngayTao;
     }
 
-    public String getUsernameChinh() {
-        return usernameChinh;
+    public String getIDNhom() {
+        return IDNhom;
     }
 
-    public String getUsernameBanBe() {
-        return usernameBanBe;
+    public String getTenNhom() {
+        return tenNhom;
     }
 
-    public Date getNgayKetBan() {
-        return ngayKetBan;
+    public Date getNgayTao() {
+        return ngayTao;
     }
 
     public String toDelimitedList() {
-        return String.format("N'%s', N'%s', '%s'",
-                usernameChinh,
-                usernameBanBe,
-                ngayKetBan.toString());
+        return String.format("'%s', '%s', '%s'",
+                IDNhom,
+                tenNhom,
+                ngayTao.toString());
     }
 
     @Override
     public String toString() {
         return String.format("%-15s %-15s %-20s",
-                usernameChinh,
-                usernameBanBe,
-                ngayKetBan.toString());
+                IDNhom,
+                tenNhom,
+                ngayTao.toString());
 
     }
 
@@ -69,5 +69,4 @@ public class BanBe {
             return null;
         }
     }
-
 }

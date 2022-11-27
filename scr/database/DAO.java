@@ -7,6 +7,7 @@ package database;
 import java.util.List;
 import java.util.Optional;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  *
@@ -19,7 +20,7 @@ public interface DAO<T> {
 
     List<T> select(String condition);
 
-    List<T> resultToList(ResultSet rs);
+    List<T> resultToList(ResultSet rs) throws SQLException;
 
     List<T> insert(T t);
 

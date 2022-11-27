@@ -13,43 +13,43 @@ import org.json.JSONObject;
  *
  * @author HMBAO
  */
-public class BanBe {
+public class LichSuDangNhap {
 
-    String usernameChinh;
-    String usernameBanBe;
-    Date ngayKetBan;
+    String username;
+    Date ngayDangNhap;
+    Date ngayDangXuat;
 
-    public BanBe(String me, String them, Date d) {
-        usernameChinh = me;
-        usernameBanBe = them;
-        ngayKetBan = d;
+    public LichSuDangNhap(String username, Date ngayDangNhap, Date ngayDangXuat) {
+        this.username = username;
+        this.ngayDangNhap = ngayDangNhap;
+        this.ngayDangXuat = ngayDangXuat;
     }
 
-    public String getUsernameChinh() {
-        return usernameChinh;
+    public String getUsername() {
+        return username;
     }
 
-    public String getUsernameBanBe() {
-        return usernameBanBe;
+    public Date getNgayDangNhap() {
+        return ngayDangNhap;
     }
 
-    public Date getNgayKetBan() {
-        return ngayKetBan;
+    public Date getNgayDangXuat() {
+        return ngayDangXuat;
     }
 
     public String toDelimitedList() {
-        return String.format("N'%s', N'%s', '%s'",
-                usernameChinh,
-                usernameBanBe,
-                ngayKetBan.toString());
+        return String.format("N'%s', '%s', '%s'",
+                username,
+                ngayDangNhap,
+                ngayDangXuat);
     }
 
     @Override
     public String toString() {
-        return String.format("%-15s %-15s %-20s",
-                usernameChinh,
-                usernameBanBe,
-                ngayKetBan.toString());
+        return String.format("%-15s %-15s %200s",
+                username,
+                ngayDangNhap,
+                ngayDangXuat);
 
     }
 
@@ -69,5 +69,4 @@ public class BanBe {
             return null;
         }
     }
-
 }

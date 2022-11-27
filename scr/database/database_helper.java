@@ -4,11 +4,13 @@
  */
 package database;
 
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 
 /**
@@ -48,7 +50,7 @@ public class database_helper {
         }
     }
 
-    public static ResultSet insert(String queryString) {
+    public static ResultSet insert(String queryString) throws SQLServerException, Exception {
         try {
             System.out.println("");
             System.out.println(queryString);
@@ -64,9 +66,14 @@ public class database_helper {
 //                System.out.println("Generated: " + resultSet.getString(1));
 //            }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            if (ex instanceof SQLServerException sQLServerException) {
+                System.out.println(sQLServerException.getSQLState());
+
+                throw ex;
+            }
             return null;
         }
+
     }
 
     public static int delete(String queryString) {

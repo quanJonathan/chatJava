@@ -5,7 +5,7 @@
 package database;
 
 import com.microsoft.sqlserver.jdbc.SQLServerException;
-import entity.BanBe;
+import entity.TinNhan;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,22 +14,22 @@ import java.util.List;
 
 /**
  *
- * @author ADMIN
+ * @author HMBAO
  */
-public class DAO_FriendList implements DAO<BanBe> {
+public class DAO_TinNhan implements DAO<TinNhan> {
 
-    final String tableName = "DanhSachBanBe";
+    final String tableName = "TinNhan";
 
-    public DAO_FriendList() {
+    public DAO_TinNhan() {
     }
 
     @Override
-    public List<BanBe> selectAll() {
+    public List<TinNhan> selectAll() {
         return select("");
     }
 
     @Override
-    public ArrayList<BanBe> select(String condition) {
+    public ArrayList<TinNhan> select(String condition) {
         try {
             var rs = database_helper.select(database_query_builder.get(tableName, condition, ""));
             return resultToList(rs);
@@ -39,23 +39,23 @@ public class DAO_FriendList implements DAO<BanBe> {
     }
 
     @Override
-    public ArrayList<BanBe> resultToList(ResultSet rs) throws SQLException {
-        var result = new ArrayList<BanBe>();
-        while (rs.next()) {
-            if (rs.getMetaData().getColumnCount() == 1) {
-                result.add(new BanBe(rs.getNString(1), "", new Date(0)));
-            } else {
-                result.add(new BanBe(
-                        rs.getNString(1),
-                        rs.getNString(2),
-                        rs.getDate(3)));
-            }
-        }
+    public ArrayList<TinNhan> resultToList(ResultSet rs) throws SQLException {
+        var result = new ArrayList<TinNhan>();
+//        while (rs.next()) {
+//            if (rs.getMetaData().getColumnCount() == 1) {
+//                result.add(new TinNhan(rs.getNString(1), "", new Date(0)));
+//            } else {
+//                result.add(new TinNhan(
+//                        rs.getNString(1),
+//                        rs.getNString(2),
+//                        rs.getDate(3)));
+//            }
+//        }
         return result;
     }
 
     @Override
-    public ArrayList<BanBe> insert(BanBe t) {
+    public ArrayList<TinNhan> insert(TinNhan t) {
         String insertQuery = t.toDelimitedList();
 
         try {
@@ -72,12 +72,13 @@ public class DAO_FriendList implements DAO<BanBe> {
     }
 
     @Override
-    public ArrayList<BanBe> update(BanBe t, String[] params) {
+    public ArrayList<TinNhan> update(TinNhan t, String[] params) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public int delete(BanBe t) {
+    public int delete(TinNhan t) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
 }

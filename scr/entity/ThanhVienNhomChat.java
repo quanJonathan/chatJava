@@ -13,43 +13,51 @@ import org.json.JSONObject;
  *
  * @author HMBAO
  */
-public class BanBe {
+public class ThanhVienNhomChat {
 
-    String usernameChinh;
-    String usernameBanBe;
-    Date ngayKetBan;
+    String IDNhom;
+    String username;
+    boolean chucNang; // 0 = user, 1 = admin
+    Date ngayThem;
 
-    public BanBe(String me, String them, Date d) {
-        usernameChinh = me;
-        usernameBanBe = them;
-        ngayKetBan = d;
+    public ThanhVienNhomChat(String IDNhom, String username, boolean chucNang, Date ngayThem) {
+        this.IDNhom = IDNhom;
+        this.username = username;
+        this.chucNang = chucNang;
+        this.ngayThem = ngayThem;
     }
 
-    public String getUsernameChinh() {
-        return usernameChinh;
+    public String getIDNhom() {
+        return IDNhom;
     }
 
-    public String getUsernameBanBe() {
-        return usernameBanBe;
+    public String getUsername() {
+        return username;
     }
 
-    public Date getNgayKetBan() {
-        return ngayKetBan;
+    public boolean isChucNang() {
+        return chucNang;
+    }
+
+    public Date getNgayThem() {
+        return ngayThem;
     }
 
     public String toDelimitedList() {
-        return String.format("N'%s', N'%s', '%s'",
-                usernameChinh,
-                usernameBanBe,
-                ngayKetBan.toString());
+        return String.format("N'%s', N'%s', '%b', '%s",
+                IDNhom,
+                username,
+                chucNang,
+                ngayThem);
     }
 
     @Override
     public String toString() {
-        return String.format("%-15s %-15s %-20s",
-                usernameChinh,
-                usernameBanBe,
-                ngayKetBan.toString());
+        return String.format("%-15s %-15s %-10s %-10s",
+                IDNhom,
+                username,
+                chucNang ? "Admin" : "Member",
+                ngayThem);
 
     }
 
@@ -69,5 +77,4 @@ public class BanBe {
             return null;
         }
     }
-
 }

@@ -4,13 +4,12 @@
  */
 package database;
 
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import entity.TaiKhoan;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 /**
  *
@@ -36,43 +35,53 @@ public class DAO_Account implements DAO<TaiKhoan> {
 
     @Override
     public List<TaiKhoan> select(String condition) {
-        var rs = database_helper.select(database_query_builder.getAll(tableName) + " " + condition);
-        return resultToList(rs);
+        try {
+            var rs = database_helper.select(database_query_builder.getAll(tableName) + " " + condition);
+            return resultToList(rs);
+        } catch (Throwable ex) {
+            return new ArrayList<>();
+        }
     }
 
     @Override
-    public List<TaiKhoan> resultToList(ResultSet rs) {
+    public List<TaiKhoan> resultToList(ResultSet rs) throws SQLException {
         var result = new ArrayList<TaiKhoan>();
-        try {
-            while (rs.next()) {
-                if (rs.getMetaData().getColumnCount() == 1) {
-                    result.add(new TaiKhoan(rs.getNString(1), "", ""));
-                } else {
-                    result.add(new TaiKhoan(
-                            rs.getNString(1),
-                            rs.getNString(2),
-                            rs.getNString(3))
-                            .setNgaySinh(rs.getDate(4))
-                            .setGioiTinh(rs.getBoolean(5))
-                            .setDiaChi(rs.getNString(6))
-                            .setTrangThai(rs.getBoolean(7)));
-                }
+        while (rs != null && rs.next()) {
+            if (rs.getMetaData().getColumnCount() == 1) {
+                result.add(new TaiKhoan(rs.getNString(1), "", ""));
+            } else {
+                result.add(new TaiKhoan(
+                        rs.getNString(1),
+                        rs.getNString(2),
+                        rs.getNString(3))
+                        .setNgaySinh(rs.getDate(4))
+                        .setGioiTinh(rs.getBoolean(5))
+                        .setDiaChi(rs.getNString(6))
+                        .setTrangThai(rs.getBoolean(7)));
             }
-            return result;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return result;
         }
+        return result;
+
     }
 
     @Override
     public List<TaiKhoan> insert(TaiKhoan t) {
         String insertQuery = t.toDelimitedList();
+        try {
+            var rs = database_helper.insert(database_query_builder.insert(tableName,
+                    insertQuery
+            ));
+            return resultToList(rs);
+        } catch (SQLServerException ex) {
+            if (ex.getSQLState().startsWith("23")) {
+                System.out.println("Account already exists.");
+            }
+            return new ArrayList<>();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ArrayList<>();
+        }
 
-        var rs = database_helper.insert(database_query_builder.insert(tableName,
-                insertQuery
-        ));
-        return resultToList(rs);
     }
 
     @Override
