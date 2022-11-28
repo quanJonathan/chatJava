@@ -4,6 +4,8 @@
  */
 package database;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author HMBAO
@@ -39,9 +41,9 @@ public class database_query_builder {
         return query;
     }
 
-    public static String update(String tableName, String updateValues, String conditions) {
+    public static String update(String tableName, ArrayList<String> updateValues, String conditions) {
         String query;
-        query = String.join(" ", UPDATE, tableName, "\n", "SET", updateValues, "\n", conditions);
+        query = String.join(" ", UPDATE, tableName, "\n", "SET", String.join(", ", updateValues), "\n", conditions);
         return query;
     }
 }

@@ -72,7 +72,7 @@ public class DAO_TinNhan implements DAO<TinNhan> {
     }
 
     @Override
-    public ArrayList<TinNhan> update(TinNhan t, String[] params) {
+    public ArrayList<TinNhan> update(TinNhan t, String conditions) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

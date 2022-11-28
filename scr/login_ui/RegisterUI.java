@@ -57,10 +57,20 @@ public class RegisterUI extends javax.swing.JFrame {
                     System.out.println("register succesfully");
                     queryResult.forEach((acc) -> {
                         System.out.println(acc);
-                        System.out.println(acc.getGioiTinh());
                     });
                 } else {
                     System.out.println("Register error");
+                }
+
+                var user2 = new TaiKhoan(user.getUsername(), user.getPassword() + "xxx", user.getEmail());
+                var r = daoAcc.update(user2, "where username = N'" + user2.getUsername() + "'");
+                if (r.size() > 0) {
+                    System.out.println("update succesfully");
+                    queryResult.forEach((acc) -> {
+                        System.out.println(acc);
+                    });
+                } else {
+                    System.out.println("update error");
                 }
             }
 

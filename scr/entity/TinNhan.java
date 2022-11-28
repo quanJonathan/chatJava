@@ -18,10 +18,10 @@ import static entity.IDPrefix.IDTinNhan;
 public class TinNhan {
 
     String ID;
-    Date thoiGian;
+    Date thoiGian = new Date(System.currentTimeMillis());
     String noiDung;
 
-    public TinNhan( Date thoiGian, String noiDung) {
+    public TinNhan(Date thoiGian, String noiDung) {
         this.ID = StringRandomizer.GetStringWithPrefix(IDTinNhan, IDPrefix.length);
         this.thoiGian = thoiGian;
         this.noiDung = noiDung;

@@ -24,7 +24,7 @@ public interface DAO<T> {
 
     List<T> insert(T t);
 
-    List<T> update(T t, String[] params);
+    List<T> update(T t, String conditions);
 
     int delete(T t);
 }

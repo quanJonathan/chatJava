@@ -72,7 +72,7 @@ public class DAO_BanBe implements DAO<BanBe> {
     }
 
     @Override
-    public ArrayList<BanBe> update(BanBe t, String[] params) {
+    public ArrayList<BanBe> update(BanBe t, String conditions) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

@@ -18,7 +18,7 @@ public class NhomChat {
 
     String IDNhom;
     String tenNhom;
-    Date ngayTao;
+    Date ngayTao = new Date(System.currentTimeMillis());
 
     public NhomChat(String tenNhom, Date ngayTao) {
         this.IDNhom = StringRandomizer.GetStringWithPrefix(IDPrefix.IDNhomChat, IDPrefix.length);

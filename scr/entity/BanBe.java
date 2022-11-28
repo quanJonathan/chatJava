@@ -17,7 +17,9 @@ public class BanBe {
 
     String usernameChinh;
     String usernameBanBe;
-    Date ngayKetBan;
+    Date ngayKetBan = new Date(System.currentTimeMillis());
+
+    ;
 
     public BanBe(String me, String them, Date d) {
         usernameChinh = me;

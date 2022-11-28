@@ -85,8 +85,22 @@ public class DAO_TaiKhoan implements DAO<TaiKhoan> {
     }
 
     @Override
-    public List<TaiKhoan> update(TaiKhoan t, String[] params) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public List<TaiKhoan> update(TaiKhoan t, String conditions) {
+        var insertQuery = t.toPair();
+        try {
+            var rs = database_helper.insert(database_query_builder.update(tableName,
+                    insertQuery, conditions
+            ));
+            return resultToList(rs);
+        } catch (SQLServerException ex) {
+//            if (ex.getSQLState().startsWith("23")) {
+//                System.out.println("Account already exists.");
+//            }
+            return new ArrayList<>();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
     @Override

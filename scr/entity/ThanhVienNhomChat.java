@@ -18,7 +18,7 @@ public class ThanhVienNhomChat {
     String IDNhom;
     String username;
     boolean chucNang; // 0 = user, 1 = admin
-    Date ngayThem;
+    Date ngayThem = new Date(System.currentTimeMillis());
 
     public ThanhVienNhomChat(String IDNhom, String username, boolean chucNang, Date ngayThem) {
         this.IDNhom = IDNhom;
