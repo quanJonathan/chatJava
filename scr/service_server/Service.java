@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -111,10 +114,9 @@ public class Service implements Runnable {
 
                             var name = listAcc.get(0).getUsername();
                             sendMessage(list[0], result, new JSONObject().put("username", name));
-                        }else{
+                        } else {
                             sendMessage(list[0], result, new JSONObject().put("error", "Wrong credentials"));
                         }
-                        
 
                     } catch (JSONException ex) {
                         System.out.println("Null object");
@@ -129,7 +131,20 @@ public class Service implements Runnable {
                 } else if (action.startsWith("resetPassword")) {
 
                 } else if (action.startsWith("/sendMessage")) {
-
+                    JSONObject object = new JSONObject(list[1]);
+                    String text = object.getString("noidung");
+                    String receiver = object.getString("receiver");
+                    
+                    Socket temp = new Socket();
+                    for (Map.Entry<Socket, String> entry : connectionsWithName.entrySet()) {
+                        if(entry.getValue().equals(receiver)){
+                            temp = entry.getKey();
+                            break;
+                        }
+                    }
+                    PrintWriter temp2 = new PrintWriter(temp.getOutputStream(), true);
+                    temp2.println("/login" + text);
+                    temp2.close();
                 } else if (action.startsWith("/getOnlUser")) {
 
                 } else if (action.startsWith("/getFriendList")) {

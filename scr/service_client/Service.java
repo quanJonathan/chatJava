@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -25,6 +27,7 @@ public class Service implements Runnable{
     private BufferedReader in;
     private PrintWriter out;
     public ActionListener al;
+    public Queue<String> cmd;
     
     public static Service getInstance(){
         if(instance == null){
@@ -38,7 +41,7 @@ public class Service implements Runnable{
     public void run() {
         try {
             client = new Socket(HOST, PORT_NUMBER);
-            
+            cmd = new PriorityQueue<String>();
             al = new ActionListener(client);
             
             Thread t = new Thread(al);
@@ -63,6 +66,8 @@ public class Service implements Runnable{
     public Socket getSocket(){
         return this.client;
     }
+    
+    
     
     public class ActionListener implements Runnable{
 
@@ -107,7 +112,7 @@ public class Service implements Runnable{
         
         public String getCommand(){
             try {
-                String readCommand = in.readLine();
+                String readCommand =  in.readLine();
                 
                 return readCommand;
             } catch (IOException ex) {

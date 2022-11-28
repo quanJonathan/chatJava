@@ -8,6 +8,8 @@ public class PublicEvent {
     private EventLogin eventLogin;
     private EventRegister eventRegister;
     private EventForgetPass eventForgetPass;
+    
+    private EventOnChatCard eventChatCard;
 
     public static PublicEvent getInstance() {
         if (instance == null) {
@@ -37,6 +39,12 @@ public class PublicEvent {
     public void addEventForgetPass(EventForgetPass event){
         this.eventForgetPass = event;
     }
+    
+    public void addEventChatCard(EventOnChatCard event){
+        this.eventChatCard = event;
+    }
+    
+    
 
     public EventMain getEventMain() {
         return eventMain;
@@ -56,6 +64,10 @@ public class PublicEvent {
     
     public EventForgetPass getEventForgetPass() {
         return eventForgetPass;
+    }
+    
+    public EventOnChatCard getEventOnChatCard(){
+        return eventChatCard;
     }
     
 }

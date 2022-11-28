@@ -1,5 +1,6 @@
 package main_ui;
 
+import event.PublicEvent;
 import java.awt.Color;
 
 public class ChatTitle extends javax.swing.JPanel {
@@ -8,7 +9,7 @@ public class ChatTitle extends javax.swing.JPanel {
         initComponents();
     }
 
-    public void setUserName(String userName) {
+    public void setUserName(String userName){
         lbName.setText(userName);
     }
 

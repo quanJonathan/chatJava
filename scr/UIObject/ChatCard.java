@@ -1,5 +1,8 @@
 package UIObject;
 
+import event.EventChat;
+import event.EventOnChatCard;
+import event.PublicEvent;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -16,16 +19,16 @@ public class ChatCard extends javax.swing.JPanel {
     }
     
     public void init(){
+        
         addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent me) {
-                setBackground(new Color(230, 230, 230));
-            }
 
             @Override
-            public void mouseExited(MouseEvent me) {
-                setBackground(new Color(242, 242, 242));
+            public void mouseClicked(MouseEvent e) {
+                String name = lbl_chatCardName.getText();
+                PublicEvent.getInstance().getEventChat().setChatter(name);
+                
             }
+          
         });
     }
     
@@ -35,6 +38,12 @@ public class ChatCard extends javax.swing.JPanel {
 
         lbl_chatCardName = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+        });
 
         lbl_chatCardName.setText("jLabel1");
 
@@ -60,6 +69,10 @@ public class ChatCard extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+           
+    }//GEN-LAST:event_formMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

@@ -4,20 +4,26 @@ import UIObject.ChatCard;
 import UIObject.FriendCard;
 import database.DAO_BanBe;
 import entity.BanBe;
+import entity.TinNhan;
 import event.EventChat;
 import event.PublicEvent;
 import swing.ModifiedScrollBar;
 import java.awt.CardLayout;
 import java.net.Socket;
+import java.sql.Time;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.sql.Date;
 import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
+import org.json.JSONObject;
 import service_client.Service;
 
 public class main_user_ui extends javax.swing.JFrame {
 
     CardLayout cardLayout;
     private static String currentUser;
+    private String currentChatter;
     private static Service client;
 
     public main_user_ui(String username, Service socket) {
@@ -36,29 +42,57 @@ public class main_user_ui extends javax.swing.JFrame {
 
     public final void init() {
 
+        ArrayList<String> usernames = new ArrayList<>();
+        usernames.add("quan");
+        usernames.add("bao");
         // UI for chat page
         chatListPanel.setLayout(new MigLayout());
-        showPersonalChat();
+        showAllPersonalChat(usernames);
 
         chat.setLayout(new MigLayout("fillx", "0[fill]0", "0[]0[100%, bottom]0[shrink 0]0"));
         ChatTitle chatTitle = new ChatTitle();
+        chatTitle.setUserName(usernames.get(0));
+
         ChatBody chatBody = new ChatBody();
         ChatBottom chatBottom = new ChatBottom();
-        PublicEvent.getInstance().addEventChat(new EventChat() {
-            @Override
-            public void sendMessage(String text) {
-                chatBody.addItemRight(text);
-            }
-        });
+
         chat.add(chatTitle, "wrap");
         chat.add(chatBody, "wrap");
         chat.add(chatBottom, "h ::50%");
+
+        PublicEvent.getInstance().addEventChat(new EventChat() {
+            @Override
+            public void sendMessage(String text) {
+                Date time = new Date(System.currentTimeMillis());
+                TinNhan mess = new TinNhan(time, text);
+                JSONObject object = mess.JSONify();
+                object.put("receiver", currentChatter);
+                client.al.sendCommand("/sendMessage", mess.JSONify());
+                chatBody.addItemRight(text);
+
+                getMessage();
+            }
+
+            @Override
+            public void setChatter(String name) {
+                currentChatter = name;
+                chatTitle.setUserName(name);
+            }
+
+            @Override
+            public String getMessage() {
+                Service.getInstance().al.getCommand();
+                
+                return "";
+            }
+        });
 
         // UI for friend list page
         friendListPanel.setLayout(new MigLayout());
         var friendList = readFriendList();
         showFriendList(friendList);
-
+        
+        
     }
 
     public void getPersonalChat() {
@@ -69,18 +103,21 @@ public class main_user_ui extends javax.swing.JFrame {
                 ArrayList<BanBe> usersChat = new ArrayList<>();
             }
         });
-
     }
 
-    public void showPersonalChat() {
+    public void showAllPersonalChat(ArrayList<String> nameList) {
         sp.setVerticalScrollBar(new ModifiedScrollBar());
         sp.setHorizontalScrollBar(new ModifiedScrollBar());
         chatListPanel.removeAll();
-        for (int i = 0; i < 40; i++) {
-            chatListPanel.add(new ChatCard("People" + i), "wrap");
+        for (int i = 0; i < nameList.size(); i++) {
+            chatListPanel.add(new ChatCard(nameList.get(i)), "wrap");
         }
         chatListPanel.revalidate();
         chatListPanel.repaint();
+    }
+
+    public void showCurrentChat() {
+
     }
 
     public void showFriendList(ArrayList<BanBe> friendList) {
