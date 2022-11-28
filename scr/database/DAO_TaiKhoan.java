@@ -15,11 +15,11 @@ import java.util.List;
  *
  * @author HMBAO
  */
-public class DAO_Account implements DAO<TaiKhoan> {
+public class DAO_TaiKhoan implements DAO<TaiKhoan> {
 
     final String tableName = "TaiKhoan";
 
-    public DAO_Account() {
+    public DAO_TaiKhoan() {
 
     }
 

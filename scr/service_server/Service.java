@@ -4,7 +4,7 @@ package service_server;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-import database.DAO_Account;
+import database.DAO_TaiKhoan;
 import entity.TaiKhoan;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -106,7 +106,7 @@ public class Service implements Runnable {
                         String password = object.getString("password");
                         int result = processLoginCommand(email, password);
                         if (result == 1) {
-                            DAO_Account dao_acc = new DAO_Account();
+                            DAO_TaiKhoan dao_acc = new DAO_TaiKhoan();
                             List<TaiKhoan> listAcc = dao_acc.select(" where '" + email + "' = Email");
 
                             var name = listAcc.get(0).getUsername();
@@ -185,7 +185,7 @@ public class Service implements Runnable {
         private int processLoginCommand(String username, String password) {
             var dbh = new database.database_helper();
 
-            var daoAcc = new DAO_Account();
+            var daoAcc = new DAO_TaiKhoan();
 
             daoAcc.selectAll().forEach((account) -> {
                 System.out.println(account);

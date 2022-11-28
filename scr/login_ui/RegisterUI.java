@@ -4,7 +4,7 @@
  */
 package login_ui;
 
-import database.DAO_Account;
+import database.DAO_TaiKhoan;
 import entity.TaiKhoan;
 import event.EventRegister;
 import event.PublicEvent;
@@ -50,7 +50,7 @@ public class RegisterUI extends javax.swing.JFrame {
                 // TODO add your handling code here:
                 var dbh = new database.database_helper();
 
-                var daoAcc = new DAO_Account();
+                var daoAcc = new DAO_TaiKhoan();
                 var queryResult = daoAcc.insert(user);
 
                 if (queryResult.size() > 0) {
