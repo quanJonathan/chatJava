@@ -4,6 +4,7 @@
  */
 package entity;
 
+import database.StringRandomizer;
 import java.lang.reflect.Field;
 import java.sql.Date;
 import org.json.JSONException;
@@ -20,7 +21,7 @@ public class NhomChat {
     Date ngayTao;
 
     public NhomChat(String IDNhom, String tenNhom, Date ngayTao) {
-        this.IDNhom = IDNhom;
+        this.IDNhom = StringRandomizer.GetStringWithPrefix(IDPrefix.IDNhomChat, IDPrefix.length);
         this.tenNhom = tenNhom;
         this.ngayTao = ngayTao;
     }

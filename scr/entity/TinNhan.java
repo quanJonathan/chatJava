@@ -8,6 +8,8 @@ import java.lang.reflect.Field;
 import java.sql.Date;
 import org.json.JSONException;
 import org.json.JSONObject;
+import database.StringRandomizer;
+import static entity.IDPrefix.IDTinNhan;
 
 /**
  *
@@ -20,7 +22,7 @@ public class TinNhan {
     String noiDung;
 
     public TinNhan(String ID, Date thoiGian, String noiDung) {
-        this.ID = ID;
+        this.ID = StringRandomizer.GetStringWithPrefix(IDTinNhan, IDPrefix.length);
         this.thoiGian = thoiGian;
         this.noiDung = noiDung;
     }
