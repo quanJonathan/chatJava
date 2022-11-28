@@ -20,7 +20,7 @@ public class NhomChat {
     String tenNhom;
     Date ngayTao;
 
-    public NhomChat(String IDNhom, String tenNhom, Date ngayTao) {
+    public NhomChat(String tenNhom, Date ngayTao) {
         this.IDNhom = StringRandomizer.GetStringWithPrefix(IDPrefix.IDNhomChat, IDPrefix.length);
         this.tenNhom = tenNhom;
         this.ngayTao = ngayTao;

@@ -21,7 +21,7 @@ public class TinNhan {
     Date thoiGian;
     String noiDung;
 
-    public TinNhan(String ID, Date thoiGian, String noiDung) {
+    public TinNhan( Date thoiGian, String noiDung) {
         this.ID = StringRandomizer.GetStringWithPrefix(IDTinNhan, IDPrefix.length);
         this.thoiGian = thoiGian;
         this.noiDung = noiDung;
