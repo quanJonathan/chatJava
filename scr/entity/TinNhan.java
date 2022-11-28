@@ -21,8 +21,8 @@ public class TinNhan {
     Date thoiGian = new Date(System.currentTimeMillis());
     String noiDung;
 
-    public TinNhan(Date thoiGian, String noiDung) {
-        this.ID = StringRandomizer.GetStringWithPrefix(IDTinNhan, IDPrefix.length);
+    public TinNhan(String ID, Date thoiGian, String noiDung) {
+        this.ID = ID;
         this.thoiGian = thoiGian;
         this.noiDung = noiDung;
     }

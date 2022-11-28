@@ -5,7 +5,8 @@
 package database;
 
 import com.microsoft.sqlserver.jdbc.SQLServerException;
-import entity.TaiKhoan;
+import entity.LichSuDangNhap;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,28 +16,23 @@ import java.util.List;
  *
  * @author HMBAO
  */
-public class DAO_TaiKhoan implements DAO<TaiKhoan> {
+public class DAO_LSDangNhap implements DAO<LichSuDangNhap>{
 
-    final String tableName = "TaiKhoan";
+    
+    final String tableName = "LichSuDangNhap";
 
-    public DAO_TaiKhoan() {
-
+    public DAO_LSDangNhap() {
     }
 
-//    @Override
-//    public Optional<Account> get(long id) {
-//        // return Optional.ofNullable(accounts.get((int) id));     
-//
-//    }
     @Override
-    public List<TaiKhoan> selectAll() {
+    public List<LichSuDangNhap> selectAll() {
         return select("");
     }
 
     @Override
-    public List<TaiKhoan> select(String condition) {
+    public ArrayList<LichSuDangNhap> select(String condition) {
         try {
-            var rs = database_helper.select(database_query_builder.getAll(tableName) + " " + condition);
+            var rs = database_helper.select(database_query_builder.get(tableName, condition, ""));
             return resultToList(rs);
         } catch (Throwable ex) {
             return new ArrayList<>();
@@ -44,48 +40,40 @@ public class DAO_TaiKhoan implements DAO<TaiKhoan> {
     }
 
     @Override
-    public List<TaiKhoan> resultToList(ResultSet rs) throws SQLException {
-        var result = new ArrayList<TaiKhoan>();
-        while (rs != null && rs.next()) {
+    public ArrayList<LichSuDangNhap> resultToList(ResultSet rs) throws SQLException {
+        var result = new ArrayList<LichSuDangNhap>();
+        while (rs.next()) {
             if (rs.getMetaData().getColumnCount() == 1) {
-                result.add(new TaiKhoan("", "", ""));
+                result.add(new LichSuDangNhap("", new Date(0), new Date(0)));
             } else {
-                result.add(new TaiKhoan(
+                result.add(new LichSuDangNhap(
                         rs.getNString(1),
-                        rs.getNString(2),
-                        rs.getNString(3))
-                        .setNgaySinh(rs.getDate(4))
-                        .setGioiTinh(rs.getBoolean(5))
-                        .setDiaChi(rs.getNString(6))
-                        .setTrangThai(rs.getInt(7)));
+                        rs.getDate(2),
+                        rs.getDate(3)));
             }
         }
         return result;
-
     }
 
     @Override
-    public List<TaiKhoan> insert(TaiKhoan t) {
+    public ArrayList<LichSuDangNhap> insert(LichSuDangNhap t) {
         String insertQuery = t.toDelimitedList();
+
         try {
             var rs = database_helper.insert(database_query_builder.insert(tableName,
                     insertQuery
             ));
             return resultToList(rs);
         } catch (SQLServerException ex) {
-            if (ex.getSQLState().startsWith("23")) {
-                System.out.println("Account already exists.");
-            }
             return new ArrayList<>();
         } catch (Exception ex) {
             ex.printStackTrace();
             return new ArrayList<>();
         }
-
     }
 
     @Override
-    public List<TaiKhoan> update(TaiKhoan t, String conditions) {
+    public ArrayList<LichSuDangNhap> update(LichSuDangNhap t, String conditions) {
         var insertQuery = t.toPair();
         try {
             var rs = database_helper.insert(database_query_builder.update(tableName,
@@ -104,7 +92,7 @@ public class DAO_TaiKhoan implements DAO<TaiKhoan> {
     }
 
     @Override
-    public int delete(TaiKhoan t) {
+    public int delete(LichSuDangNhap t) {
         return -1;
     }
 
@@ -115,4 +103,5 @@ public class DAO_TaiKhoan implements DAO<TaiKhoan> {
         return rs;
     }
 
+    
 }

@@ -80,7 +80,7 @@ public class TaiKhoan {
     }
 
     public String toDelimitedList() {
-        return String.format("N'%s', '%s', '%s', '%s', '%s', N'%s', '%b'",
+        return String.format("N'%s', '%s', '%s', '%s', '%b', N'%s', '%d'",
                 username,
                 password,
                 email,

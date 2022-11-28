@@ -3,7 +3,10 @@ package main_ui;
 import UIObject.ChatCard;
 import UIObject.FriendCard;
 import database.DAO_BanBe;
+import database.StringRandomizer;
 import entity.BanBe;
+import entity.IDPrefix;
+import static entity.IDPrefix.IDTinNhan;
 import entity.TinNhan;
 import event.EventChat;
 import event.PublicEvent;
@@ -64,7 +67,7 @@ public class main_user_ui extends javax.swing.JFrame {
             @Override
             public void sendMessage(String text) {
                 Date time = new Date(System.currentTimeMillis());
-                TinNhan mess = new TinNhan(time, text);
+                TinNhan mess = new TinNhan(IDPrefix.getIDTinNhan(), time, text);
                 JSONObject object = mess.JSONify();
                 object.put("receiver", currentChatter);
                 client.al.sendCommand("/sendMessage", mess.JSONify());
@@ -132,10 +135,7 @@ public class main_user_ui extends javax.swing.JFrame {
     }
 
     public ArrayList<BanBe> readFriendList() {
-        ArrayList<BanBe> friendList = new ArrayList<>();
-
-        var dbh = new database.database_helper();
-
+        ArrayList<BanBe> friendList;
         var daoFriend = new DAO_BanBe();
 
         friendList = daoFriend.select(" where usernamechinh = '" + currentUser + "'");

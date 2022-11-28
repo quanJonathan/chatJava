@@ -41,16 +41,16 @@ public class DAO_TinNhan implements DAO<TinNhan> {
     @Override
     public ArrayList<TinNhan> resultToList(ResultSet rs) throws SQLException {
         var result = new ArrayList<TinNhan>();
-//        while (rs.next()) {
-//            if (rs.getMetaData().getColumnCount() == 1) {
-//                result.add(new TinNhan(rs.getNString(1), "", new Date(0)));
-//            } else {
-//                result.add(new TinNhan(
-//                        rs.getNString(1),
-//                        rs.getNString(2),
-//                        rs.getDate(3)));
-//            }
-//        }
+        while (rs.next()) {
+            if (rs.getMetaData().getColumnCount() == 1) {
+                result.add(new TinNhan("", new Date(0), ""));
+            } else {
+                result.add(new TinNhan(
+                        rs.getNString(1),
+                        rs.getDate(2),
+                        rs.getNString(3)));
+            }
+        }
         return result;
     }
 
@@ -78,7 +78,14 @@ public class DAO_TinNhan implements DAO<TinNhan> {
 
     @Override
     public int delete(TinNhan t) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return -1;
+    }
+
+    public int delete(String conditions) {
+        var rs = database_helper.delete(database_query_builder.delete(tableName,
+                conditions
+        ));
+        return rs;
     }
 
 }

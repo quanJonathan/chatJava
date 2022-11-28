@@ -55,9 +55,11 @@ public class LoginUI extends javax.swing.JFrame {
                           JSONObject subObject = new JSONObject(resultSet.get("object").toString());
                 
                           username = subObject.getString("username");
+                          System.out.println(username + " login successfully");
+                          //Service.getInstance().al.getCommandLoop();
                     }
                 } catch (JSONException ex) {
-                
+                    System.out.println("JSON error");
                 }
                 
                 return result;

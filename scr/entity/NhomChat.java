@@ -20,8 +20,8 @@ public class NhomChat {
     String tenNhom;
     Date ngayTao = new Date(System.currentTimeMillis());
 
-    public NhomChat(String tenNhom, Date ngayTao) {
-        this.IDNhom = StringRandomizer.GetStringWithPrefix(IDPrefix.IDNhomChat, IDPrefix.length);
+    public NhomChat(String IDNhom, String tenNhom, Date ngayTao) {
+        this.IDNhom = IDNhom;
         this.tenNhom = tenNhom;
         this.ngayTao = ngayTao;
     }

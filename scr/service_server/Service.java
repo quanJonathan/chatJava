@@ -32,6 +32,8 @@ public class Service implements Runnable {
     private static Service instance;
     private ServerSocket server;
     private boolean done;
+    private database.database_helper dbh = new database.database_helper();
+
 
     private ExecutorService pool;
 
@@ -52,6 +54,7 @@ public class Service implements Runnable {
     public void run() {
         try {
             server = new ServerSocket(9999);
+            System.out.println("SERVER CONNECTED SUCCESSFULLY!");
             pool = Executors.newCachedThreadPool();
             while (!done) {
                 Socket client = server.accept();
@@ -121,6 +124,19 @@ public class Service implements Runnable {
                     } catch (JSONException ex) {
                         System.out.println("Null object");
                     }
+                    (new Thread() {
+                        public void run() {
+                          while(true) {
+                              try {
+                                  sleep(5000);
+                                  sendMessage("Testing", 1, new JSONObject().put("e", "e"));
+                              } catch (InterruptedException ex) {
+                                  Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+                              }
+
+                          }
+                        }
+                    }).start();
 
                 } else if (action.startsWith("/logout")) {
 
@@ -198,8 +214,6 @@ public class Service implements Runnable {
         }
 
         private int processLoginCommand(String username, String password) {
-            var dbh = new database.database_helper();
-
             var daoAcc = new DAO_TaiKhoan();
 
             daoAcc.selectAll().forEach((account) -> {

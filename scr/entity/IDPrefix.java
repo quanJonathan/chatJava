@@ -4,6 +4,8 @@
  */
 package entity;
 
+import database.StringRandomizer;
+
 /**
  *
  * @author HMBAO
@@ -13,4 +15,12 @@ public class IDPrefix {
     public static final String IDTinNhan = "msg";
     public static final String IDNhomChat = "grp";
     public static final int length = 10;
+    
+    public static String getIDTinNhan() {
+        return StringRandomizer.GetStringWithPrefix(IDTinNhan, IDPrefix.length);
+    }
+    
+    public static String getIDNhomChat() {
+        return StringRandomizer.GetStringWithPrefix(IDNhomChat, IDPrefix.length);
+    }
 }
