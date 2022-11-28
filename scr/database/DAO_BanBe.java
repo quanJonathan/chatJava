@@ -16,11 +16,11 @@ import java.util.List;
  *
  * @author ADMIN
  */
-public class DAO_FriendList implements DAO<BanBe> {
+public class DAO_BanBe implements DAO<BanBe> {
 
     final String tableName = "DanhSachBanBe";
 
-    public DAO_FriendList() {
+    public DAO_BanBe() {
     }
 
     @Override

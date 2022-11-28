@@ -4,7 +4,7 @@
  */
 package UIObject;
 
-import database.DAO_FriendList;
+import database.DAO_BanBe;
 
 /**
  *
@@ -76,7 +76,7 @@ public class FriendCard extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnUnfriendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnfriendActionPerformed
-        DAO_FriendList dao_friend = new DAO_FriendList();
+        DAO_BanBe dao_friend = new DAO_BanBe();
     }//GEN-LAST:event_btnUnfriendActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

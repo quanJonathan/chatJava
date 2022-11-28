@@ -2,7 +2,7 @@ package main_ui;
 
 import UIObject.ChatCard;
 import UIObject.FriendCard;
-import database.DAO_FriendList;
+import database.DAO_BanBe;
 import entity.BanBe;
 import event.EventChat;
 import event.PublicEvent;
@@ -99,7 +99,7 @@ public class main_user_ui extends javax.swing.JFrame {
 
         var dbh = new database.database_helper();
 
-        var daoFriend = new DAO_FriendList();
+        var daoFriend = new DAO_BanBe();
 
         friendList = daoFriend.select(" where usernamechinh = '" + currentUser + "'");
 
