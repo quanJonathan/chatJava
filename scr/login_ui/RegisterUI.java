@@ -62,16 +62,16 @@ public class RegisterUI extends javax.swing.JFrame {
                     System.out.println("Register error");
                 }
 
-                var user2 = new TaiKhoan(user.getUsername(), user.getPassword() + "xxx", user.getEmail());
-                var r = daoAcc.update(user2, "where username = N'" + user2.getUsername() + "'");
-                if (r.size() > 0) {
-                    System.out.println("update succesfully");
-                    queryResult.forEach((acc) -> {
-                        System.out.println(acc);
-                    });
-                } else {
-                    System.out.println("update error");
-                }
+//                var user2 = new TaiKhoan(user.getUsername(), user.getPassword() + "xxx", user.getEmail());
+//                var r = daoAcc.update(user2, "where username = N'" + user2.getUsername() + "'");
+//                if (r.size() > 0) {
+//                    System.out.println("update succesfully");
+//                    queryResult.forEach((acc) -> {
+//                        System.out.println(acc);
+//                    });
+//                } else {
+//                    System.out.println("update error");
+//                }
             }
 
             @Override
@@ -289,7 +289,7 @@ public class RegisterUI extends javax.swing.JFrame {
                 .setNgaySinh(selectedDate)
                 .setGioiTinh(!maleRadioButton.isSelected())
                 .setDiaChi(new String(addressTextField.getText().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8))
-                .setTrangThai(false);
+                .setTrangThai(0);
         PublicEvent.getInstance().getEventRegister().register(user);
     }//GEN-LAST:event_signUpButtonMouseClicked
 

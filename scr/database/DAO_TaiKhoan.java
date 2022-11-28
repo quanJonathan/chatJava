@@ -57,7 +57,7 @@ public class DAO_TaiKhoan implements DAO<TaiKhoan> {
                         .setNgaySinh(rs.getDate(4))
                         .setGioiTinh(rs.getBoolean(5))
                         .setDiaChi(rs.getNString(6))
-                        .setTrangThai(rs.getBoolean(7)));
+                        .setTrangThai(rs.getInt(7)));
             }
         }
         return result;

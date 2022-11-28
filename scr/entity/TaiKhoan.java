@@ -22,7 +22,7 @@ public class TaiKhoan {
     Date ngaySinh = new Date(System.currentTimeMillis());
     boolean gioiTinh; // 0 is male
     String diaChi;
-    boolean trangThai; // 1 is active
+    int trangThai; // 1 is active
 
     public TaiKhoan(String name, String pass, String email) {
         username = name;
@@ -46,7 +46,7 @@ public class TaiKhoan {
         return this;
     }
 
-    public TaiKhoan setTrangThai(boolean s) {
+    public TaiKhoan setTrangThai(int s) {
         trangThai = s;
         return this;
     }
@@ -75,12 +75,12 @@ public class TaiKhoan {
         return diaChi;
     }
 
-    public boolean getTrangThai() {
+    public int getTrangThai() {
         return trangThai;
     }
 
     public String toDelimitedList() {
-        return String.format("N'%s', '%s', '%s', '%s', '%b', N'%s', '%b'",
+        return String.format("N'%s', '%s', '%s', '%s', '%s', N'%s', '%b'",
                 username,
                 password,
                 email,
@@ -94,7 +94,7 @@ public class TaiKhoan {
     public String toString() {
         return String.format("%-15s %-15s %-30s %-15s %-1s %-15s %-1s",
                 username, password, email, ngaySinh != null ? ngaySinh.toString() : "",
-                gioiTinh ? "Female" : "Male", diaChi, trangThai ? "Online" : "Offline");
+                gioiTinh ? "Female" : "Male", diaChi, trangThai == 1 ? "Online" : "Offline");
 
     }
 
