@@ -44,7 +44,13 @@ public class main_user_ui extends javax.swing.JFrame {
     }
 
     public final void init() {
-
+        (new Thread() {
+            public void run() {
+                while (true) {
+                    client.al.getCommand();
+                } //Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }).start();
         ArrayList<String> usernames = new ArrayList<>();
         usernames.add("quan");
         usernames.add("bao");
@@ -85,7 +91,7 @@ public class main_user_ui extends javax.swing.JFrame {
             @Override
             public String getMessage() {
                 Service.getInstance().al.getCommand();
-                
+
                 return "";
             }
         });
@@ -94,8 +100,7 @@ public class main_user_ui extends javax.swing.JFrame {
         friendListPanel.setLayout(new MigLayout());
         var friendList = readFriendList();
         showFriendList(friendList);
-        
-        
+
     }
 
     public void getPersonalChat() {
@@ -138,7 +143,7 @@ public class main_user_ui extends javax.swing.JFrame {
         ArrayList<BanBe> friendList;
         var daoFriend = new DAO_BanBe();
 
-        friendList = daoFriend.select(" where usernamechinh = '" + currentUser + "'");
+        friendList = daoFriend.select(" where username = '" + currentUser + "'");
 
         friendList.forEach((account) -> {
             System.out.println(account);
@@ -667,6 +672,7 @@ public class main_user_ui extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new main_user_ui(currentUser, client).setVisible(true);
+
             }
         });
     }
