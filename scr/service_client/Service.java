@@ -112,9 +112,8 @@ public class Service implements Runnable {
         public String getCommand() {
             try {
                 var readCommand = cmd.take();
-                System.out.println("LOOP OUT");
 
-                System.out.println("Queue added: " + readCommand);
+                System.out.println("Queue taken: " + readCommand);
                 return readCommand;
             } catch (Exception ex) {
                 Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);

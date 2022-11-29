@@ -15,20 +15,20 @@ import org.json.JSONObject;
  */
 public class BanBe {
 
-    String usernameChinh;
+    String username;
     String usernameBanBe;
     Date ngayKetBan = new Date(System.currentTimeMillis());
 
     ;
 
     public BanBe(String me, String them, Date d) {
-        usernameChinh = me;
+        username = me;
         usernameBanBe = them;
         ngayKetBan = d;
     }
 
     public String getUsernameChinh() {
-        return usernameChinh;
+        return username;
     }
 
     public String getUsernameBanBe() {
@@ -41,7 +41,7 @@ public class BanBe {
 
     public String toDelimitedList() {
         return String.format("N'%s', N'%s', '%s'",
-                usernameChinh,
+                username,
                 usernameBanBe,
                 ngayKetBan.toString());
     }
@@ -49,7 +49,7 @@ public class BanBe {
     @Override
     public String toString() {
         return String.format("%-15s %-15s %-20s",
-                usernameChinh,
+                username,
                 usernameBanBe,
                 ngayKetBan.toString());
 
