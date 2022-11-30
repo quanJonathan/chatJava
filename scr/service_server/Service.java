@@ -1,4 +1,3 @@
-
 package service_server;
 
 /*
@@ -11,18 +10,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.lang.reflect.Field;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,7 +31,6 @@ public class Service implements Runnable {
     private ServerSocket server;
     private boolean done;
     private database.database_helper dbh = new database.database_helper();
-
 
     private ExecutorService pool;
 
@@ -102,78 +98,93 @@ public class Service implements Runnable {
                 //get message from client/user
                 in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
-                String command = in.readLine();
-                var list = command.split(" ", 2);
-                var action = list[0];
+                while (true) {
+                    String command = in.readLine();
+                    var list = command.split(" ", 2);
+                    var action = list[0];
+                    System.out.println(command);
+                    if (action.startsWith("/login")) {
+                        try {
+                            JSONObject object = new JSONObject(list[1]);
+                            String email = object.getString("email");
+                            String password = object.getString("password");
+                            int result = processLoginCommand(email, password);
+                            if (result == 1) {
+                                DAO_TaiKhoan dao_acc = new DAO_TaiKhoan();
+                                List<TaiKhoan> listAcc = dao_acc.select(" where '" + email + "' = Email");
+                               
+                                String name = listAcc.get(0).getUsername();
+                                connectionsWithName.replace(client,  name);
+                                sendMessage(list[0], result, new JSONObject().put("username", name));
+                            } else {
+                                sendMessage(list[0], result, new JSONObject().put("error", "Wrong credentials"));
+                            }
 
-                if (action.startsWith("/login")) {
-                    try {
+                        } catch (JSONException ex) {
+                            System.out.println("Null object");
+                        }
+//                    (new Thread() {
+//                        public void run() {
+//                          while(true) {
+//                              try {
+//                                  sleep(5000);
+//                                  sendMessage("Testing", 1, new JSONObject().put("e", "e"));
+//                              } catch (InterruptedException ex) {
+//                                  Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+//                              }
+//
+//                          }
+//                        }
+//                    }).start();
+
+                    } else if (action.startsWith("/logout")) {
+
+                    } else if (action.startsWith("/register")) {
+
+                    } else if (action.startsWith("/changePassword")) {
+
+                    } else if (action.startsWith("resetPassword")) {
+
+                    } else if (action.startsWith("/sendMessage")) {
                         JSONObject object = new JSONObject(list[1]);
-                        String email = object.getString("email");
-                        String password = object.getString("password");
-                        int result = processLoginCommand(email, password);
-                        if (result == 1) {
-                            DAO_TaiKhoan dao_acc = new DAO_TaiKhoan();
-                            List<TaiKhoan> listAcc = dao_acc.select(" where '" + email + "' = Email");
+                        String text = object.getString("noiDung");
+                        String receiver = object.getString("receiver");
+                        String sender = object.getString("sender");
 
-                            var name = listAcc.get(0).getUsername();
-                            sendMessage(list[0], result, new JSONObject().put("username", name));
+                        Socket temp = null;
+                        for (Entry<Socket, String> entry : connectionsWithName.entrySet()) {
+                            if (receiver.equals(entry.getValue())) {
+                                temp = entry.getKey();
+                                break;
+                            }
+                        }
+                        if (temp != null) {
+                            PrintWriter temp2 = new PrintWriter(temp.getOutputStream(), true);
+
+                            JSONObject newObject = new JSONObject();
+                            newObject.put("message", "/messageReceived");
+                            newObject.put("result", 1);
+                            newObject.put("object", object.toString());
+                            System.out.println(newObject.toString());
+                            temp2.println(newObject.toString());
+                            
                         } else {
-                            sendMessage(list[0], result, new JSONObject().put("error", "Wrong credentials"));
+                            System.out.println("failed");
+                            writeMessageToDb(text);
                         }
+                    } else if (action.startsWith("/getOnlUser")) {
 
-                    } catch (JSONException ex) {
-                        System.out.println("Null object");
+                    } else if (action.startsWith("/getFriendList")) {
+
+                    } else if (action.startsWith("/getChatData")) {
+
+                    } else if (action.startsWith("/unfriend")) {
+
+                    } else if (action.startsWith("/deleteChatRoom")) {
+
+                    } else if (action.startsWith("/searchWordInChatRoom")) {
+
                     }
-                    (new Thread() {
-                        public void run() {
-                          while(true) {
-                              try {
-                                  sleep(5000);
-                                  sendMessage("Testing", 1, new JSONObject().put("e", "e"));
-                              } catch (InterruptedException ex) {
-                                  Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
-                              }
-
-                          }
-                        }
-                    }).start();
-
-                } else if (action.startsWith("/logout")) {
-
-                } else if (action.startsWith("/register")) {
-
-                } else if (action.startsWith("/changePassword")) {
-
-                } else if (action.startsWith("resetPassword")) {
-
-                } else if (action.startsWith("/sendMessage")) {
-                    JSONObject object = new JSONObject(list[1]);
-                    String text = object.getString("noidung");
-                    String receiver = object.getString("receiver");
-                    
-                    Socket temp = new Socket();
-                    for (Map.Entry<Socket, String> entry : connectionsWithName.entrySet()) {
-                        if(entry.getValue().equals(receiver)){
-                            temp = entry.getKey();
-                            break;
-                        }
-                    }
-                    PrintWriter temp2 = new PrintWriter(temp.getOutputStream(), true);
-                    temp2.println("/login" + text);
-                    temp2.close();
-                } else if (action.startsWith("/getOnlUser")) {
-
-                } else if (action.startsWith("/getFriendList")) {
-
-                } else if (action.startsWith("/getChatData")) {
-
-                } else if (action.startsWith("/unfriend")) {
-
-                } else if (action.startsWith("/deleteChatRoom")) {
-
-                } else if (action.startsWith("/searchWordInChatRoom")) {
-
                 }
 
             } catch (IOException e) {
@@ -233,6 +244,10 @@ public class Service implements Runnable {
                 System.out.println("Wrong username/password");
                 return 0;
             }
+        }
+
+        private void writeMessageToDb(String message) {
+
         }
     }
 

@@ -30,7 +30,7 @@ public class LoginUI extends javax.swing.JFrame {
 
         PublicEvent.getInstance().addEventLogin(new EventLogin() {
             @Override
-            public int login() {
+            public void login() {
 
                 var email = usernameTextField.getText();
                 String password = String.valueOf(passwordTextField.getPassword());
@@ -38,31 +38,37 @@ public class LoginUI extends javax.swing.JFrame {
                 TaiKhoan acc = new TaiKhoan("", password, email.toLowerCase());
                 var object = acc.JSONify();
 
-                Service.getInstance().al.sendCommand("login", object);
+                Service.getInstance().al.sendCommand("/login", object);
 
-                String results = Service.getInstance().al.getCommand();
-
-                int result = 0;
-                try {
-                    JSONObject resultSet = new JSONObject(results);
-                    result = resultSet.getInt("result");
-                    
-                    if(result == 0){
-                        var error = resultSet.getJSONObject("object").getString("error");
-                        System.out.println("error" + error);
-                    }else{
-//                        System.out.println(resultSet.get("object").getClass());
-                          JSONObject subObject = new JSONObject(resultSet.get("object").toString());
-                
-                          username = subObject.getString("username");
-                          System.out.println(username + " login successfully");
-                          //Service.getInstance().al.getCommandLoop();
-                    }
-                } catch (JSONException ex) {
-                    System.out.println("JSON error");
-                }
-                
-                return result;
+//                String results = Service.getInstance().al.getCommand();
+//
+//                int result = 0;
+//                try {
+//                    JSONObject resultSet = new JSONObject(results);
+//                    result = resultSet.getInt("result");
+//                    
+//                    if(result == 0){
+//                        var error = resultSet.getJSONObject("object").getString("error");
+//                        System.out.println("error" + error);
+//                    }else{
+////                        System.out.println(resultSet.get("object").getClass());
+//                          JSONObject subObject = new JSONObject(resultSet.get("object").toString());
+//                
+//                          username = subObject.getString("username");
+//                          System.out.println(username + " login successfully");
+//                          //Service.getInstance().al.getCommandLoop();
+//                    }
+//                } catch (JSONException ex) {
+//                    System.out.println("JSON error");
+//                }
+//                
+//                return result;
+            }
+            
+            @Override
+            public void goLogin(String username){
+                dispose();
+                new main_user_ui(username, Service.getInstance()).setVisible(true);
             }
 
             @Override
@@ -215,11 +221,7 @@ public class LoginUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void logInButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logInButtonMouseClicked
-        int result = PublicEvent.getInstance().getEventLogin().login();
-        if (result == 1) {
-            this.dispose();
-            new main_user_ui(username, Service.getInstance()).setVisible(true);
-        }
+        PublicEvent.getInstance().getEventLogin().login();
     }//GEN-LAST:event_logInButtonMouseClicked
 
     private void signUpButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_signUpButtonMouseClicked

@@ -7,6 +7,7 @@ import database.StringRandomizer;
 import entity.BanBe;
 import entity.IDPrefix;
 import static entity.IDPrefix.IDTinNhan;
+import entity.TaiKhoan;
 import entity.TinNhan;
 import event.EventChat;
 import event.PublicEvent;
@@ -26,7 +27,6 @@ public class main_user_ui extends javax.swing.JFrame {
 
     CardLayout cardLayout;
     private static String currentUser;
-    private String currentChatter;
     private static Service client;
 
     public main_user_ui(String username, Service socket) {
@@ -44,16 +44,10 @@ public class main_user_ui extends javax.swing.JFrame {
     }
 
     public final void init() {
-        (new Thread() {
-            public void run() {
-                while (true) {
-                    client.al.getCommand();
-                } //Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }).start();
+
         ArrayList<String> usernames = new ArrayList<>();
-        usernames.add("quan");
-        usernames.add("bao");
+        usernames.add("luutuanquan");
+        usernames.add("bebaoboy");
         // UI for chat page
         chatListPanel.setLayout(new MigLayout());
         showAllPersonalChat(usernames);
@@ -68,31 +62,41 @@ public class main_user_ui extends javax.swing.JFrame {
         chat.add(chatTitle, "wrap");
         chat.add(chatBody, "wrap");
         chat.add(chatBottom, "h ::50%");
+        
 
         PublicEvent.getInstance().addEventChat(new EventChat() {
             @Override
-            public void sendMessage(String text) {
+            public void sendMessage(String text, String currentChatter) {
                 Date time = new Date(System.currentTimeMillis());
                 TinNhan mess = new TinNhan(IDPrefix.getIDTinNhan(), time, text);
                 JSONObject object = mess.JSONify();
                 object.put("receiver", currentChatter);
-                client.al.sendCommand("/sendMessage", mess.JSONify());
+                object.put("sender", currentUser);
+//                System.out.println(object.toString());
+                client.al.sendCommand("/sendMessage", object);
                 chatBody.addItemRight(text);
-
-                getMessage();
             }
 
             @Override
-            public void setChatter(String name) {
-                currentChatter = name;
-                chatTitle.setUserName(name);
+            public void receiveMessage(TinNhan mess, String username) {
+                chatBody.addItemLeft(mess, username);
             }
 
             @Override
-            public String getMessage() {
-                Service.getInstance().al.getCommand();
+            public void setAllChat(ArrayList<TaiKhoan> users) {
+            
+            }
 
-                return "";
+            @Override
+            public void selectUser(String username) {
+               chatBottom.setUser(username);
+               chatTitle.setUserName(username);
+               chatBody.clear();
+            }
+
+            @Override
+            public void setChatData(ArrayList<TinNhan> messages) {
+                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
             }
         });
 

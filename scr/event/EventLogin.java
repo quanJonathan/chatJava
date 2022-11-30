@@ -3,9 +3,11 @@ package event;
 
 public interface EventLogin {
 
-    public int login();
+    public void login();
 
     public void goRegister();
     
     public void forgetPass();
+    
+    public void goLogin(String username);
 }

@@ -4,11 +4,15 @@
  */
 package service_client;
 
+import entity.TinNhan;
+import event.PublicEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Queue;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
@@ -28,7 +32,6 @@ public class Service implements Runnable {
     public ActionListener al;
     public BlockingQueue<String> cmd;
     private database.database_helper dbh = new database.database_helper();
-
 
     public static Service getInstance() {
         if (instance == null) {
@@ -90,7 +93,24 @@ public class Service implements Runnable {
 //                For testing only
 //                out.println("connect To server");
 //                System.out.println(in.readLine());
-                getCommandLoop();
+                  getCommandLoop();
+                
+//                String command = getCommand();
+//                
+//                    var list = command.split(" ", 2);
+//                    var action = list[0];
+//                    
+//                    if(action == "/receivedMessage"){
+//                        JSONObject object = new JSONObject(list[1]);
+//                        String text = object.getString("noiDung");
+//                        String sender = object.getString("sender");
+//                        String id = object.getString("ID");
+//                        Date time = new Date(object.getInt("thoiGian"));
+//                        TinNhan mess = new TinNhan(id, time, text);
+//                        PublicEvent.getInstance().getEventChat().receiveMessage(mess, command);
+//                    }
+//                }
+                
             } catch (IOException ex) {
 
             }
@@ -106,15 +126,15 @@ public class Service implements Runnable {
         }
 
         public void sendCommand(String command, JSONObject object) {
-            out.println("/login " + object.toString());
+            out.println(command + " " + object.toString());
         }
 
         public String getCommand() {
             try {
                 var readCommand = cmd.take();
-
-                System.out.println("Queue taken: " + readCommand);
+                 
                 return readCommand;
+                
             } catch (Exception ex) {
                 Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -128,10 +148,41 @@ public class Service implements Runnable {
                 public void run() {
                     while (!client.isClosed()) {
                         try {
+                            System.out.println("Waiting for commands");
                             String readCommand = in.readLine();
-                            if (!readCommand.isBlank()) {
-                                cmd.add(readCommand);
-                                System.out.println("Queue added loop: " + readCommand);
+                            if (readCommand != null) {
+                                if (!readCommand.isBlank()) {
+                                    cmd.add(readCommand);
+                                    System.out.println("Queue added loop: " + readCommand);
+                                    
+                                    var command = new JSONObject(readCommand);
+                                    //System.out.println(command);
+                                    var action =  command.getString("message");
+                                    var result = command.getInt("result");
+                                    var object = new JSONObject(command.getString("object"));
+//                                    System.out.println(object);
+                                    if(action.equals("/login")){
+                                        if (result == 0) {
+                                            var error = object.getJSONObject("object").getString("error");
+                                            System.out.println("error" + error);
+                                        } else {
+//                                          System.out.println(resultSet.get("object").getClass());
+                                            String username = object.getString("username");
+
+                                            System.out.println(username + " login successfully");
+                                            
+                                            PublicEvent.getInstance().getEventLogin().goLogin(username);
+                                        }
+                                    }
+                                    else if(action.equals("/messageReceived")){
+                                        String ID = object.getString("ID");
+                                        String text = object.getString("noiDung");
+                                        var time = Date.valueOf(object.getString("thoiGian"));
+                                        String sender = object.getString("sender");
+                                        TinNhan objectMess = new TinNhan(ID, time, text);
+                                        PublicEvent.getInstance().getEventChat().receiveMessage(objectMess, sender);
+                                    }
+                                }
                             }
                         } catch (IOException ex) {
                             Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);

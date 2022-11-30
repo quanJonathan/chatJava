@@ -19,9 +19,14 @@ import net.miginfocom.swing.MigLayout;
 
 public class ChatBottom extends javax.swing.JPanel {
 
+    private String currentChatter;
     public ChatBottom() {
         initComponents();
         init();
+    }
+    
+    public void setUser(String username){
+        currentChatter = username;
     }
 
     private void init() {
@@ -55,7 +60,7 @@ public class ChatBottom extends javax.swing.JPanel {
         cmd.addActionListener((ActionEvent ae) -> {
             String text = txt.getText().trim();
             if (!text.equals("")) {
-                PublicEvent.getInstance().getEventChat().sendMessage(text);
+                PublicEvent.getInstance().getEventChat().sendMessage(text, currentChatter);
                 txt.setText("");
                 txt.grabFocus();
                 refresh();

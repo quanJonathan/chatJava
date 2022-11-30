@@ -1,20 +1,18 @@
 package main_ui;
 
+import entity.TinNhan;
 import swing.ModifiedScrollBar;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
 
 public class ChatBody extends javax.swing.JPanel {
-
+    
+    public String username;
     public ChatBody() {
         initComponents();
         init();
-//        addItemLeft("hello", "bao");
-          addItemRight("hiii");
-          addItemLeft("baby làm j dọ", "bao");
-//        addItemRight("a sép nghỉ rồi");
-//        addDate("17/11/2022");
     }
+    
 
     private void init() {
         body.setLayout(new MigLayout("fillx", "", "5[]5"));
@@ -22,9 +20,9 @@ public class ChatBody extends javax.swing.JPanel {
         sp.getVerticalScrollBar().setBackground(Color.WHITE);
     }
 
-    public void addItemLeft(String text, String username) {
+    public void addItemLeft(TinNhan text, String username) {
         ChatLeftWithProfile item = new ChatLeftWithProfile();
-        item.setText(text);
+        item.setText(text.getNoiDung());
         item.setUserProfile(username);
         body.add(item, "wrap, al left, w 100::80%");
         body.repaint();
@@ -44,6 +42,12 @@ public class ChatBody extends javax.swing.JPanel {
         ChatDate item = new ChatDate();
         item.setDate(date);
         body.add(item, "wrap, al center");
+        body.repaint();
+        body.revalidate();
+    }
+    
+    public void clear(){
+        body.removeAll();
         body.repaint();
         body.revalidate();
     }

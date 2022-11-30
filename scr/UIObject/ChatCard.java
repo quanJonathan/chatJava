@@ -25,8 +25,7 @@ public class ChatCard extends javax.swing.JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 String name = lbl_chatCardName.getText();
-                PublicEvent.getInstance().getEventChat().setChatter(name);
-                
+                PublicEvent.getInstance().getEventChat().selectUser(name);               
             }
           
         });
