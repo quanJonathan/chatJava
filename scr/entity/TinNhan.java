@@ -4,22 +4,28 @@
  */
 package entity;
 
-import java.sql.Date;
+import java.util.Date;
 
 /**
  *
  * @author ADMIN
  */
-public class TinNhan extends Serializable{
+public class TinNhan extends Serializable {
 
     String ID;
     Date thoiGian = new Date(System.currentTimeMillis());
     String noiDung;
+    String nguoiGui;
+    String nguoiNhan;
+    String IDNhom;
 
-    public TinNhan(String ID, Date thoiGian, String noiDung) {
+    public TinNhan(String ID, Date d, String noiDung, String nguoiGui, String nguoiNhan, String IDNhom) {
         this.ID = ID;
-        this.thoiGian = thoiGian;
+        this.thoiGian = d;
         this.noiDung = noiDung;
+        this.nguoiGui = nguoiGui;
+        this.nguoiNhan = nguoiNhan;
+        this.IDNhom = IDNhom;
     }
 
     public String getID() {
@@ -34,6 +40,18 @@ public class TinNhan extends Serializable{
         return thoiGian;
     }
 
+    public String getNguoiGui() {
+        return nguoiGui;
+    }
+
+    public String getNguoiNhan() {
+        return nguoiNhan;
+    }
+
+    public String getIDNhom() {
+        return IDNhom;
+    }
+
     @Override
     public String toDelimitedList() {
         return String.format("'%s', '%s', N'%s'",
@@ -42,11 +60,21 @@ public class TinNhan extends Serializable{
                 noiDung);
     }
 
+    public String toDelimitedList2() {
+        return String.format("N'%s', N'%s', '%s'",
+                nguoiGui,
+                nguoiNhan,
+                IDNhom);
+    }
+
     @Override
     public String toString() {
-        return String.format("%-15s %-15s %200s",
+        return String.format("%-15s %-15s %-15s %-15s %-15s %-200s",
                 ID,
                 thoiGian,
+                nguoiGui,
+                nguoiNhan,
+                IDNhom,
                 noiDung);
 
     }

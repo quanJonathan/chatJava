@@ -19,6 +19,8 @@ import java.util.List;
 public class DAO_TinNhan implements DAO<TinNhan> {
 
     final String tableName = "TinNhan";
+        final String tableName2 = "Danhsachtinnhan";
+
 
     public DAO_TinNhan() {
     }
@@ -26,6 +28,18 @@ public class DAO_TinNhan implements DAO<TinNhan> {
     @Override
     public List<TinNhan> selectAll() {
         return select("");
+    }
+
+    public List<TinNhan> selectAll(String sender, String receiver) {
+        try {
+            var condition = "inner join danhsachtinnhan on tinnhan.id = danhsachtinnhan.id where danhsachtinnhan.nguoigui = N'" + sender + "' or danhsachtinnhan.nguoinhan = N'" + receiver + "'" + " or danhsachtinnhan.nguoinhan = N'" + sender + "'" + " or danhsachtinnhan.nguoigui = N'" + receiver + "'";
+            var rs = database_helper.select(database_query_builder.get(tableName, condition, "tinnhan.id", "tinnhan.thoiGian", "tinnhan.noidung", "danhsachtinnhan.nguoigui", "danhsachtinnhan.nguoinhan", "danhsachtinnhan.idnhom"));
+            var ars = resultToList(rs);
+            ars.sort((TinNhan t1, TinNhan t2) -> t1.getThoiGian().compareTo(t2.getThoiGian()));
+            return ars;
+        } catch (Throwable ex) {
+            return new ArrayList<>();
+        }
     }
 
     @Override
@@ -43,12 +57,15 @@ public class DAO_TinNhan implements DAO<TinNhan> {
         var result = new ArrayList<TinNhan>();
         while (rs.next()) {
             if (rs.getMetaData().getColumnCount() == 1) {
-                result.add(new TinNhan("", new Date(0), ""));
+                //
             } else {
                 result.add(new TinNhan(
                         rs.getNString(1),
-                        rs.getDate(2),
-                        rs.getNString(3)));
+                        rs.getTimestamp(2),
+                        rs.getNString(3),
+                        rs.getNString(4),
+                        rs.getNString(5),
+                        rs.getNString(6)));
             }
         }
         return result;
@@ -56,12 +73,19 @@ public class DAO_TinNhan implements DAO<TinNhan> {
 
     @Override
     public ArrayList<TinNhan> insert(TinNhan t) {
-        String insertQuery = t.toDelimitedList();
-
         try {
+            String insertQuery = t.toDelimitedList();
+
             var rs = database_helper.insert(database_query_builder.insert(tableName,
                     insertQuery
             ));
+            
+            insertQuery = t.toDelimitedList2();
+
+            rs = database_helper.insert(database_query_builder.insert(tableName2,
+                    insertQuery
+            ));
+            
             return resultToList(rs);
         } catch (SQLServerException ex) {
             return new ArrayList<>();

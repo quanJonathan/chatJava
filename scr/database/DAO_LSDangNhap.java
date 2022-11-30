@@ -48,8 +48,8 @@ public class DAO_LSDangNhap implements DAO<LichSuDangNhap>{
             } else {
                 result.add(new LichSuDangNhap(
                         rs.getNString(1),
-                        rs.getDate(2),
-                        rs.getDate(3)));
+                        rs.getTimestamp(2),
+                        rs.getTimestamp(3)));
             }
         }
         return result;
