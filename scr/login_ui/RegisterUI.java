@@ -11,7 +11,10 @@ import event.PublicEvent;
 import java.awt.GridLayout;
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import main_ui.DateLabelFormatter;
 import org.jdatepicker.impl.JDatePanelImpl;
@@ -64,7 +67,23 @@ public class RegisterUI extends javax.swing.JFrame {
                 } else {
                     System.out.println("Register error");
                 }
-
+                
+                var rs = database.database_helper.select(
+                        database.database_query_builder.get("tinnhan", 
+                                "inner join danhsachtinnhan on tinnhan.id = danhsachtinnhan.id where nguoigui = 'bebaoboy'", 
+                                "tinnhan.id", "nguoigui", "nguoinhan", "thoigian", "noidung"));
+                try {
+                    while (rs != null && rs.next()) {
+                        try {
+                            System.out.println(String.format("%-15s %-10s %-10s %-20s %s", 
+                                    rs.getNString(1), rs.getNString(2), rs.getNString(3), rs.getDate(4), rs.getNString(5)));
+                        } catch (SQLException ex) {
+                            Logger.getLogger(RegisterUI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(RegisterUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
 //                var user2 = new TaiKhoan(user.getUsername(), user.getPassword() + "xxx", user.getEmail());
 //                var r = daoAcc.update(user2, "where username = N'" + user2.getUsername() + "'");
 //                if (r.size() > 0) {
@@ -75,6 +94,7 @@ public class RegisterUI extends javax.swing.JFrame {
 //                } else {
 //                    System.out.println("update error");
 //                }
+
             }
 
             @Override
