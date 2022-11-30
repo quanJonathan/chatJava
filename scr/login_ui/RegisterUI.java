@@ -5,6 +5,7 @@
 package login_ui;
 
 import database.DAO_TaiKhoan;
+import database.DAO_TinNhan;
 import entity.TaiKhoan;
 import event.EventRegister;
 import event.PublicEvent;
@@ -67,23 +68,23 @@ public class RegisterUI extends javax.swing.JFrame {
                 } else {
                     System.out.println("Register error");
                 }
-                
-                var rs = database.database_helper.select(
-                        database.database_query_builder.get("tinnhan", 
-                                "inner join danhsachtinnhan on tinnhan.id = danhsachtinnhan.id where nguoigui = 'bebaoboy'", 
-                                "tinnhan.id", "nguoigui", "nguoinhan", "thoigian", "noidung"));
-                try {
-                    while (rs != null && rs.next()) {
-                        try {
-                            System.out.println(String.format("%-15s %-10s %-10s %-20s %s", 
-                                    rs.getNString(1), rs.getNString(2), rs.getNString(3), rs.getDate(4), rs.getNString(5)));
-                        } catch (SQLException ex) {
-                            Logger.getLogger(RegisterUI.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                } catch (SQLException ex) {
-                    Logger.getLogger(RegisterUI.class.getName()).log(Level.SEVERE, null, ex);
-                }
+
+//                var rs = database.database_helper.select(
+//                        database.database_query_builder.get("tinnhan",
+//                                "inner join danhsachtinnhan on tinnhan.id = danhsachtinnhan.id where nguoigui = 'bebaoboy'",
+//                                "tinnhan.id", "nguoigui", "nguoinhan", "thoigian", "noidung"));
+//                try {
+//                    while (rs != null && rs.next()) {
+//                        try {
+//                            System.out.println(String.format("%-15s %-10s %-10s %-20s %s",
+//                                    rs.getNString(1), rs.getNString(2), rs.getNString(3), rs.getDate(4), rs.getNString(5)));
+//                        } catch (SQLException ex) {
+//                            Logger.getLogger(RegisterUI.class.getName()).log(Level.SEVERE, null, ex);
+//                        }
+//                    }
+//                } catch (SQLException ex) {
+//                    Logger.getLogger(RegisterUI.class.getName()).log(Level.SEVERE, null, ex);
+//                }
 //                var user2 = new TaiKhoan(user.getUsername(), user.getPassword() + "xxx", user.getEmail());
 //                var r = daoAcc.update(user2, "where username = N'" + user2.getUsername() + "'");
 //                if (r.size() > 0) {
@@ -94,6 +95,11 @@ public class RegisterUI extends javax.swing.JFrame {
 //                } else {
 //                    System.out.println("update error");
 //                }
+                var daoTN = new DAO_TinNhan();
+                var rs = daoTN.selectAll("bebaoboy", "luutuanquan");
+                rs.forEach((item) -> {
+                    System.out.println(item);
+                });
 
             }
 
