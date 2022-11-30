@@ -4,17 +4,13 @@
  */
 package entity;
 
-import java.lang.reflect.Field;
 import java.sql.Date;
-import java.util.ArrayList;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  *
  * @author HMBAO
  */
-public class TaiKhoan {
+public class TaiKhoan extends Serializable{
 
     String username;
     String password;
@@ -79,6 +75,7 @@ public class TaiKhoan {
         return trangThai;
     }
 
+    @Override
     public String toDelimitedList() {
         return String.format("N'%s', '%s', '%s', '%s', '%b', N'%s', '%d'",
                 username,
@@ -96,39 +93,5 @@ public class TaiKhoan {
                 username, password, email, ngaySinh != null ? ngaySinh.toString() : "",
                 gioiTinh ? "Female" : "Male", diaChi, trangThai == 1 ? "Online" : "Offline");
 
-    }
-
-    public JSONObject JSONify() {
-        try {
-            JSONObject object = new JSONObject();
-            Field[] fields = this.getClass().getDeclaredFields();
-            for (Field field : fields) {
-                try {
-                    object.put(field.getName(), field.get(this));
-                } catch (IllegalAccessException ex) {
-                    System.out.println(ex);
-                }
-            }
-            return object;
-        } catch (JSONException ex) {
-            return null;
-        }
-    }
-
-    public ArrayList<String> toPair() {
-        try {
-            var list = new ArrayList<String>();
-            Field[] fields = this.getClass().getDeclaredFields();
-            for (Field field : fields) {
-                try {
-                    list.add(String.format("%s = N'%s'", field.getName(), field.get(this)));
-                } catch (IllegalAccessException ex) {
-                    System.out.println(ex);
-                }
-            }
-            return list;
-        } catch (JSONException ex) {
-            return new ArrayList<>();
-        }
     }
 }

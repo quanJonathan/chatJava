@@ -4,16 +4,13 @@
  */
 package entity;
 
-import java.lang.reflect.Field;
 import java.sql.Date;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  *
  * @author HMBAO
  */
-public class ThanhVienNhomChat {
+public class ThanhVienNhomChat extends Serializable{
 
     String IDNhom;
     String username;
@@ -43,6 +40,7 @@ public class ThanhVienNhomChat {
         return ngayThem;
     }
 
+    @Override
     public String toDelimitedList() {
         return String.format("N'%s', N'%s', '%b', '%s",
                 IDNhom,
@@ -59,22 +57,5 @@ public class ThanhVienNhomChat {
                 chucNang ? "Admin" : "Member",
                 ngayThem);
 
-    }
-
-    public JSONObject JSONify() {
-        try {
-            JSONObject object = new JSONObject();
-            Field[] fields = this.getClass().getDeclaredFields();
-            for (Field field : fields) {
-                try {
-                    object.put(field.getName(), field.get(this));
-                } catch (IllegalAccessException ex) {
-                    System.out.println(ex);
-                }
-            }
-            return object;
-        } catch (JSONException ex) {
-            return null;
-        }
     }
 }

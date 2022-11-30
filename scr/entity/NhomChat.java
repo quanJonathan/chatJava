@@ -4,18 +4,14 @@
  */
 package entity;
 
-import database.StringRandomizer;
-import java.lang.reflect.Field;
 import java.sql.Date;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  *
  * @author HMBAO
  */
-public class NhomChat {
-
+public class NhomChat extends Serializable{
+ 
     String IDNhom;
     String tenNhom;
     Date ngayTao = new Date(System.currentTimeMillis());
@@ -38,6 +34,7 @@ public class NhomChat {
         return ngayTao;
     }
 
+    @Override
     public String toDelimitedList() {
         return String.format("'%s', '%s', '%s'",
                 IDNhom,
@@ -52,22 +49,5 @@ public class NhomChat {
                 tenNhom,
                 ngayTao.toString());
 
-    }
-
-    public JSONObject JSONify() {
-        try {
-            JSONObject object = new JSONObject();
-            Field[] fields = this.getClass().getDeclaredFields();
-            for (Field field : fields) {
-                try {
-                    object.put(field.getName(), field.get(this));
-                } catch (IllegalAccessException ex) {
-                    System.out.println(ex);
-                }
-            }
-            return object;
-        } catch (JSONException ex) {
-            return null;
-        }
     }
 }

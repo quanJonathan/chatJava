@@ -36,7 +36,7 @@ public class DAO_TaiKhoan implements DAO<TaiKhoan> {
     @Override
     public List<TaiKhoan> select(String condition) {
         try {
-            var rs = database_helper.select(database_query_builder.getAll(tableName) + " " + condition);
+            var rs = database_helper.select(database_query_builder.get(tableName,condition, ""));
             return resultToList(rs);
         } catch (Throwable ex) {
             return new ArrayList<>();
