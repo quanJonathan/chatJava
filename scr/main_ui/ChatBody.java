@@ -3,6 +3,7 @@ package main_ui;
 import entity.TinNhan;
 import swing.ModifiedScrollBar;
 import java.awt.Color;
+import java.sql.Date;
 import net.miginfocom.swing.MigLayout;
 
 public class ChatBody extends javax.swing.JPanel {
@@ -18,13 +19,19 @@ public class ChatBody extends javax.swing.JPanel {
         body.setLayout(new MigLayout("fillx", "", "5[]5"));
         sp.setVerticalScrollBar(new ModifiedScrollBar());
         sp.getVerticalScrollBar().setBackground(Color.WHITE);
+        
+        addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "hiiii", username, username, username), "bebaoboy");
+        addItemRight("hello");
+        addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "hiiii", username, username, username), "bebaoboy");
+        addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "hiiii", username, username, username), "bebaoboy");
+        
     }
 
     public void addItemLeft(TinNhan text, String username) {
         ChatLeftWithProfile item = new ChatLeftWithProfile();
-        item.setText(text.getNoiDung());
+        item.setText(text.getNoiDung(), text.getThoiGian().toString());
         item.setUserProfile(username);
-        body.add(item, "wrap, al left, w 100::80%");
+        body.add(item, "wrap, al left");
         body.repaint();
         body.revalidate();
     }
@@ -32,16 +39,8 @@ public class ChatBody extends javax.swing.JPanel {
     public void addItemRight(String text) {
         ChatRight item = new ChatRight();
         item.setText(text);
-        body.add(item, "wrap, al right, w 100::80%");
+        body.add(item, "wrap, al right");
         //  ::80% set max with 80%
-        body.repaint();
-        body.revalidate();
-    }
-
-    public void addDate(String date) {
-        ChatDate item = new ChatDate();
-        item.setDate(date);
-        body.add(item, "wrap, al center");
         body.repaint();
         body.revalidate();
     }

@@ -1,4 +1,4 @@
-package login_ui;
+package authentication_ui;
 
 import entity.TaiKhoan;
 import event.EventLogin;

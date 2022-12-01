@@ -178,8 +178,10 @@ public class Service implements Runnable {
                                         String ID = object.getString("ID");
                                         String text = object.getString("noiDung");
                                         var time = Date.valueOf(object.getString("thoiGian"));
-                                        String sender = object.getString("sender");
-                                        TinNhan objectMess = new TinNhan(ID, time, text);
+                                        String sender = object.getString("sender");                                        
+                                        String receiver = object.getString("receiver");
+
+                                        TinNhan objectMess = new TinNhan(ID, time, text, sender, receiver, "");
                                         PublicEvent.getInstance().getEventChat().receiveMessage(objectMess, sender);
                                     }
                                 }

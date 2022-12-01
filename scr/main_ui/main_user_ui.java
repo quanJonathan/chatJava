@@ -25,19 +25,18 @@ import service_client.Service;
 
 public class main_user_ui extends javax.swing.JFrame {
 
-    CardLayout cardLayout;
+    CardLayout cardLayoutMain;
+    CardLayout cardHomePage;
     private static String currentUser;
     private static Service client;
 
     public main_user_ui(String username, Service socket) {
         initComponents();
-        cardLayout = (CardLayout) pnlCard.getLayout();
+        cardLayoutMain = (CardLayout) mainBody.getLayout();
+        cardHomePage = (CardLayout) modifiedPanelHome.getLayout();
 
-        //Get current user name
         currentUser = username;
-        //currentUser = jTextField3.getText();
 
-        //set current socket
         client = socket;
 
         init();
@@ -49,37 +48,25 @@ public class main_user_ui extends javax.swing.JFrame {
         usernames.add("luutuanquan");
         usernames.add("bebaoboy");
         // UI for chat page
-        chatListPanel.setLayout(new MigLayout());
-        showAllPersonalChat(usernames);
-
-        chat.setLayout(new MigLayout("fillx", "0[fill]0", "0[]0[100%, bottom]0[shrink 0]0"));
-        ChatTitle chatTitle = new ChatTitle();
-        chatTitle.setUserName(usernames.get(0));
-
-        ChatBody chatBody = new ChatBody();
-        ChatBottom chatBottom = new ChatBottom();
-
-        chat.add(chatTitle, "wrap");
-        chat.add(chatBody, "wrap");
-        chat.add(chatBottom, "h ::50%");
         
-
+        showAllPersonalChat(usernames);
+        
         PublicEvent.getInstance().addEventChat(new EventChat() {
             @Override
             public void sendMessage(String text, String currentChatter) {
                 Date time = new Date(System.currentTimeMillis());
-                TinNhan mess = new TinNhan(IDPrefix.getIDTinNhan(), time, text);
+                TinNhan mess = new TinNhan(IDPrefix.getIDTinNhan(), time, text, currentUser, currentChatter, "");
                 JSONObject object = mess.JSONify();
                 object.put("receiver", currentChatter);
                 object.put("sender", currentUser);
-//                System.out.println(object.toString());
+                System.out.println(object.toString());
                 client.al.sendCommand("/sendMessage", object);
-                chatBody.addItemRight(text);
+                chat.getChatBody().addItemRight(text);
             }
 
             @Override
             public void receiveMessage(TinNhan mess, String username) {
-                chatBody.addItemLeft(mess, username);
+                chat.getChatBody().addItemLeft(mess, username);
             }
 
             @Override
@@ -89,9 +76,9 @@ public class main_user_ui extends javax.swing.JFrame {
 
             @Override
             public void selectUser(String username) {
-               chatBottom.setUser(username);
-               chatTitle.setUserName(username);
-               chatBody.clear();
+               chat.getChatBottom().setUser(username);
+               chat.getChatTitle().setUserName(username);
+               chat.getChatBody().clear();
             }
 
             @Override
@@ -118,14 +105,12 @@ public class main_user_ui extends javax.swing.JFrame {
     }
 
     public void showAllPersonalChat(ArrayList<String> nameList) {
-        sp.setVerticalScrollBar(new ModifiedScrollBar());
-        sp.setHorizontalScrollBar(new ModifiedScrollBar());
-        chatListPanel.removeAll();
+        chatList.getChatListPanel().removeAll();
         for (int i = 0; i < nameList.size(); i++) {
-            chatListPanel.add(new ChatCard(nameList.get(i)), "wrap");
+            chatList.getChatListPanel().add(new ChatCard(nameList.get(i)), "wrap");
         }
-        chatListPanel.revalidate();
-        chatListPanel.repaint();
+        chatList.getChatListPanel().revalidate();
+        chatList.getChatListPanel().repaint();
     }
 
     public void showCurrentChat() {
@@ -162,17 +147,12 @@ public class main_user_ui extends javax.swing.JFrame {
 
         jPanel8 = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
-        jPanel1 = new javax.swing.JPanel();
+        sideNavBar = new javax.swing.JPanel();
         homeTab = new javax.swing.JLabel();
         friendListTab = new javax.swing.JLabel();
         chatTab = new javax.swing.JLabel();
-        onlineUserTab = new javax.swing.JLabel();
         groupTab = new javax.swing.JLabel();
-        pnlCard = new javax.swing.JPanel();
-        onlineUserPage = new javax.swing.JPanel();
-        jTextField7 = new javax.swing.JTextField();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        jList4 = new javax.swing.JList<>();
+        mainBody = new javax.swing.JPanel();
         groupPage = new javax.swing.JPanel();
         jSplitPane2 = new javax.swing.JSplitPane();
         jPanel6 = new javax.swing.JPanel();
@@ -193,15 +173,37 @@ public class main_user_ui extends javax.swing.JFrame {
         spFriendList = new javax.swing.JScrollPane();
         friendListPanel = new javax.swing.JPanel();
         homePage = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        chatPage = new javax.swing.JSplitPane();
-        chat = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
+        initGroupCreateButton = new javax.swing.JButton();
+        initChangePassButton = new javax.swing.JButton();
+        initChangeUserNameButton = new javax.swing.JButton();
+        modifiedPanelHome = new javax.swing.JPanel();
+        changePassPage = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
+        txtOldPass = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        txtNewPass = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        txtConfirmNewPass = new javax.swing.JTextField();
+        changePassButton = new javax.swing.JButton();
+        changeUserNamePage = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
-        sp = new javax.swing.JScrollPane();
-        chatListPanel = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        txtChangePass = new javax.swing.JTextField();
+        changeUsernameButton = new javax.swing.JButton();
+        createGroupPage = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        txtGroupName = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        listSelectToGroupCreate = new javax.swing.JList<>();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        textAreaAdmin = new javax.swing.JTextArea();
+        createGroupButton = new javax.swing.JButton();
+        chatPage = new javax.swing.JSplitPane();
+        chat = new main_ui.Chat();
+        chatList = new main_ui.chatListAndSearch();
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -217,7 +219,7 @@ public class main_user_ui extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(900, 700));
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        sideNavBar.setBackground(new java.awt.Color(255, 255, 255));
 
         homeTab.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-home-32.png"))); // NOI18N
         homeTab.setText("Home");
@@ -243,14 +245,6 @@ public class main_user_ui extends javax.swing.JFrame {
             }
         });
 
-        onlineUserTab.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-checked-user-male-32.png"))); // NOI18N
-        onlineUserTab.setText("Online User");
-        onlineUserTab.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                onlineUserTabMouseClicked(evt);
-            }
-        });
-
         groupTab.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-user-groups-32.png"))); // NOI18N
         groupTab.setText("Group");
         groupTab.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -259,23 +253,22 @@ public class main_user_ui extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout sideNavBarLayout = new javax.swing.GroupLayout(sideNavBar);
+        sideNavBar.setLayout(sideNavBarLayout);
+        sideNavBarLayout.setHorizontalGroup(
+            sideNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(sideNavBarLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(sideNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(groupTab, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(onlineUserTab, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(chatTab, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(friendListTab, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(friendListTab, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
                     .addComponent(homeTab, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        sideNavBarLayout.setVerticalGroup(
+            sideNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(sideNavBarLayout.createSequentialGroup()
                 .addGap(78, 78, 78)
                 .addComponent(homeTab)
                 .addGap(51, 51, 51)
@@ -284,46 +277,12 @@ public class main_user_ui extends javax.swing.JFrame {
                 .addComponent(friendListTab)
                 .addGap(58, 58, 58)
                 .addComponent(groupTab)
-                .addGap(62, 62, 62)
-                .addComponent(onlineUserTab)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(100, Short.MAX_VALUE))
         );
 
-        jSplitPane1.setLeftComponent(jPanel1);
+        jSplitPane1.setLeftComponent(sideNavBar);
 
-        pnlCard.setLayout(new java.awt.CardLayout());
-
-        jTextField7.setText("jTextField7");
-
-        jList4.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane6.setViewportView(jList4);
-
-        javax.swing.GroupLayout onlineUserPageLayout = new javax.swing.GroupLayout(onlineUserPage);
-        onlineUserPage.setLayout(onlineUserPageLayout);
-        onlineUserPageLayout.setHorizontalGroup(
-            onlineUserPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(onlineUserPageLayout.createSequentialGroup()
-                .addGap(153, 153, 153)
-                .addGroup(onlineUserPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField7, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
-                    .addComponent(jScrollPane6))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        onlineUserPageLayout.setVerticalGroup(
-            onlineUserPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(onlineUserPageLayout.createSequentialGroup()
-                .addGap(39, 39, 39)
-                .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        pnlCard.add(onlineUserPage, "onlineUserCard");
+        mainBody.setLayout(new java.awt.CardLayout());
 
         jTextField5.setText("jTextField5");
 
@@ -452,7 +411,7 @@ public class main_user_ui extends javax.swing.JFrame {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        pnlCard.add(groupPage, "groupCard");
+        mainBody.add(groupPage, "groupCard");
 
         friendListPage.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -505,21 +464,193 @@ public class main_user_ui extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        pnlCard.add(friendListPage, "friendListCard");
+        mainBody.add(friendListPage, "friendListCard");
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-add-user-group-woman-man-32.png"))); // NOI18N
-        jButton2.setText("Tạo nhóm");
-
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-password-reset-32.png"))); // NOI18N
-        jButton3.setText("Đổi mật khẩu");
-
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-name-tag-32.png"))); // NOI18N
-        jButton4.setText("Đổi tên");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        initGroupCreateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-add-user-group-woman-man-32.png"))); // NOI18N
+        initGroupCreateButton.setText("Tạo nhóm");
+        initGroupCreateButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                initGroupCreateButtonActionPerformed(evt);
             }
         });
+
+        initChangePassButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-password-reset-32.png"))); // NOI18N
+        initChangePassButton.setText("Đổi mật khẩu");
+        initChangePassButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                initChangePassButtonActionPerformed(evt);
+            }
+        });
+
+        initChangeUserNameButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-name-tag-32.png"))); // NOI18N
+        initChangeUserNameButton.setText("Đổi tên");
+        initChangeUserNameButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                initChangeUserNameButtonActionPerformed(evt);
+            }
+        });
+
+        modifiedPanelHome.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        modifiedPanelHome.setEnabled(false);
+        modifiedPanelHome.setFocusable(false);
+        modifiedPanelHome.setOpaque(false);
+        modifiedPanelHome.setLayout(new java.awt.CardLayout());
+
+        jLabel8.setText("Nhập mật khẩu cũ");
+
+        jLabel9.setText("Nhập mật khẩu mới");
+
+        jLabel10.setText("Xác nhận mật khẩu mới");
+
+        changePassButton.setText("Đổi mật khẩu");
+
+        javax.swing.GroupLayout changePassPageLayout = new javax.swing.GroupLayout(changePassPage);
+        changePassPage.setLayout(changePassPageLayout);
+        changePassPageLayout.setHorizontalGroup(
+            changePassPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(changePassPageLayout.createSequentialGroup()
+                .addGroup(changePassPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(changePassPageLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(changePassPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtOldPass, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtNewPass, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtConfirmNewPass, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(changePassPageLayout.createSequentialGroup()
+                        .addGap(58, 58, 58)
+                        .addComponent(changePassButton)))
+                .addContainerGap(39, Short.MAX_VALUE))
+        );
+        changePassPageLayout.setVerticalGroup(
+            changePassPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(changePassPageLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtOldPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtNewPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtConfirmNewPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
+                .addComponent(changePassButton)
+                .addContainerGap(59, Short.MAX_VALUE))
+        );
+
+        modifiedPanelHome.add(changePassPage, "homeChangePassCard");
+
+        jLabel6.setText("Tên hiển thị mới");
+
+        jLabel7.setText("Nhập mật khẩu xác nhận");
+
+        changeUsernameButton.setText("Đổi tên hiển thị");
+
+        javax.swing.GroupLayout changeUserNamePageLayout = new javax.swing.GroupLayout(changeUserNamePage);
+        changeUserNamePage.setLayout(changeUserNamePageLayout);
+        changeUserNamePageLayout.setHorizontalGroup(
+            changeUserNamePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(changeUserNamePageLayout.createSequentialGroup()
+                .addGroup(changeUserNamePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(changeUserNamePageLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(changeUserNamePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7)
+                            .addComponent(txtChangePass, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(changeUserNamePageLayout.createSequentialGroup()
+                        .addGap(55, 55, 55)
+                        .addComponent(changeUsernameButton)))
+                .addContainerGap(37, Short.MAX_VALUE))
+        );
+        changeUserNamePageLayout.setVerticalGroup(
+            changeUserNamePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(changeUserNamePageLayout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtChangePass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(46, 46, 46)
+                .addComponent(changeUsernameButton)
+                .addContainerGap(113, Short.MAX_VALUE))
+        );
+
+        modifiedPanelHome.add(changeUserNamePage, "homeChangeUsernameCard");
+
+        jLabel1.setText("Nhập tên nhóm");
+
+        listSelectToGroupCreate.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "quan", "bao", "phu" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane1.setViewportView(listSelectToGroupCreate);
+
+        jLabel2.setText("Chọn thành viên nhóm");
+
+        jLabel5.setText("Chọn admin");
+
+        textAreaAdmin.setColumns(20);
+        textAreaAdmin.setRows(5);
+        jScrollPane2.setViewportView(textAreaAdmin);
+
+        createGroupButton.setText("Tạo nhóm");
+
+        javax.swing.GroupLayout createGroupPageLayout = new javax.swing.GroupLayout(createGroupPage);
+        createGroupPage.setLayout(createGroupPageLayout);
+        createGroupPageLayout.setHorizontalGroup(
+            createGroupPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(createGroupPageLayout.createSequentialGroup()
+                .addGroup(createGroupPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(createGroupPageLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(createGroupPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(createGroupPageLayout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(createGroupPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabel1)
+                                .addComponent(jLabel2)
+                                .addComponent(txtGroupName, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1))
+                            .addComponent(jLabel5)))
+                    .addGroup(createGroupPageLayout.createSequentialGroup()
+                        .addGap(83, 83, 83)
+                        .addComponent(createGroupButton)))
+                .addContainerGap(46, Short.MAX_VALUE))
+        );
+        createGroupPageLayout.setVerticalGroup(
+            createGroupPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(createGroupPageLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtGroupName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel2)
+                .addGap(11, 11, 11)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(createGroupButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        modifiedPanelHome.add(createGroupPage, "homeCreateGroupCard");
 
         javax.swing.GroupLayout homePageLayout = new javax.swing.GroupLayout(homePage);
         homePage.setLayout(homePageLayout);
@@ -528,122 +659,85 @@ public class main_user_ui extends javax.swing.JFrame {
             .addGroup(homePageLayout.createSequentialGroup()
                 .addGap(171, 171, 171)
                 .addGroup(homePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(initChangeUserNameButton, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(initChangePassButton)
+                    .addComponent(initGroupCreateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(32, 32, 32)
+                .addComponent(modifiedPanelHome, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 211, Short.MAX_VALUE))
         );
         homePageLayout.setVerticalGroup(
             homePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(homePageLayout.createSequentialGroup()
-                .addGap(155, 155, 155)
-                .addComponent(jButton2)
-                .addGap(67, 67, 67)
-                .addComponent(jButton3)
-                .addGap(66, 66, 66)
-                .addComponent(jButton4)
+                .addGroup(homePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(homePageLayout.createSequentialGroup()
+                        .addGap(76, 76, 76)
+                        .addComponent(initGroupCreateButton)
+                        .addGap(52, 52, 52)
+                        .addComponent(initChangePassButton)
+                        .addGap(52, 52, 52)
+                        .addComponent(initChangeUserNameButton))
+                    .addGroup(homePageLayout.createSequentialGroup()
+                        .addGap(48, 48, 48)
+                        .addComponent(modifiedPanelHome, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        pnlCard.add(homePage, "homeCard");
+        mainBody.add(homePage, "homeCard");
 
         chatPage.setPreferredSize(new java.awt.Dimension(800, 800));
-
-        chat.setLayout(new javax.swing.BoxLayout(chat, javax.swing.BoxLayout.LINE_AXIS));
         chatPage.setRightComponent(chat);
+        chatPage.setLeftComponent(chatList);
 
-        jPanel2.setBackground(new java.awt.Color(0, 153, 255));
+        mainBody.add(chatPage, "chatCard");
 
-        jTextField1.setText("jTextField1");
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout chatListPanelLayout = new javax.swing.GroupLayout(chatListPanel);
-        chatListPanel.setLayout(chatListPanelLayout);
-        chatListPanelLayout.setHorizontalGroup(
-            chatListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 210, Short.MAX_VALUE)
-        );
-        chatListPanelLayout.setVerticalGroup(
-            chatListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 738, Short.MAX_VALUE)
-        );
-
-        sp.setViewportView(chatListPanel);
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(6, 6, 6)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(sp)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp, javax.swing.GroupLayout.DEFAULT_SIZE, 529, Short.MAX_VALUE))
-        );
-
-        chatPage.setLeftComponent(jPanel2);
-
-        pnlCard.add(chatPage, "chatCard");
-
-        jSplitPane1.setRightComponent(pnlCard);
+        jSplitPane1.setRightComponent(mainBody);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 545, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 774, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 412, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+    private void initChangeUserNameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initChangeUserNameButtonActionPerformed
+        cardHomePage.show(modifiedPanelHome, "homeChangeUsernameCard");
+    }//GEN-LAST:event_initChangeUserNameButtonActionPerformed
 
     private void homeTabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_homeTabMouseClicked
-        cardLayout.show(pnlCard, "homeCard");
+        cardLayoutMain.show(mainBody, "homeCard");
     }//GEN-LAST:event_homeTabMouseClicked
 
     private void chatTabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chatTabMouseClicked
-        cardLayout.show(pnlCard, "chatCard");
+        cardLayoutMain.show(mainBody, "chatCard");
     }//GEN-LAST:event_chatTabMouseClicked
 
     private void friendListTabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_friendListTabMouseClicked
-        cardLayout.show(pnlCard, "friendListCard");
+        cardLayoutMain.show(mainBody, "friendListCard");
     }//GEN-LAST:event_friendListTabMouseClicked
 
     private void groupTabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_groupTabMouseClicked
-        cardLayout.show(pnlCard, "groupCard");
+        cardLayoutMain.show(mainBody, "groupCard");
     }//GEN-LAST:event_groupTabMouseClicked
 
-    private void onlineUserTabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_onlineUserTabMouseClicked
-        cardLayout.show(pnlCard, "onlineUserCard");
-    }//GEN-LAST:event_onlineUserTabMouseClicked
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void initGroupCreateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initGroupCreateButtonActionPerformed
+        cardHomePage.show(modifiedPanelHome, "homeCreateGroupCard");
+    }//GEN-LAST:event_initGroupCreateButtonActionPerformed
+
+    private void initChangePassButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initChangePassButtonActionPerformed
+        cardHomePage.show(modifiedPanelHome, "homeChangePassCard");
+    }//GEN-LAST:event_initChangePassButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -682,10 +776,16 @@ public class main_user_ui extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel chat;
-    private javax.swing.JPanel chatListPanel;
+    private javax.swing.JButton changePassButton;
+    private javax.swing.JPanel changePassPage;
+    private javax.swing.JPanel changeUserNamePage;
+    private javax.swing.JButton changeUsernameButton;
+    private main_ui.Chat chat;
+    private main_ui.chatListAndSearch chatList;
     private javax.swing.JSplitPane chatPage;
     private javax.swing.JLabel chatTab;
+    private javax.swing.JButton createGroupButton;
+    private javax.swing.JPanel createGroupPage;
     private javax.swing.JPanel friendListPage;
     private javax.swing.JPanel friendListPanel;
     private javax.swing.JLabel friendListTab;
@@ -693,24 +793,30 @@ public class main_user_ui extends javax.swing.JFrame {
     private javax.swing.JLabel groupTab;
     private javax.swing.JPanel homePage;
     private javax.swing.JLabel homeTab;
+    private javax.swing.JButton initChangePassButton;
+    private javax.swing.JButton initChangeUserNameButton;
+    private javax.swing.JButton initGroupCreateButton;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JList<String> jList3;
-    private javax.swing.JList<String> jList4;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTextArea jTextArea2;
@@ -718,11 +824,16 @@ public class main_user_ui extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField jTextField7;
-    private javax.swing.JPanel onlineUserPage;
-    private javax.swing.JLabel onlineUserTab;
-    private javax.swing.JPanel pnlCard;
-    private javax.swing.JScrollPane sp;
+    private javax.swing.JList<String> listSelectToGroupCreate;
+    private javax.swing.JPanel mainBody;
+    private javax.swing.JPanel modifiedPanelHome;
+    private javax.swing.JPanel sideNavBar;
     private javax.swing.JScrollPane spFriendList;
+    private javax.swing.JTextArea textAreaAdmin;
+    private javax.swing.JTextField txtChangePass;
+    private javax.swing.JTextField txtConfirmNewPass;
+    private javax.swing.JTextField txtGroupName;
+    private javax.swing.JTextField txtNewPass;
+    private javax.swing.JTextField txtOldPass;
     // End of variables declaration//GEN-END:variables
 }

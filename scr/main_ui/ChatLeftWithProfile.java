@@ -13,9 +13,9 @@ public class ChatLeftWithProfile extends javax.swing.JLayeredPane {
         txt.setUserProfile(user);
     }
 
-    public void setText(String text) {
+    public void setText(String text, String time) {
         txt.setText(text);
-        txt.setTime("10:30 PM");    //  Testing
+        txt.setTime(time);
     }
 
     @SuppressWarnings("unchecked")
