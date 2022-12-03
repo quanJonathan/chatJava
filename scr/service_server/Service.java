@@ -173,7 +173,7 @@ public class Service implements Runnable {
 //                          }
 //                        }
 //                    }).start();
-
+                    
                     } else if (action.startsWith("/logout")) {
 
                     } else if (action.startsWith("/register")) {
@@ -234,6 +234,14 @@ public class Service implements Runnable {
 
                     } else if (action.startsWith("/searchWordInChatRoom")) {
 
+                    }else if(action.startsWith("/shutdown")){
+                        JSONObject object = new JSONObject(list[1]);
+                        var host = object.getString("host");
+                        var localPort = object.getInt("localPort");
+                        var port = object.getInt("port");
+                        Socket client = new Socket(host, port);
+                        removeClient(client);
+                        this.shutDown();
                     }
                 }
 

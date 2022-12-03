@@ -56,7 +56,7 @@ public class ChatBody extends javax.swing.JPanel {
         ChatLeftWithProfile item = new ChatLeftWithProfile();
         item.setText(text.getNoiDung(), text.getThoiGian().toString());
         item.setUserProfile(text.getNguoiNhan());
-        body.add(item, "wrap, al left");
+        body.add(item, "wrap, w 100::80%");
         body.repaint();
         body.revalidate();
     }
@@ -65,7 +65,7 @@ public class ChatBody extends javax.swing.JPanel {
         ChatRight item = new ChatRight();
         item.setText(text.getNoiDung());
         item.setTime(text.getThoiGian().toString());
-        body.add(item, "wrap, al right");
+        body.add(item, "wrap, al right, w 100::80%");
         body.repaint();
         body.revalidate();
         scrollToBottom();

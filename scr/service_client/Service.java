@@ -26,7 +26,7 @@ public class Service implements Runnable {
 
     private Socket client;
     private static Service instance;
-    static final int PORT_NUMBER = 9999;
+    public static final int PORT_NUMBER = 9999;
     static final String HOST = "127.0.0.1";
     private BufferedReader in;
     private PrintWriter out;
@@ -40,6 +40,10 @@ public class Service implements Runnable {
             instance = new Service();
         }
         return instance;
+    }
+    
+    public String getHost(){
+        return HOST;
     }
 
     public String getCurrentUser() {
