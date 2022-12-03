@@ -1,26 +1,41 @@
 package main_ui;
 
+import entity.TaiKhoan;
 import event.PublicEvent;
 import java.awt.Color;
 
 public class ChatTitle extends javax.swing.JPanel {
 
+    private TaiKhoan user;
     public ChatTitle() {
         initComponents();
     }
 
-    public void setUserName(String userName){
-        lbName.setText(userName);
+    public void setUserName(TaiKhoan user){
+        lbName.setText(user.getUsername());
+        this.user = user;
+        setStatus(user);
+    }
+    
+    public TaiKhoan getUser(){
+        return this.user;
+    }
+    
+    public void updateUser(TaiKhoan user){
+        if(this.user == user){
+            setUserName(user);
+            setStatus(user);
+        }
     }
 
-    public void statusActive() {
-        lbStatus.setText("Active now");
-        lbStatus.setForeground(new java.awt.Color(40, 147, 59));
-    }
-
-    public void setStatusText(String text) {
-        lbStatus.setText(text);
-        lbStatus.setForeground(new Color(160, 160, 160));
+    public void setStatus(TaiKhoan user) {
+        if(user.getTrangThai() == 1){
+            lblStatus.setText("Active now");
+            lblStatus.setForeground(new java.awt.Color(40, 147, 59));
+        }else{
+             lblStatus.setText("Offline");
+             lblStatus.setForeground(new Color(160, 160, 160));
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -29,8 +44,7 @@ public class ChatTitle extends javax.swing.JPanel {
 
         layer = new javax.swing.JLayeredPane();
         lbName = new javax.swing.JLabel();
-        lbStatus = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        lblStatus = new javax.swing.JLabel();
 
         layer.setLayout(new java.awt.GridLayout(0, 1));
 
@@ -39,11 +53,9 @@ public class ChatTitle extends javax.swing.JPanel {
         lbName.setText("Name");
         layer.add(lbName);
 
-        lbStatus.setForeground(new java.awt.Color(40, 147, 59));
-        lbStatus.setText("Active now");
-        layer.add(lbStatus);
-
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-ellipsis-50.png"))); // NOI18N
+        lblStatus.setForeground(new java.awt.Color(40, 147, 59));
+        lblStatus.setText("Active now");
+        layer.add(lblStatus);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -52,29 +64,21 @@ public class ChatTitle extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(layer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 400, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addContainerGap())
+                .addContainerGap(456, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(3, 3, 3)
-                        .addComponent(layer)))
+                .addGap(3, 3, 3)
+                .addComponent(layer, javax.swing.GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE)
                 .addGap(3, 3, 3))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLayeredPane layer;
     private javax.swing.JLabel lbName;
-    private javax.swing.JLabel lbStatus;
+    private javax.swing.JLabel lblStatus;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,5 +1,8 @@
 package main_ui;
 
+import entity.IDPrefix;
+import entity.TaiKhoan;
+import entity.TinNhan;
 import event.PublicEvent;
 import swing.AutoResizeTextPanel;
 import swing.ModifiedScrollBar;
@@ -10,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.sql.Date;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -19,14 +23,18 @@ import net.miginfocom.swing.MigLayout;
 
 public class ChatBottom extends javax.swing.JPanel {
 
-    private String currentChatter;
+    private TaiKhoan currentChatter;
+    private TaiKhoan user;
     public ChatBottom() {
         initComponents();
         init();
     }
+    public void setSender(TaiKhoan user){
+        this.user = user;
+    }
     
-    public void setUser(String username){
-        currentChatter = username;
+    public void setUser(TaiKhoan user){
+        currentChatter = user;
     }
 
     private void init() {
@@ -60,7 +68,10 @@ public class ChatBottom extends javax.swing.JPanel {
         cmd.addActionListener((ActionEvent ae) -> {
             String text = txt.getText().trim();
             if (!text.equals("")) {
-                PublicEvent.getInstance().getEventChat().sendMessage(text, currentChatter);
+                TinNhan mess = new TinNhan(IDPrefix.getIDTinNhan(), 
+                        new Date(System.currentTimeMillis()), text, user.getUsername(),
+                        currentChatter.getUsername(), "");
+                PublicEvent.getInstance().getEventChat().sendMessage(mess);
                 txt.setText("");
                 txt.grabFocus();
                 refresh();

@@ -10,6 +10,7 @@ import static entity.IDPrefix.IDTinNhan;
 import entity.TaiKhoan;
 import entity.TinNhan;
 import event.EventChat;
+import event.EventFriend;
 import event.PublicEvent;
 import swing.ModifiedScrollBar;
 import java.awt.CardLayout;
@@ -17,6 +18,7 @@ import java.net.Socket;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.awt.Component;
 import java.sql.Date;
 import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
@@ -27,118 +29,110 @@ public class main_user_ui extends javax.swing.JFrame {
 
     CardLayout cardLayoutMain;
     CardLayout cardHomePage;
-    private static String currentUser;
-    private static Service client;
+    private static TaiKhoan currentUser;
+    
+    ArrayList<TaiKhoan> usernames = new ArrayList<>();
 
-    public main_user_ui(String username, Service socket) {
+    public main_user_ui(TaiKhoan username) {
         initComponents();
         cardLayoutMain = (CardLayout) mainBody.getLayout();
         cardHomePage = (CardLayout) modifiedPanelHome.getLayout();
 
-        currentUser = username;
+        // Main function
+         currentUser = username;
 
-        client = socket;
-
+        //Test data
+//        currentUser = new TaiKhoan("luutuanquan", "", "");
         init();
     }
 
     public final void init() {
 
-        ArrayList<String> usernames = new ArrayList<>();
-        usernames.add("luutuanquan");
-        usernames.add("bebaoboy");
-        // UI for chat page
+        usernames.add(new TaiKhoan("luutuanquan", "", ""));
+        usernames.add(new TaiKhoan("bebaoboy", "", ""));
         
-        showAllPersonalChat(usernames);
+        // UI for chat page
+        //chat.setVisible(false);
+        chat.getChatBottom().setSender(currentUser);
+        
+        
+        
+        //readFriendList();
         
         PublicEvent.getInstance().addEventChat(new EventChat() {
             @Override
-            public void sendMessage(String text, String currentChatter) {
-                Date time = new Date(System.currentTimeMillis());
-                TinNhan mess = new TinNhan(IDPrefix.getIDTinNhan(), time, text, currentUser, currentChatter, "");
+            public void sendMessage(TinNhan mess) {
                 JSONObject object = mess.JSONify();
-                object.put("receiver", currentChatter);
-                object.put("sender", currentUser);
                 System.out.println(object.toString());
-                client.al.sendCommand("/sendMessage", object);
-                chat.getChatBody().addItemRight(text);
+                Service.getInstance().al.sendCommand("/sendMessage", object);
+                chat.getChatBody().addItemRight(mess);
             }
 
             @Override
-            public void receiveMessage(TinNhan mess, String username) {
-                chat.getChatBody().addItemLeft(mess, username);
+            public void receiveMessage(TinNhan mess) {
+                chat.addMessage(mess);
             }
 
             @Override
             public void setAllChat(ArrayList<TaiKhoan> users) {
-            
+
             }
 
             @Override
-            public void selectUser(String username) {
-               chat.getChatBottom().setUser(username);
-               chat.getChatTitle().setUserName(username);
-               chat.getChatBody().clear();
+            public void setUser(TaiKhoan user) {
+                chat.setUser(user);
+                chat.setVisible(true);
             }
 
             @Override
             public void setChatData(ArrayList<TinNhan> messages) {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                chat.setChatData(messages);
             }
-        });
 
-        // UI for friend list page
-        friendListPanel.setLayout(new MigLayout());
-        var friendList = readFriendList();
-        showFriendList(friendList);
-
-    }
-
-    public void getPersonalChat() {
-
-        SwingUtilities.invokeLater(new Runnable() {
             @Override
-            public void run() {
-                ArrayList<BanBe> usersChat = new ArrayList<>();
+            public void updateUser(TaiKhoan user) {
+                chat.updateUser(user);
             }
         });
+ 
+        PublicEvent.getInstance().addEventFriend(new EventFriend(){
+            @Override
+            public void setData(ArrayList<BanBe> friendList) {
+                friendListPage.setFriendList(friendList);
+                friendListPage.showAllFriend();
+            }
+            
+        });
+        
+        //Main function
+        showAllPersonalChat();
+        
+        //Test data
+//        chatList.getChatListPanel().removeAll();
+//        for (TaiKhoan t: usernames) {
+//            if (!t.getUsername().equals(currentUser.getUsername())) {
+//                chatList.getChatListPanel().add(new ChatCard(t), "wrap");
+//            }
+//        }
+//        chatList.getChatListPanel().revalidate();
+//        chatList.getChatListPanel().repaint();
+        
     }
 
-    public void showAllPersonalChat(ArrayList<String> nameList) {
+    public void showAllPersonalChat() {
         chatList.getChatListPanel().removeAll();
-        for (int i = 0; i < nameList.size(); i++) {
-            chatList.getChatListPanel().add(new ChatCard(nameList.get(i)), "wrap");
+        for (TaiKhoan t: usernames) {
+            if (!t.getUsername().equals(currentUser.getUsername())) {
+                chatList.getChatListPanel().add(new ChatCard(t), "wrap");
+            }
         }
         chatList.getChatListPanel().revalidate();
         chatList.getChatListPanel().repaint();
     }
 
-    public void showCurrentChat() {
 
-    }
-
-    public void showFriendList(ArrayList<BanBe> friendList) {
-        spFriendList.setVerticalScrollBar(new ModifiedScrollBar());
-        spFriendList.setHorizontalScrollBar(new ModifiedScrollBar());
-        friendListPanel.removeAll();
-        for (int i = 0; i < friendList.size(); i++) {
-            friendListPanel.add(new FriendCard(friendList.get(i).getUsernameBanBe()), "wrap");
-        }
-        friendListPanel.revalidate();
-        friendListPanel.repaint();
-    }
-
-    public ArrayList<BanBe> readFriendList() {
-        ArrayList<BanBe> friendList;
-        var daoFriend = new DAO_BanBe();
-
-        friendList = daoFriend.select(" where username = '" + currentUser + "'");
-
-        friendList.forEach((account) -> {
-            System.out.println(account);
-        });
-
-        return friendList;
+    public void readFriendList() {
+       Service.getInstance().al.sendCommand("/getFriendList", currentUser.JSONify());
     }
 
     @SuppressWarnings("unchecked")
@@ -153,6 +147,7 @@ public class main_user_ui extends javax.swing.JFrame {
         chatTab = new javax.swing.JLabel();
         groupTab = new javax.swing.JLabel();
         mainBody = new javax.swing.JPanel();
+        friendListPage = new main_ui.FriendPage();
         groupPage = new javax.swing.JPanel();
         jSplitPane2 = new javax.swing.JSplitPane();
         jPanel6 = new javax.swing.JPanel();
@@ -167,11 +162,6 @@ public class main_user_ui extends javax.swing.JFrame {
         jTextArea2 = new javax.swing.JTextArea();
         jTextField6 = new javax.swing.JTextField();
         jButton5 = new javax.swing.JButton();
-        friendListPage = new javax.swing.JPanel();
-        jTextField3 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        spFriendList = new javax.swing.JScrollPane();
-        friendListPanel = new javax.swing.JPanel();
         homePage = new javax.swing.JPanel();
         initGroupCreateButton = new javax.swing.JButton();
         initChangePassButton = new javax.swing.JButton();
@@ -201,9 +191,10 @@ public class main_user_ui extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         textAreaAdmin = new javax.swing.JTextArea();
         createGroupButton = new javax.swing.JButton();
-        chatPage = new javax.swing.JSplitPane();
-        chat = new main_ui.Chat();
+        logoutButton = new javax.swing.JButton();
+        chatPage = new javax.swing.JPanel();
         chatList = new main_ui.chatListAndSearch();
+        chat = new main_ui.Chat();
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -217,7 +208,6 @@ public class main_user_ui extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(900, 700));
 
         sideNavBar.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -262,7 +252,7 @@ public class main_user_ui extends javax.swing.JFrame {
                 .addGroup(sideNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(groupTab, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(chatTab, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(friendListTab, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                    .addComponent(friendListTab, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(homeTab, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -277,12 +267,13 @@ public class main_user_ui extends javax.swing.JFrame {
                 .addComponent(friendListTab)
                 .addGap(58, 58, 58)
                 .addComponent(groupTab)
-                .addContainerGap(100, Short.MAX_VALUE))
+                .addContainerGap(332, Short.MAX_VALUE))
         );
 
         jSplitPane1.setLeftComponent(sideNavBar);
 
         mainBody.setLayout(new java.awt.CardLayout());
+        mainBody.add(friendListPage, "friendListCard");
 
         jTextField5.setText("jTextField5");
 
@@ -301,7 +292,8 @@ public class main_user_ui extends javax.swing.JFrame {
                 .addGap(6, 6, 6)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -309,7 +301,8 @@ public class main_user_ui extends javax.swing.JFrame {
                 .addGap(25, 25, 25)
                 .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(48, 48, 48)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         jSplitPane2.setLeftComponent(jPanel6);
@@ -412,59 +405,6 @@ public class main_user_ui extends javax.swing.JFrame {
         );
 
         mainBody.add(groupPage, "groupCard");
-
-        friendListPage.setBackground(new java.awt.Color(204, 204, 204));
-
-        jTextField3.setText("bebaoboy");
-
-        jButton1.setText("Search");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        friendListPanel.setBackground(new java.awt.Color(255, 255, 255));
-
-        javax.swing.GroupLayout friendListPanelLayout = new javax.swing.GroupLayout(friendListPanel);
-        friendListPanel.setLayout(friendListPanelLayout);
-        friendListPanelLayout.setHorizontalGroup(
-            friendListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 503, Short.MAX_VALUE)
-        );
-        friendListPanelLayout.setVerticalGroup(
-            friendListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 499, Short.MAX_VALUE)
-        );
-
-        spFriendList.setViewportView(friendListPanel);
-
-        javax.swing.GroupLayout friendListPageLayout = new javax.swing.GroupLayout(friendListPage);
-        friendListPage.setLayout(friendListPageLayout);
-        friendListPageLayout.setHorizontalGroup(
-            friendListPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(friendListPageLayout.createSequentialGroup()
-                .addGap(134, 134, 134)
-                .addGroup(friendListPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(spFriendList, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        friendListPageLayout.setVerticalGroup(
-            friendListPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(friendListPageLayout.createSequentialGroup()
-                .addGap(66, 66, 66)
-                .addGroup(friendListPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
-                .addGap(38, 38, 38)
-                .addComponent(spFriendList, javax.swing.GroupLayout.PREFERRED_SIZE, 453, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        mainBody.add(friendListPage, "friendListCard");
 
         initGroupCreateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-add-user-group-woman-man-32.png"))); // NOI18N
         initGroupCreateButton.setText("Tạo nhóm");
@@ -652,6 +592,9 @@ public class main_user_ui extends javax.swing.JFrame {
 
         modifiedPanelHome.add(createGroupPage, "homeCreateGroupCard");
 
+        logoutButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-log-out-32.png"))); // NOI18N
+        logoutButton.setText("Đăng xuất");
+
         javax.swing.GroupLayout homePageLayout = new javax.swing.GroupLayout(homePage);
         homePage.setLayout(homePageLayout);
         homePageLayout.setHorizontalGroup(
@@ -659,12 +602,14 @@ public class main_user_ui extends javax.swing.JFrame {
             .addGroup(homePageLayout.createSequentialGroup()
                 .addGap(171, 171, 171)
                 .addGroup(homePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(initChangeUserNameButton, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(initChangePassButton)
-                    .addComponent(initGroupCreateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(initGroupCreateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(homePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(logoutButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(initChangeUserNameButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(32, 32, 32)
                 .addComponent(modifiedPanelHome, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 211, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         homePageLayout.setVerticalGroup(
             homePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -676,7 +621,9 @@ public class main_user_ui extends javax.swing.JFrame {
                         .addGap(52, 52, 52)
                         .addComponent(initChangePassButton)
                         .addGap(52, 52, 52)
-                        .addComponent(initChangeUserNameButton))
+                        .addComponent(initChangeUserNameButton)
+                        .addGap(48, 48, 48)
+                        .addComponent(logoutButton))
                     .addGroup(homePageLayout.createSequentialGroup()
                         .addGap(48, 48, 48)
                         .addComponent(modifiedPanelHome, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -685,9 +632,21 @@ public class main_user_ui extends javax.swing.JFrame {
 
         mainBody.add(homePage, "homeCard");
 
-        chatPage.setPreferredSize(new java.awt.Dimension(800, 800));
-        chatPage.setRightComponent(chat);
-        chatPage.setLeftComponent(chatList);
+        javax.swing.GroupLayout chatPageLayout = new javax.swing.GroupLayout(chatPage);
+        chatPage.setLayout(chatPageLayout);
+        chatPageLayout.setHorizontalGroup(
+            chatPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(chatPageLayout.createSequentialGroup()
+                .addComponent(chatList, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chat, javax.swing.GroupLayout.PREFERRED_SIZE, 546, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        chatPageLayout.setVerticalGroup(
+            chatPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(chatList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(chat, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
+        );
 
         mainBody.add(chatPage, "chatCard");
 
@@ -697,11 +656,11 @@ public class main_user_ui extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 774, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 920, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
+            .addComponent(jSplitPane1)
         );
 
         pack();
@@ -726,10 +685,6 @@ public class main_user_ui extends javax.swing.JFrame {
     private void groupTabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_groupTabMouseClicked
         cardLayoutMain.show(mainBody, "groupCard");
     }//GEN-LAST:event_groupTabMouseClicked
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
-    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void initGroupCreateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initGroupCreateButtonActionPerformed
         cardHomePage.show(modifiedPanelHome, "homeCreateGroupCard");
@@ -769,8 +724,7 @@ public class main_user_ui extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new main_user_ui(currentUser, client).setVisible(true);
-
+                new main_user_ui(currentUser).setVisible(true);
             }
         });
     }
@@ -782,12 +736,11 @@ public class main_user_ui extends javax.swing.JFrame {
     private javax.swing.JButton changeUsernameButton;
     private main_ui.Chat chat;
     private main_ui.chatListAndSearch chatList;
-    private javax.swing.JSplitPane chatPage;
+    private javax.swing.JPanel chatPage;
     private javax.swing.JLabel chatTab;
     private javax.swing.JButton createGroupButton;
     private javax.swing.JPanel createGroupPage;
-    private javax.swing.JPanel friendListPage;
-    private javax.swing.JPanel friendListPanel;
+    private main_ui.FriendPage friendListPage;
     private javax.swing.JLabel friendListTab;
     private javax.swing.JPanel groupPage;
     private javax.swing.JLabel groupTab;
@@ -796,7 +749,6 @@ public class main_user_ui extends javax.swing.JFrame {
     private javax.swing.JButton initChangePassButton;
     private javax.swing.JButton initChangeUserNameButton;
     private javax.swing.JButton initGroupCreateButton;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -821,14 +773,13 @@ public class main_user_ui extends javax.swing.JFrame {
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField jTextField6;
     private javax.swing.JList<String> listSelectToGroupCreate;
+    private javax.swing.JButton logoutButton;
     private javax.swing.JPanel mainBody;
     private javax.swing.JPanel modifiedPanelHome;
     private javax.swing.JPanel sideNavBar;
-    private javax.swing.JScrollPane spFriendList;
     private javax.swing.JTextArea textAreaAdmin;
     private javax.swing.JTextField txtChangePass;
     private javax.swing.JTextField txtConfirmNewPass;

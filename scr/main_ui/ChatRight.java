@@ -15,11 +15,10 @@ public class ChatRight extends javax.swing.JLayeredPane {
         } else {
             txt.setText(text);
         }
-        txt.seen();
     }
 
-    public void setTime() {
-        txt.setTime("10:30 PM");    //  Testing
+    public void setTime(String time) {
+        txt.setTime(time);
     }
 
     @SuppressWarnings("unchecked")

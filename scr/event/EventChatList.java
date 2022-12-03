@@ -5,13 +5,13 @@
 package event;
 
 import entity.TaiKhoan;
-import entity.TinNhan;
-import java.util.ArrayList;
+import java.util.List;
 
-/**
- *
- * @author ADMIN
- */
-public interface EventOnChatCard {
-    public TaiKhoan getChatTarget();
+public interface EventChatList {
+    public void newUser(List<TaiKhoan> users);
+    
+    public void userConnect(TaiKhoan username);
+    
+    public void userDisconnect(TaiKhoan username);
+    
 }

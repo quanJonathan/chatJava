@@ -39,6 +39,24 @@ public class Chat extends javax.swing.JPanel {
     public ChatBottom getChatBottom(){
         return this.chatBottom;  
     }
+    
+    public void setUser(TaiKhoan user){
+        chatTitle.setUserName(user);
+        chatBottom.setUser(user);
+        chatBody.clear();
+    }
+    
+    public void addMessage(TinNhan mess){
+        chatBody.addItemLeft(mess);
+    }
+    
+    public void updateUser(TaiKhoan user){
+        chatTitle.updateUser(user);
+    }
+    
+    public void setChatData(ArrayList<TinNhan> messages){
+        chatBody.setChatData(messages);
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

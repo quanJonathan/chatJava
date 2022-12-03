@@ -142,6 +142,8 @@ public class RegisterUI extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-sign-up-96.png"))); // NOI18N
         jLabel1.setText("Tài khoản mới");

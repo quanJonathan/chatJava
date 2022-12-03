@@ -39,36 +39,12 @@ public class LoginUI extends javax.swing.JFrame {
                 var object = acc.JSONify();
 
                 Service.getInstance().al.sendCommand("/login", object);
-
-//                String results = Service.getInstance().al.getCommand();
-//
-//                int result = 0;
-//                try {
-//                    JSONObject resultSet = new JSONObject(results);
-//                    result = resultSet.getInt("result");
-//                    
-//                    if(result == 0){
-//                        var error = resultSet.getJSONObject("object").getString("error");
-//                        System.out.println("error" + error);
-//                    }else{
-////                        System.out.println(resultSet.get("object").getClass());
-//                          JSONObject subObject = new JSONObject(resultSet.get("object").toString());
-//                
-//                          username = subObject.getString("username");
-//                          System.out.println(username + " login successfully");
-//                          //Service.getInstance().al.getCommandLoop();
-//                    }
-//                } catch (JSONException ex) {
-//                    System.out.println("JSON error");
-//                }
-//                
-//                return result;
             }
             
             @Override
-            public void goLogin(String username){
+            public void goLogin(TaiKhoan username){
                 dispose();
-                new main_user_ui(username, Service.getInstance()).setVisible(true);
+                new main_user_ui(username).setVisible(true);
             }
 
             @Override
@@ -104,7 +80,10 @@ public class LoginUI extends javax.swing.JFrame {
         passwordTextField = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
         setResizable(false);
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-account-96.png"))); // NOI18N

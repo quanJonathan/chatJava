@@ -48,7 +48,7 @@ public class DAO_BanBe implements DAO<BanBe> {
                 result.add(new BanBe(
                         rs.getNString(1),
                         rs.getNString(2),
-                        rs.getTimestamp(3)));
+                        rs.getDate(3)));
             }
         }
         return result;

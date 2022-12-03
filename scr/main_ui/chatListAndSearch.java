@@ -4,9 +4,16 @@
  */
 package main_ui;
 
+import UIObject.ChatCard;
+import entity.TaiKhoan;
+import event.EventChatList;
+import event.PublicEvent;
+import java.awt.Component;
+import java.util.List;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import swing.ModifiedScrollBar;
+import java.util.ArrayList;
 
 /**
  *
@@ -14,14 +21,67 @@ import swing.ModifiedScrollBar;
  */
 public class chatListAndSearch extends javax.swing.JPanel {
 
-    /**
-     * Creates new form chatListAndSearch
-     */
+    private ArrayList<TaiKhoan> userAccounts;
     public chatListAndSearch() {
         initComponents();
+        init();
         sp.setVerticalScrollBar(new ModifiedScrollBar());
         sp.setHorizontalScrollBar(new ModifiedScrollBar());
         chatListPanel.setLayout(new MigLayout("wrap"));
+        
+        PublicEvent.getInstance().addEventChatList(new EventChatList(){
+            @Override
+            public void newUser(List<TaiKhoan> users) {
+                for (TaiKhoan user : users) {
+                    userAccounts.add(user);
+                    chatListPanel.add(new ChatCard(user), "wrap");
+                    refreshChatListPanel();
+                }
+            }
+
+            @Override
+            public void userConnect(TaiKhoan user) {
+               for(TaiKhoan u : userAccounts) {
+                    if (u.getUsername().equals(u.getUsername())) {
+                        u.setTrangThai(1);
+                        PublicEvent.getInstance().getEventChat().updateUser(user);
+                        break;
+                    }
+                }
+               for(int i=0;i<userAccounts.size();i++){
+                    ChatCard c = (ChatCard) chatListPanel.getComponent(i);
+                    if(c.getUser() == user){
+                        c.setStatus();
+                    }
+                }
+            }
+
+            @Override
+            public void userDisconnect(TaiKhoan user) {
+                for(TaiKhoan u : userAccounts) {
+                    if (u.getUsername().equals(u.getUsername())) {
+                        u.setTrangThai(0);
+                        PublicEvent.getInstance().getEventChat().updateUser(user);
+                        break;
+                    }
+                }
+               for(int i=0;i<userAccounts.size();i++){
+                    ChatCard c = (ChatCard) chatListPanel.getComponent(i);
+                    if(c.getUser() == user){
+                        c.setStatus();
+                    }
+                }
+            }            
+        });
+    }
+    
+    public void refreshChatListPanel(){
+        chatListPanel.repaint();
+        chatListPanel.revalidate();
+    }
+    
+    public void init(){
+        userAccounts = new ArrayList<>();
     }
     
     public JPanel getChatListPanel(){

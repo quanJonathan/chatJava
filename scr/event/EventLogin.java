@@ -1,5 +1,7 @@
 package event;
 
+import entity.TaiKhoan;
+
 
 public interface EventLogin {
 
@@ -9,5 +11,5 @@ public interface EventLogin {
     
     public void forgetPass();
     
-    public void goLogin(String username);
+    public void goLogin(TaiKhoan user);
 }

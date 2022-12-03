@@ -4,6 +4,8 @@
  */
 package service_client;
 
+import entity.BanBe;
+import entity.TaiKhoan;
 import entity.TinNhan;
 import event.PublicEvent;
 import java.io.BufferedReader;
@@ -12,13 +14,12 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.sql.Date;
-import java.time.LocalDate;
-import java.util.Queue;
-import java.util.concurrent.BlockingDeque;
+import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Service implements Runnable {
@@ -31,6 +32,7 @@ public class Service implements Runnable {
     private PrintWriter out;
     public ActionListener al;
     public BlockingQueue<String> cmd;
+    public String username;
     private database.database_helper dbh = new database.database_helper();
 
     public static Service getInstance() {
@@ -38,6 +40,14 @@ public class Service implements Runnable {
             instance = new Service();
         }
         return instance;
+    }
+
+    public String getCurrentUser() {
+        return this.username;
+    }
+
+    public void setCurrentUser(String user) {
+        this.username = user;
     }
 
     @Override
@@ -93,24 +103,8 @@ public class Service implements Runnable {
 //                For testing only
 //                out.println("connect To server");
 //                System.out.println(in.readLine());
-                  getCommandLoop();
-                
-//                String command = getCommand();
-//                
-//                    var list = command.split(" ", 2);
-//                    var action = list[0];
-//                    
-//                    if(action == "/receivedMessage"){
-//                        JSONObject object = new JSONObject(list[1]);
-//                        String text = object.getString("noiDung");
-//                        String sender = object.getString("sender");
-//                        String id = object.getString("ID");
-//                        Date time = new Date(object.getInt("thoiGian"));
-//                        TinNhan mess = new TinNhan(id, time, text);
-//                        PublicEvent.getInstance().getEventChat().receiveMessage(mess, command);
-//                    }
-//                }
-                
+                getCommandLoop();
+
             } catch (IOException ex) {
 
             }
@@ -132,9 +126,9 @@ public class Service implements Runnable {
         public String getCommand() {
             try {
                 var readCommand = cmd.take();
-                 
+
                 return readCommand;
-                
+
             } catch (Exception ex) {
                 Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -154,35 +148,63 @@ public class Service implements Runnable {
                                 if (!readCommand.isBlank()) {
                                     cmd.add(readCommand);
                                     System.out.println("Queue added loop: " + readCommand);
-                                    
+
                                     var command = new JSONObject(readCommand);
                                     //System.out.println(command);
-                                    var action =  command.getString("message");
+                                    var action = command.getString("message");
                                     var result = command.getInt("result");
-                                    var object = new JSONObject(command.getString("object"));
 //                                    System.out.println(object);
-                                    if(action.equals("/login")){
-                                        if (result == 0) {
-                                            var error = object.getJSONObject("object").getString("error");
-                                            System.out.println("error" + error);
-                                        } else {
+                                    switch (action) {
+                                        case "/login": {
+                                            var object = new JSONObject(command.getString("object"));
+                                            if (result == 0) {
+//                                                var error = object.getJSONObject("object").getString("error");
+//                                                System.out.println("error" + error);
+                                            } else {
 //                                          System.out.println(resultSet.get("object").getClass());
-                                            String username = object.getString("username");
+                                                TaiKhoan user = new TaiKhoan(object.getString("username"), object.getString("password"), object.getString("email"));
+                                                System.out.println(username + " login successfully");
 
-                                            System.out.println(username + " login successfully");
-                                            
-                                            PublicEvent.getInstance().getEventLogin().goLogin(username);
+                                                PublicEvent.getInstance().getEventLogin().goLogin(user);
+                                            }
+                                            break;
                                         }
-                                    }
-                                    else if(action.equals("/messageReceived")){
-                                        String ID = object.getString("ID");
-                                        String text = object.getString("noiDung");
-                                        var time = Date.valueOf(object.getString("thoiGian"));
-                                        String sender = object.getString("sender");                                        
-                                        String receiver = object.getString("receiver");
-
-                                        TinNhan objectMess = new TinNhan(ID, time, text, sender, receiver, "");
-                                        PublicEvent.getInstance().getEventChat().receiveMessage(objectMess, sender);
+                                        case "/newUserLogin":{
+                                            var object = new JSONObject(command.getString("object"));
+                                            TaiKhoan user = new TaiKhoan(object.getString("username"), object.getString("password"), object.getString("email"));
+                                            user.setTrangThai(object.getInt("trangThai"));
+                                           // PublicEvent.getInstance().getEventChatList().userConnect(user);
+                                            break;
+                                        }
+                                            
+                                        case "/messageReceived": {
+                                            var object = new JSONObject(command.getString("object"));
+                                            String ID = object.getString("ID");
+                                            String text = object.getString("noiDung");
+                                            var time = Date.valueOf(object.getString("thoiGian"));
+                                            String sender = object.getString("nguoiGui");
+                                            String receiver = object.getString("nguoiNhan");
+                                            TinNhan objectMess = new TinNhan(ID, time, text, sender, receiver, "");
+                                            PublicEvent.getInstance().getEventChat().receiveMessage(objectMess);
+                                            break;
+                                        }
+                                        case "/friendListReceived": {
+                                            var object = new JSONArray(command.getString("object"));
+                                            ArrayList<BanBe> friendList = new ArrayList<>();
+                                            for(int i=0;i<object.length(); i++){
+                                                var newObject = object.getJSONObject(i);
+                                                String main = newObject.getString("username");
+                                                String friend = newObject.getString("usernameBanBe");
+                                                String date = newObject.getString("ngayKetBan");
+                                                BanBe b = new BanBe(main, friend, Date.valueOf(date));
+                                                friendList.add(b);
+                                            }
+                                            System.out.println(friendList);
+                                            PublicEvent.getInstance().getEventFriend().setData(friendList);
+                                            break;
+                                        }
+                                        default:
+                                            break;
                                     }
                                 }
                             }

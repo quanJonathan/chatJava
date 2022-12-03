@@ -4,14 +4,19 @@ package service_server;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+import database.DAO_BanBe;
 import database.DAO_TaiKhoan;
+import entity.BanBe;
 import entity.TaiKhoan;
+import entity.TinNhan;
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,12 +25,13 @@ import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Service implements Runnable {
 
-    private Map<Socket, String> connectionsWithName;
+    private Map<Socket, TaiKhoan> connectionsWithName;
     private ArrayList<ConnectionHandler> connections;
     private static Service instance;
     private ServerSocket server;
@@ -56,7 +62,7 @@ public class Service implements Runnable {
             while (!done) {
                 Socket client = server.accept();
                 ConnectionHandler handler = new ConnectionHandler(client);
-                connectionsWithName.put(client, "");
+                connectionsWithName.put(client, null);
                 pool.execute(handler);
             }
         } catch (IOException ex) {
@@ -79,6 +85,18 @@ public class Service implements Runnable {
         }
     }
 
+    public String removeClient(Socket client) {
+        for (ConnectionHandler c : connections) {
+            if (c.client == client) {
+                connections.remove(c);
+                String username = connectionsWithName.get(client).getUsername();
+                connectionsWithName.remove(client);
+                return username;
+            }
+        }
+        return "";
+    }
+
     class ConnectionHandler implements Runnable {
 
         private Socket client;
@@ -87,6 +105,20 @@ public class Service implements Runnable {
 
         public ConnectionHandler(Socket client) {
             this.client = client;
+        }
+
+        private void userConnect(String username) {
+            for (Entry<Socket, TaiKhoan> entry : connectionsWithName.entrySet()) {
+                if (entry.getValue() != null) {
+                    if (!username.equals(entry.getValue().getUsername())) {
+                        sendMessage("/newUserLogin", 1, entry.getValue().JSONify());
+                    }
+                }
+            }
+        }
+
+        private void userDisconnect(int userID) {
+
         }
 
         @Override
@@ -112,10 +144,15 @@ public class Service implements Runnable {
                             if (result == 1) {
                                 DAO_TaiKhoan dao_acc = new DAO_TaiKhoan();
                                 List<TaiKhoan> listAcc = dao_acc.select(" where '" + email + "' = Email");
-                               
-                                String name = listAcc.get(0).getUsername();
-                                connectionsWithName.replace(client,  name);
-                                sendMessage(list[0], result, new JSONObject().put("username", name));
+
+                                TaiKhoan user = listAcc.get(0);
+                                JSONObject userObject = user.JSONify();
+                                user.setTrangThai(1);
+                                userConnect(user.getUsername());
+                                System.out.println(user);
+                                connectionsWithName.replace(client, user);
+                                sendMessage(list[0], result, userObject);
+
                             } else {
                                 sendMessage(list[0], result, new JSONObject().put("error", "Wrong credentials"));
                             }
@@ -147,15 +184,21 @@ public class Service implements Runnable {
 
                     } else if (action.startsWith("/sendMessage")) {
                         JSONObject object = new JSONObject(list[1]);
+                        String id = object.getString("ID");
                         String text = object.getString("noiDung");
-                        String receiver = object.getString("receiver");
-                        String sender = object.getString("sender");
+                        String receiver = object.getString("nguoiNhan");
+                        String sender = object.getString("nguoiGui");
+                        Date time = Date.valueOf(object.getString("thoiGian"));
+                        String idGroup = object.getString("IDNhom");
+                        TinNhan mess = new TinNhan(id, time, text, sender, receiver, idGroup);
 
                         Socket temp = null;
-                        for (Entry<Socket, String> entry : connectionsWithName.entrySet()) {
-                            if (receiver.equals(entry.getValue())) {
-                                temp = entry.getKey();
-                                break;
+                        for (Entry<Socket, TaiKhoan> entry : connectionsWithName.entrySet()) {
+                            if (entry.getValue() != null) {
+                                if (receiver.equals(entry.getValue().getUsername())) {
+                                    temp = entry.getKey();
+                                    break;
+                                }
                             }
                         }
                         if (temp != null) {
@@ -164,18 +207,25 @@ public class Service implements Runnable {
                             JSONObject newObject = new JSONObject();
                             newObject.put("message", "/messageReceived");
                             newObject.put("result", 1);
-                            newObject.put("object", object.toString());
+                            newObject.put("object", mess.JSONify().toString());
                             System.out.println(newObject.toString());
                             temp2.println(newObject.toString());
-                            
                         } else {
                             System.out.println("failed");
-                            writeMessageToDb(text);
+                            writeMessageToDb(mess);
                         }
-                    } else if (action.startsWith("/getOnlUser")) {
-
                     } else if (action.startsWith("/getFriendList")) {
+                        JSONObject object = new JSONObject(list[1]);
+                        TaiKhoan user = new TaiKhoan(object.getString("username"), "", "");
+                        ArrayList<BanBe> friendList = getFriendList(user);
+                        JSONArray array = new JSONArray();
 
+                        for (BanBe b : friendList) {
+                            var objectFriend = b.JSONify();
+                            array.put(objectFriend);
+                        }
+
+                        sendManyObject("/friendListReceived", array);
                     } else if (action.startsWith("/getChatData")) {
 
                     } else if (action.startsWith("/unfriend")) {
@@ -189,6 +239,17 @@ public class Service implements Runnable {
 
             } catch (IOException e) {
 
+            }
+        }
+
+        public void sendManyObject(String message, JSONArray array) {
+            try {
+                JSONObject newObject = new JSONObject();
+                newObject.put("message", message);
+                newObject.put("result", 1);
+                newObject.put("object", array.toString());
+                out.println(newObject.toString());
+            } catch (JSONException ex) {
             }
         }
 
@@ -246,9 +307,42 @@ public class Service implements Runnable {
             }
         }
 
-        private void writeMessageToDb(String message) {
+        private void writeMessageToDb(TinNhan message) {
 
         }
+
+        private void logout() {
+
+        }
+
+        private void addLoginHistory(TaiKhoan user) {
+
+        }
+
+        private ArrayList<BanBe> getFriendList(TaiKhoan user) {
+            ArrayList<BanBe> friendList;
+            var daoFriend = new DAO_BanBe();
+
+            friendList = daoFriend.select(" where username = '" + user.getUsername() + "'");
+
+            friendList.forEach((account) -> {
+                System.out.println(account);
+            });
+            return friendList;
+        }
+
+        private void unfriend(TaiKhoan user1, TaiKhoan user2) {
+
+        }
+
+        private List<TinNhan> getChatData(TaiKhoan user1, TaiKhoan user2) {
+            return null;
+        }
+
+        private void searchWordChat(String text) {
+
+        }
+
     }
 
     public static void main(String[] args) {

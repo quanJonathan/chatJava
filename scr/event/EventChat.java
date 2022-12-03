@@ -5,13 +5,15 @@ import java.util.ArrayList;
 import entity.TaiKhoan;
 
 public interface EventChat {
-    public void sendMessage(String text, String currentChatter);
+    public void sendMessage(TinNhan mess);
     
-    public void receiveMessage(TinNhan mess, String username);
+    public void receiveMessage(TinNhan mess);
     
     public void setAllChat(ArrayList<TaiKhoan> users);
     
-    public void selectUser(String username);
+    public void setUser(TaiKhoan user);
     
     public void setChatData(ArrayList<TinNhan> messages);
+    
+    public void updateUser(TaiKhoan user);
 }

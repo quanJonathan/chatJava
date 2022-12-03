@@ -5,6 +5,9 @@
 package UIObject;
 
 import database.DAO_BanBe;
+import entity.BanBe;
+import entity.TaiKhoan;
+import java.awt.Color;
 
 /**
  *
@@ -15,12 +18,23 @@ public class FriendCard extends javax.swing.JPanel {
     /**
      * Creates new form friendCard
      */
-    String name;
+    private BanBe user;
     
-    public FriendCard(String username) {
+    public FriendCard(BanBe user) {
         initComponents();
-        name = username;
-        lblUsername.setText(username);
+        this.user = user;
+        lblUsername.setText(user.getUsernameBanBe());
+        lblBeFriendDate.setText("Ngày kết bạn: " + user.getNgayKetBan().toString());
+    }
+    
+    public void setStatus(){
+          if(1 == 1){
+            lblStatus.setText("Active now");
+            lblStatus.setForeground(new java.awt.Color(40, 147, 59));
+        }else{
+             lblStatus.setText("Offline");
+             lblStatus.setForeground(new Color(160, 160, 160));
+        }
     }
 
     /**
@@ -35,7 +49,8 @@ public class FriendCard extends javax.swing.JPanel {
         lblUsername = new javax.swing.JLabel();
         btnUnfriend = new javax.swing.JButton();
         btnChat = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        lblStatus = new javax.swing.JLabel();
+        lblBeFriendDate = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -51,8 +66,10 @@ public class FriendCard extends javax.swing.JPanel {
 
         btnChat.setText("Chat");
 
-        jLabel1.setForeground(new java.awt.Color(0, 204, 0));
-        jLabel1.setText("active");
+        lblStatus.setForeground(new java.awt.Color(0, 204, 0));
+        lblStatus.setText("active");
+
+        lblBeFriendDate.setText("Ngày kết bạn");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -61,30 +78,34 @@ public class FriendCard extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblUsername)
+                    .addComponent(lblStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblUsername)
-                        .addGap(37, 37, 37))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
-                .addComponent(btnUnfriend)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnChat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnUnfriend)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnChat, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE))
+                    .addComponent(lblBeFriendDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
-                    .addComponent(btnUnfriend, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnChat))
-                .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblUsername)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblUsername)
+                    .addComponent(btnUnfriend, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnChat))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblBeFriendDate)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblStatus)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -95,7 +116,8 @@ public class FriendCard extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChat;
     private javax.swing.JButton btnUnfriend;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel lblBeFriendDate;
+    private javax.swing.JLabel lblStatus;
     private javax.swing.JLabel lblUsername;
     // End of variables declaration//GEN-END:variables
 }

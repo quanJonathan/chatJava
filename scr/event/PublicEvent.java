@@ -3,13 +3,13 @@ package event;
 public class PublicEvent {
 
     private static PublicEvent instance;
-    private EventMain eventMain;
     private EventChat eventChat;
     private EventLogin eventLogin;
     private EventRegister eventRegister;
     private EventForgetPass eventForgetPass;
-    
+    private EventChatList eventChatList;
     private EventOnChatCard eventChatCard;
+    private EventFriend eventFriend;
 
     public static PublicEvent getInstance() {
         if (instance == null) {
@@ -18,11 +18,23 @@ public class PublicEvent {
         return instance;
     }
 
-    private PublicEvent() {}
-
-    public void addEventMain(EventMain event) {
-        this.eventMain = event;
+    public EventOnChatCard getEventChatCard() {
+        return eventChatCard;
     }
+
+    public void setEventChatCard(EventOnChatCard eventChatCard) {
+        this.eventChatCard = eventChatCard;
+    }
+
+    public EventFriend getEventFriend() {
+        return eventFriend;
+    }
+
+    public void addEventFriend(EventFriend eventFriend) {
+        this.eventFriend = eventFriend;
+    }
+
+    private PublicEvent() {}
 
     public void addEventChat(EventChat event) {
         this.eventChat = event;
@@ -44,10 +56,12 @@ public class PublicEvent {
         this.eventChatCard = event;
     }
     
-    
-
-    public EventMain getEventMain() {
-        return eventMain;
+    public void addEventChatList(EventChatList event){
+        this.eventChatList = event;
+    }
+     
+    public EventChatList getEventChatList() {
+        return eventChatList;
     }
     
     public EventRegister getEventRegister() {
@@ -68,6 +82,5 @@ public class PublicEvent {
     
     public EventOnChatCard getEventOnChatCard(){
         return eventChatCard;
-    }
-    
+    } 
 }

@@ -1,48 +1,85 @@
 package main_ui;
 
+import entity.TaiKhoan;
 import entity.TinNhan;
+import java.awt.Adjustable;
 import swing.ModifiedScrollBar;
 import java.awt.Color;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.sql.Date;
 import net.miginfocom.swing.MigLayout;
+import java.util.ArrayList;
+import javax.swing.JScrollBar;
 
 public class ChatBody extends javax.swing.JPanel {
     
-    public String username;
+    public TaiKhoan user;
+    private ArrayList<TinNhan> currentChatData;
+   
     public ChatBody() {
         initComponents();
         init();
     }
     
+    public void setUser(TaiKhoan user){
+        this.user = user;
+    }
+    
 
     private void init() {
-        body.setLayout(new MigLayout("fillx", "", "5[]5"));
+        body.setLayout(new MigLayout("fillx", "", "5[bottom]5"));
         sp.setVerticalScrollBar(new ModifiedScrollBar());
         sp.getVerticalScrollBar().setBackground(Color.WHITE);
         
-        addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "hiiii", username, username, username), "bebaoboy");
-        addItemRight("hello");
-        addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "hiiii", username, username, username), "bebaoboy");
-        addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "hiiii", username, username, username), "bebaoboy");
-        
+        addItemRight(new TinNhan("3", new Date(System.currentTimeMillis()), "Nothing much", "user2", "user1", "")); 
+        addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "hello", "user1", "user2", ""));
+        addItemLeft(new TinNhan("2", new Date(System.currentTimeMillis()), "what are you doing", "user1", "user2", ""));
+        addItemRight(new TinNhan("3", new Date(System.currentTimeMillis()), "Nothing much", "user2", "user1", ""));
     }
-
-    public void addItemLeft(TinNhan text, String username) {
+    
+    private void setCurrentData(TaiKhoan user){
+       
+    }
+    
+    private void showCurrentData(){
+       for(TinNhan t: currentChatData){
+            if(t.getNguoiGui().equals(this.user.getUsername())){
+                addItemRight(t);
+            }else{
+                addItemLeft(t);
+            }
+       }
+    }
+    
+    public void addItemLeft(TinNhan text) {
         ChatLeftWithProfile item = new ChatLeftWithProfile();
         item.setText(text.getNoiDung(), text.getThoiGian().toString());
-        item.setUserProfile(username);
+        item.setUserProfile(text.getNguoiNhan());
         body.add(item, "wrap, al left");
         body.repaint();
         body.revalidate();
     }
 
-    public void addItemRight(String text) {
+    public void addItemRight(TinNhan text) {
         ChatRight item = new ChatRight();
-        item.setText(text);
+        item.setText(text.getNoiDung());
+        item.setTime(text.getThoiGian().toString());
         body.add(item, "wrap, al right");
-        //  ::80% set max with 80%
         body.repaint();
         body.revalidate();
+        scrollToBottom();
+    }
+    
+    public void setChatData(ArrayList<TinNhan> messages){
+        clear();
+        for (TinNhan t: messages){
+            if(t.getNguoiGui().equals(this.user.getUsername())){
+                addItemRight(t);
+            }else{
+                addItemLeft(t);
+            }
+        }
     }
     
     public void clear(){
@@ -57,6 +94,8 @@ public class ChatBody extends javax.swing.JPanel {
 
         sp = new javax.swing.JScrollPane();
         body = new javax.swing.JPanel();
+
+        setPreferredSize(new java.awt.Dimension(1000, 555));
 
         sp.setBorder(null);
         sp.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -93,4 +132,17 @@ public class ChatBody extends javax.swing.JPanel {
     private javax.swing.JPanel body;
     private javax.swing.JScrollPane sp;
     // End of variables declaration//GEN-END:variables
+
+    private void scrollToBottom() {
+        JScrollBar scrollBar = sp.getVerticalScrollBar();
+        AdjustmentListener downScroller = new AdjustmentListener() {
+            @Override
+            public void adjustmentValueChanged(AdjustmentEvent e) {
+                Adjustable adjustable = e.getAdjustable();
+                adjustable.setValue(adjustable.getMaximum());
+                scrollBar.removeAdjustmentListener(this);
+            }
+        };
+        scrollBar.addAdjustmentListener(downScroller);
+    }
 }
