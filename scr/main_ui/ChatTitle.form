@@ -19,7 +19,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="layer" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="456" max="32767" attributes="0"/>
+              <EmptySpace pref="447" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -49,7 +49,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="42" green="42" red="42" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Name"/>
+            <Property name="text" type="java.lang.String" value="bebaoboy"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="lblStatus">

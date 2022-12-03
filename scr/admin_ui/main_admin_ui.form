@@ -181,11 +181,13 @@
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="NameSort" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="DateSort" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="AdminUserSearch_home" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jLabel2" alignment="1" min="-2" pref="22" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="NameSort" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="DateSort" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="AdminUserSearch_home" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                           <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
                           <Component id="jScrollPane3" min="-2" pref="245" max="-2" attributes="0"/>
@@ -1114,7 +1116,7 @@
                         <Component class="javax.swing.JTable" name="groupDetailTable">
                           <Properties>
                             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                              <Table columnCount="3" rowCount="4">
+                              <Table columnCount="4" rowCount="4">
                                 <Column editable="false" title="T&#xea;n nh&#xf3;m" type="java.lang.Object">
                                   <Data value="nhomchat1"/>
                                   <Data value=""/>
@@ -1123,9 +1125,15 @@
                                 </Column>
                                 <Column editable="false" title="Th&#xe0;nh vi&#xea;n" type="java.lang.Object">
                                   <Data value=""/>
-                                  <Data value="bebaoboy (admin)"/>
-                                  <Data value="luutuanquan (admin)"/>
+                                  <Data value="bebaoboy"/>
+                                  <Data value="luutuanquan"/>
                                   <Data value="reika"/>
+                                </Column>
+                                <Column editable="false" title="Ch&#x1ee9;c n&#x103;ng" type="java.lang.Object">
+                                  <Data value="null"/>
+                                  <Data value="Admin"/>
+                                  <Data value="Admin"/>
+                                  <Data value="Member"/>
                                 </Column>
                                 <Column editable="false" title="Ng&#xe0;y th&#xea;m" type="java.lang.Object">
                                   <Data value="01-12-2022 20:05:36"/>
@@ -1143,6 +1151,11 @@
                                   <Renderer/>
                                 </Column>
                                 <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                                  <Title/>
+                                  <Editor/>
+                                  <Renderer/>
+                                </Column>
+                                <Column maxWidth="60" minWidth="60" prefWidth="-1" resizable="true">
                                   <Title/>
                                   <Editor/>
                                   <Renderer/>

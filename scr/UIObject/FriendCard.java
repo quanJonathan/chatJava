@@ -55,6 +55,7 @@ public class FriendCard extends javax.swing.JPanel {
         setBackground(new java.awt.Color(255, 255, 255));
         setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+        lblUsername.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         lblUsername.setText("Username");
 
         btnUnfriend.setText("Hủy kết bạn");
@@ -69,6 +70,7 @@ public class FriendCard extends javax.swing.JPanel {
         lblStatus.setForeground(new java.awt.Color(0, 204, 0));
         lblStatus.setText("active");
 
+        lblBeFriendDate.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblBeFriendDate.setText("Ngày kết bạn");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -97,15 +99,11 @@ public class FriendCard extends javax.swing.JPanel {
                     .addComponent(lblUsername)
                     .addComponent(btnUnfriend, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnChat))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lblBeFriendDate)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblStatus)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblStatus)
+                    .addComponent(lblBeFriendDate))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

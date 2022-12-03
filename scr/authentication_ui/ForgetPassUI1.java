@@ -6,17 +6,18 @@ package authentication_ui;
 
 import event.EventForgetPass;
 import event.PublicEvent;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author ADMIN
  */
-public class ForgetPassUI extends javax.swing.JFrame {
+public class ForgetPassUI1 extends javax.swing.JFrame {
 
     /**
      * Creates new form forgot_password_1
      */
-    public ForgetPassUI() {
+    public ForgetPassUI1() {
         initComponents();
         init();
     }
@@ -30,7 +31,7 @@ public class ForgetPassUI extends javax.swing.JFrame {
 
             @Override
             public void goback() {
-               new LoginUI().setVisible(true);
+               new LoginUI1().setVisible(true);
             }  
         });
     }
@@ -77,11 +78,13 @@ public class ForgetPassUI extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         jLabel2.setText("Email");
 
+        emailText.setText("bebaoboy@gmail.com");
         emailText.setToolTipText("Enter email");
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         jLabel3.setText("Username");
 
+        usernameText.setText("bebaoboy");
         usernameText.setToolTipText("Enter username");
 
         emailSendingButton.setText("Gửi email đặt lại mật khẩu");
@@ -148,7 +151,10 @@ public class ForgetPassUI extends javax.swing.JFrame {
     private void emailSendingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailSendingButtonActionPerformed
         var email = emailText.getText();
         var username = usernameText.getText();
-        PublicEvent.getInstance().getEventForgetPass().sendPasswordResetMail(email, username);
+        JOptionPane.showConfirmDialog(rootPane, "Email đã được gửi đến " + email + ".\nVui lòng kiểm tra và làm theo hướng dẫn trong email!", "Thông báo", JOptionPane.CLOSED_OPTION);
+        this.dispose();
+        PublicEvent.getInstance().getEventForgetPass().goback();
+        // PublicEvent.getInstance().getEventForgetPass().sendPasswordResetMail(email, username);
     }//GEN-LAST:event_emailSendingButtonActionPerformed
 
     /**
@@ -168,14 +174,18 @@ public class ForgetPassUI extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ForgetPassUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ForgetPassUI1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ForgetPassUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ForgetPassUI1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ForgetPassUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ForgetPassUI1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ForgetPassUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ForgetPassUI1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -184,7 +194,7 @@ public class ForgetPassUI extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ForgetPassUI().setVisible(true);
+                new ForgetPassUI1().setVisible(true);
             }
         });
     }

@@ -4,22 +4,19 @@ import entity.TaiKhoan;
 import event.EventLogin;
 import event.PublicEvent;
 import javax.swing.JOptionPane;
-import main_ui.main_user_ui;
-import org.json.JSONException;
-import org.json.JSONObject;
-import service_client.Service;
+import main_ui.main_user_ui1;
 
 /**
  *
  * @author ADMIN
  */
-public class LoginUI extends javax.swing.JFrame {
+public class LoginUI1 extends javax.swing.JFrame {
 
     /**
      * Creates new form login_1
      */
     private String username;
-    public LoginUI() {
+    public LoginUI1() {
         initComponents();
         init();
     }
@@ -27,7 +24,7 @@ public class LoginUI extends javax.swing.JFrame {
 
     public final void init() {
 
-        Service.getInstance().run();
+        //Service.getInstance().run();
 
         PublicEvent.getInstance().addEventLogin(new EventLogin() {
             @Override
@@ -39,23 +36,23 @@ public class LoginUI extends javax.swing.JFrame {
                 TaiKhoan acc = new TaiKhoan("", password, email.toLowerCase());
                 var object = acc.JSONify();
 
-                Service.getInstance().al.sendCommand("/login", object);
+                //Service.getInstance().al.sendCommand("/login", object);
             }
             
             @Override
             public void goLogin(TaiKhoan username){
                 dispose();
-                new main_user_ui(username).setVisible(true);
+                new main_user_ui1(username).setVisible(true);
             }
 
             @Override
             public void goRegister() {
-                new RegisterUI().setVisible(true);
+                new RegisterUI1().setVisible(true);
             }
 
             @Override
             public void forgetPass() {
-                new ForgetPassUI().setVisible(true);
+                new ForgetPassUI1().setVisible(true);
             }
         });
     }
@@ -229,7 +226,8 @@ public class LoginUI extends javax.swing.JFrame {
     }//GEN-LAST:event_passwordTextFieldActionPerformed
 
     private void logInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logInButtonActionPerformed
-        // JOptionPane.showMessageDialog(rootPane, "Hoàn tất đăng nhập", "Thông báo", JOptionPane.OK_OPTION);
+        JOptionPane.showConfirmDialog(rootPane, "Đăng nhập thành công!" , "Thông báo", JOptionPane.CLOSED_OPTION);
+        PublicEvent.getInstance().getEventLogin().goLogin(new TaiKhoan("luutuanquan", "", ""));
     }//GEN-LAST:event_logInButtonActionPerformed
 
     /**
@@ -249,14 +247,18 @@ public class LoginUI extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(LoginUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginUI1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(LoginUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginUI1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(LoginUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginUI1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(LoginUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginUI1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -265,7 +267,7 @@ public class LoginUI extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new LoginUI().setVisible(true);
+                new LoginUI1().setVisible(true);
 
             }
         });

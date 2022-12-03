@@ -1,33 +1,20 @@
 package main_ui;
 
 import UIObject.ChatCard;
-import UIObject.FriendCard;
 import authentication_ui.LoginUI;
-import database.DAO_BanBe;
-import database.StringRandomizer;
 import entity.BanBe;
-import entity.IDPrefix;
-import static entity.IDPrefix.IDTinNhan;
 import entity.TaiKhoan;
 import entity.TinNhan;
 import event.EventChat;
 import event.EventFriend;
 import event.PublicEvent;
-import swing.ModifiedScrollBar;
 import java.awt.CardLayout;
-import java.net.Socket;
-import java.sql.Time;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.awt.Component;
-import java.sql.Date;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import net.miginfocom.swing.MigLayout;
 import org.json.JSONObject;
 import service_client.Service;
 
-public class main_user_ui extends javax.swing.JFrame {
+public class main_user_ui1 extends javax.swing.JFrame {
 
     CardLayout cardLayoutMain;
     CardLayout cardHomePage;
@@ -35,7 +22,7 @@ public class main_user_ui extends javax.swing.JFrame {
     
     ArrayList<TaiKhoan> usernames = new ArrayList<>();
 
-    public main_user_ui(TaiKhoan username) {
+    public main_user_ui1(TaiKhoan username) {
         initComponents();
         cardLayoutMain = (CardLayout) mainBody.getLayout();
         cardHomePage = (CardLayout) modifiedPanelHome.getLayout();
@@ -45,7 +32,7 @@ public class main_user_ui extends javax.swing.JFrame {
          currentUser = username;
 
         //Test data
-//        currentUser = new TaiKhoan("luutuanquan", "", "");
+        currentUser = new TaiKhoan("luutuanquan", "", "");
         init();
     }
 
@@ -67,7 +54,7 @@ public class main_user_ui extends javax.swing.JFrame {
             public void sendMessage(TinNhan mess) {
                 JSONObject object = mess.JSONify();
                 System.out.println(object.toString());
-                Service.getInstance().al.sendCommand("/sendMessage", object);
+                // Service.getInstance().al.sendCommand("/sendMessage", object);
                 chat.getChatBody().addItemRight(mess);
             }
 
@@ -83,8 +70,8 @@ public class main_user_ui extends javax.swing.JFrame {
 
             @Override
             public void setUser(TaiKhoan user) {
-                chat.setUser(user);
-                chat.setVisible(true);
+//                chat.setUser(user);
+//                chat.setVisible(true);
             }
 
             @Override
@@ -658,7 +645,7 @@ public class main_user_ui extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 920, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 920, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -721,20 +708,21 @@ public class main_user_ui extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(main_user_ui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(main_user_ui1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(main_user_ui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(main_user_ui1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(main_user_ui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(main_user_ui1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(main_user_ui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(main_user_ui1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new main_user_ui(currentUser).setVisible(true);
+                new main_user_ui1(currentUser).setVisible(true);
             }
         });
     }

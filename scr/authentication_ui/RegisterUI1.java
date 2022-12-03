@@ -12,11 +12,8 @@ import event.PublicEvent;
 import java.awt.GridLayout;
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.ButtonGroup;
+import javax.swing.JOptionPane;
 import main_ui.DateLabelFormatter;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
@@ -26,12 +23,12 @@ import org.jdatepicker.impl.SqlDateModel;
  *
  * @author ADMIN
  */
-public class RegisterUI extends javax.swing.JFrame {
+public class RegisterUI1 extends javax.swing.JFrame {
 
     /**
      * Creates new form register1
      */
-    public RegisterUI() {
+    public RegisterUI1() {
         this.model = new SqlDateModel();
         model.setDate(2002, 0, 1);
         model.setSelected(true);
@@ -105,7 +102,7 @@ public class RegisterUI extends javax.swing.JFrame {
 
             @Override
             public void goback() {
-                new LoginUI().setVisible(true);
+                new LoginUI1().setVisible(true);
             }
 
         });
@@ -317,16 +314,23 @@ public class RegisterUI extends javax.swing.JFrame {
     }//GEN-LAST:event_addressTextFieldActionPerformed
 
     private void signUpButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_signUpButtonMouseClicked
-        Date selectedDate = (java.sql.Date) datePicker.getModel().getValue();
-        var user = new TaiKhoan(
-                usernameTextField.getText(),
-                String.valueOf(passwordTextField.getPassword()),
-                emailTextField.getText())
-                .setNgaySinh(selectedDate)
-                .setGioiTinh(!maleRadioButton.isSelected())
-                .setDiaChi(new String(addressTextField.getText().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8))
-                .setTrangThai(0);
-        PublicEvent.getInstance().getEventRegister().register(user);
+        var input = JOptionPane.showConfirmDialog(rootPane, "Xác nhận tạo tài khoản?", "Thông báo", JOptionPane.YES_NO_CANCEL_OPTION);
+        if (input == JOptionPane.YES_OPTION) {
+            Date selectedDate = (java.sql.Date) datePicker.getModel().getValue();
+            var user = new TaiKhoan(
+                    usernameTextField.getText(),
+                    String.valueOf(passwordTextField.getPassword()),
+                    emailTextField.getText())
+                    .setNgaySinh(selectedDate)
+                    .setGioiTinh(!maleRadioButton.isSelected())
+                    .setDiaChi(new String(addressTextField.getText().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8))
+                    .setTrangThai(0);
+            JOptionPane.showConfirmDialog(rootPane, "Hoàn tất đăng ký tài khoản", "Thông báo", JOptionPane.CLOSED_OPTION);
+            this.dispose();
+            PublicEvent.getInstance().getEventRegister().goback();
+            // PublicEvent.getInstance().getEventRegister().register(user);
+        }
+
     }//GEN-LAST:event_signUpButtonMouseClicked
 
     private void gobackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gobackActionPerformed
@@ -351,14 +355,18 @@ public class RegisterUI extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(RegisterUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RegisterUI1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(RegisterUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RegisterUI1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(RegisterUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RegisterUI1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(RegisterUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RegisterUI1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -367,7 +375,7 @@ public class RegisterUI extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new RegisterUI().setVisible(true);
+                new RegisterUI1().setVisible(true);
             }
         });
     }

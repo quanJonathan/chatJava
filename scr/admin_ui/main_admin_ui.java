@@ -720,11 +720,12 @@ public class main_admin_ui extends javax.swing.JFrame {
                 .addGap(96, 96, 96))
             .addGroup(HomeLayout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addGroup(HomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(NameSort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(DateSort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(AdminUserSearch_home, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(HomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(HomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(NameSort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(DateSort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(AdminUserSearch_home, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(37, 37, 37)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -806,17 +807,17 @@ public class main_admin_ui extends javax.swing.JFrame {
 
         groupDetailTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"nhomchat1", "", "01-12-2022 20:05:36"},
-                {"", "bebaoboy (admin)", "23-11-2022 14:18:01"},
-                {"", "luutuanquan (admin)", "05-11-2022 07:11:11"},
-                {null, "reika", "01-12-2022 20:05:36"}
+                {"nhomchat1", "", null, "01-12-2022 20:05:36"},
+                {"", "bebaoboy", "Admin", "23-11-2022 14:18:01"},
+                {"", "luutuanquan", "Admin", "05-11-2022 07:11:11"},
+                {null, "reika", "Member", "01-12-2022 20:05:36"}
             },
             new String [] {
-                "Tên nhóm", "Thành viên", "Ngày thêm"
+                "Tên nhóm", "Thành viên", "Chức năng", "Ngày thêm"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -824,6 +825,10 @@ public class main_admin_ui extends javax.swing.JFrame {
             }
         });
         jScrollPane9.setViewportView(groupDetailTable);
+        if (groupDetailTable.getColumnModel().getColumnCount() > 0) {
+            groupDetailTable.getColumnModel().getColumn(2).setMinWidth(60);
+            groupDetailTable.getColumnModel().getColumn(2).setMaxWidth(60);
+        }
 
         javax.swing.GroupLayout groupDetailPanelLayout = new javax.swing.GroupLayout(groupDetailPanel);
         groupDetailPanel.setLayout(groupDetailPanelLayout);
@@ -1060,7 +1065,6 @@ public class main_admin_ui extends javax.swing.JFrame {
     private javax.swing.JTable groupDetailTable;
     private javax.swing.JTable groupTable;
     private javax.swing.JPanel jDatePanel;
-    private javax.swing.JPanel jDatePanel1;
     private javax.swing.JPanel jDatePanel2;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

@@ -50,7 +50,7 @@ public class ChatTitle extends javax.swing.JPanel {
 
         lbName.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         lbName.setForeground(new java.awt.Color(66, 66, 66));
-        lbName.setText("Name");
+        lbName.setText("bebaoboy");
         layer.add(lbName);
 
         lblStatus.setForeground(new java.awt.Color(40, 147, 59));
@@ -64,7 +64,7 @@ public class ChatTitle extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(layer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(456, Short.MAX_VALUE))
+                .addContainerGap(447, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
