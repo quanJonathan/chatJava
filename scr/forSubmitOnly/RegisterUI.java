@@ -9,6 +9,7 @@ import database.DAO_TinNhan;
 import entity.TaiKhoan;
 import event.EventRegister;
 import event.PublicEvent;
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
@@ -37,6 +38,7 @@ public class RegisterUI extends javax.swing.JFrame {
         p.put("text.year", "Year");
         datePanel = new JDatePanelImpl(model, p);
         datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        datePicker.setBackground(Color.white);
         initComponents();
         jDatePanel.setLayout(new GridLayout(1, 5));
         jDatePanel.add(datePicker);
@@ -49,7 +51,7 @@ public class RegisterUI extends javax.swing.JFrame {
 
     public void init() {
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

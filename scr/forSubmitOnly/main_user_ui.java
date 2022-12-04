@@ -1,7 +1,6 @@
 package forSubmitOnly;
 
 import forSubmitOnly.GroupCard;
-import authentication_ui.LoginUI;
 import entity.TaiKhoan;
 import java.awt.CardLayout;
 import java.util.ArrayList;
@@ -522,7 +521,7 @@ public class main_user_ui extends javax.swing.JFrame {
         var input = JOptionPane.showConfirmDialog(rootPane, "Đăng xuất tải khoản?", "Xác nhận", JOptionPane.YES_NO_OPTION);
         if (input == JOptionPane.YES_OPTION) {
             this.dispose();
-            new LoginUI().setVisible(true);
+            new forSubmitOnly.LoginUI().setVisible(true);
         }
     }//GEN-LAST:event_logoutButtonActionPerformed
 

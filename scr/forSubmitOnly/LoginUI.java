@@ -194,6 +194,7 @@ public class LoginUI extends javax.swing.JFrame {
 
         TaiKhoan acc = new TaiKhoan("", password, email.toLowerCase());
         JOptionPane.showConfirmDialog(rootPane, "Đăng nhập thành công!", "Thông báo", JOptionPane.CLOSED_OPTION);
+        this.dispose();
         new main_user_ui(acc).setVisible(true);
     }//GEN-LAST:event_logInButtonActionPerformed
 
