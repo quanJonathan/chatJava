@@ -30,7 +30,6 @@ public class ChatBody extends javax.swing.JPanel {
     private void init() {
         body.setLayout(new MigLayout("fillx", "", "5[bottom]5"));
         sp.setVerticalScrollBar(new ModifiedScrollBar());
-        sp.getVerticalScrollBar().setBackground(Color.WHITE);
         
         addItemRight(new TinNhan("3", new Date(System.currentTimeMillis()), "Nothing much", "user2", "user1", "")); 
         addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "hello", "user1", "user2", ""));
@@ -119,7 +118,7 @@ public class ChatBody extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(sp)
+            .addComponent(sp, javax.swing.GroupLayout.PREFERRED_SIZE, 553, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

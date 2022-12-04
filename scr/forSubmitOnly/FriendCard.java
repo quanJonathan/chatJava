@@ -2,12 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package UIObject;
-
-import database.DAO_BanBe;
-import entity.BanBe;
-import entity.TaiKhoan;
-import java.awt.Color;
+package forSubmitOnly;
 
 /**
  *
@@ -16,25 +11,12 @@ import java.awt.Color;
 public class FriendCard extends javax.swing.JPanel {
 
     /**
-     * Creates new form friendCard
+     * Creates new form FriendCard1
      */
-    private BanBe user;
-    
-    public FriendCard(BanBe user) {
+    public FriendCard(String name) {
         initComponents();
-        this.user = user;
-        lblUsername.setText(user.getUsernameBanBe());
-        lblBeFriendDate.setText("Ngày kết bạn: " + user.getNgayKetBan().toString());
-    }
-    
-    public void setStatus(){
-          if(1 == 1){
-            lblStatus.setText("Active now");
-            lblStatus.setForeground(new java.awt.Color(40, 147, 59));
-        }else{
-             lblStatus.setText("Offline");
-             lblStatus.setForeground(new Color(160, 160, 160));
-        }
+        lblUsername.setText(name);
+        lblBeFriendDate.setText("Ngay ket ban: 21/10/2022");
     }
 
     /**
@@ -46,17 +28,25 @@ public class FriendCard extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lblUsername = new javax.swing.JLabel();
-        btnUnfriend = new javax.swing.JButton();
-        btnChat = new javax.swing.JButton();
         lblStatus = new javax.swing.JLabel();
+        lblUsername = new javax.swing.JLabel();
+        btnChat = new javax.swing.JButton();
         lblBeFriendDate = new javax.swing.JLabel();
+        btnUnfriend = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        setForeground(new java.awt.Color(255, 255, 255));
+
+        lblStatus.setForeground(new java.awt.Color(0, 204, 0));
+        lblStatus.setText("active");
 
         lblUsername.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         lblUsername.setText("Username");
+
+        btnChat.setText("Chat");
+
+        lblBeFriendDate.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblBeFriendDate.setText("Ngày kết bạn");
 
         btnUnfriend.setText("Hủy kết bạn");
         btnUnfriend.addActionListener(new java.awt.event.ActionListener() {
@@ -64,15 +54,6 @@ public class FriendCard extends javax.swing.JPanel {
                 btnUnfriendActionPerformed(evt);
             }
         });
-
-        btnChat.setText("Chat");
-
-        lblStatus.setForeground(new java.awt.Color(0, 204, 0));
-        lblStatus.setText("active");
-
-        lblBeFriendDate.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        lblBeFriendDate.setText("Ngày kết bạn");
-        lblBeFriendDate.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -83,13 +64,15 @@ public class FriendCard extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblUsername)
                     .addComponent(lblStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(13, 13, 13)
                         .addComponent(btnUnfriend)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnChat, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE))
-                    .addComponent(lblBeFriendDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnChat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(lblBeFriendDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -104,12 +87,12 @@ public class FriendCard extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblStatus)
                     .addComponent(lblBeFriendDate))
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnUnfriendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnfriendActionPerformed
-        DAO_BanBe dao_friend = new DAO_BanBe();
+
     }//GEN-LAST:event_btnUnfriendActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

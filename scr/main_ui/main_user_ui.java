@@ -58,9 +58,7 @@ public class main_user_ui extends javax.swing.JFrame {
         //chat.setVisible(false);
         chat.getChatBottom().setSender(currentUser);
         
-        
-        
-        //readFriendList();
+        readFriendList();
         
         PublicEvent.getInstance().addEventChat(new EventChat() {
             @Override
