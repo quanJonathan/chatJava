@@ -6,6 +6,8 @@ package database;
 
 import com.microsoft.sqlserver.jdbc.SQLServerException;
 import entity.NhomChat;
+import entity.ThanhVienNhomChat;
+import entity.TinNhan;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,18 +28,23 @@ public class DAO_NhomChat implements DAO<NhomChat> {
     }
 
     @Override
-    public List<NhomChat> selectAll() {
+    public ArrayList<NhomChat> selectAll() {
         return select("");
     }
 
-    public List<NhomChat> selectAllMessage(String id) {
+    public ArrayList<TinNhan> selectAllMessage(String id) {
         try {
-            var messages = database_helper.select("select");
-            var condition = "inner join danhsachtinnhan on tinnhan.id = danhsachtinnhan.id where danhsachtinnhan.nguoigui = N'" + sender + "' or danhsachtinnhan.nguoinhan = N'" + receiver + "'" + " or danhsachtinnhan.nguoinhan = N'" + sender + "'" + " or danhsachtinnhan.nguoigui = N'" + receiver + "'";
-            var rs = database_helper.select(database_query_builder.get(tableName, condition, "tinnhan.id", "tinnhan.thoiGian", "tinnhan.noidung", "danhsachtinnhan.nguoigui", "danhsachtinnhan.nguoinhan", "danhsachtinnhan.idnhom"));
-            var ars = resultToList(rs);
-            // ars.sort((NhomChat t1, NhomChat t2) -> t1.getThoiGian().compareTo(t2.getThoiGian()));
-            return ars;
+            var messages = new DAO_TinNhan().select("where id=" + id);
+            return messages;
+        } catch (Throwable ex) {
+            return new ArrayList<>();
+        }
+    }
+    
+    public ArrayList<ThanhVienNhomChat> selectAllMembers(String id) {
+        try {
+            var messages = new DAO_TinNhan().select("where id=" + id);
+            return new ArrayList<>();
         } catch (Throwable ex) {
             return new ArrayList<>();
         }
