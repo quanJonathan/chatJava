@@ -37,20 +37,6 @@ public class ChatBody extends javax.swing.JPanel {
         addItemRight(new TinNhan("3", new Date(System.currentTimeMillis()), "Nothing much", "user2", "user1", ""));
     }
     
-    private void setCurrentData(TaiKhoan user){
-       
-    }
-    
-    private void showCurrentData(){
-       for(TinNhan t: currentChatData){
-            if(t.getNguoiGui().equals(this.user.getUsername())){
-                addItemRight(t);
-            }else{
-                addItemLeft(t);
-            }
-       }
-    }
-    
     public void addItemLeft(TinNhan text) {
         ChatLeftWithProfile item = new ChatLeftWithProfile();
         item.setText(text.getNoiDung(), text.getThoiGian().toString());

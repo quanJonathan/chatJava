@@ -43,6 +43,7 @@ public class Chat extends javax.swing.JPanel {
     public void setUser(TaiKhoan user){
         chatTitle.setUserName(user);
         chatBottom.setUser(user);
+        chatBody.setUser(user);
         chatBody.clear();
     }
     

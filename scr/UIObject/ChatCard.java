@@ -96,6 +96,7 @@ public class ChatCard extends javax.swing.JPanel {
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
 
          PublicEvent.getInstance().getEventChat().setUser(this.user); 
+         PublicEvent.getInstance().getEventChat().requestData(this.user);
     }//GEN-LAST:event_formMouseClicked
 
     private void deleteChatButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteChatButtonActionPerformed

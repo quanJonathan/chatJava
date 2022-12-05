@@ -23,22 +23,22 @@ public class LoginUI extends javax.swing.JFrame {
         initComponents();
         init();
     }
-    
 
     public final void init() {
 
-        Service.getInstance().run();
+        //Service.getInstance().run();
 
         PublicEvent.getInstance().addEventLogin(new EventLogin() {
             @Override
             public void login() {
-
+                Service.getInstance().run();
+                
                 var email = usernameTextField.getText();
                 String password = String.valueOf(passwordTextField.getPassword());
 
                 TaiKhoan acc = new TaiKhoan("", password, email.toLowerCase());
                 var object = acc.JSONify();
-
+                
                 Service.getInstance().al.sendCommand("/login", object);
             }
             

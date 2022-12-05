@@ -13,7 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.Date;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -69,7 +70,7 @@ public class ChatBottom extends javax.swing.JPanel {
             String text = txt.getText().trim();
             if (!text.equals("")) {
                 TinNhan mess = new TinNhan(IDPrefix.getIDTinNhan(), 
-                        new Date(System.currentTimeMillis()), text, user.getUsername(),
+                        new Timestamp(System.currentTimeMillis()), text, user.getUsername(),
                         currentChatter.getUsername(), "");
                 PublicEvent.getInstance().getEventChat().sendMessage(mess);
                 txt.setText("");

@@ -44,40 +44,70 @@ public class ChatTitle extends javax.swing.JPanel {
 
         layer = new javax.swing.JLayeredPane();
         lbName = new javax.swing.JLabel();
+        layerSearch = new javax.swing.JLayeredPane();
+        jTextField1 = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
         lblStatus = new javax.swing.JLabel();
 
-        layer.setLayout(new java.awt.GridLayout(0, 1));
+        layer.setLayout(new java.awt.BorderLayout());
 
-        lbName.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        lbName.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
         lbName.setForeground(new java.awt.Color(66, 66, 66));
         lbName.setText("bebaoboy");
-        layer.add(lbName);
+        layer.add(lbName, java.awt.BorderLayout.PAGE_START);
+
+        layerSearch.setLayout(new javax.swing.BoxLayout(layerSearch, javax.swing.BoxLayout.LINE_AXIS));
+
+        jTextField1.setToolTipText("Nhập tin nhắn");
+        jTextField1.setPreferredSize(new java.awt.Dimension(50, 26));
+        layerSearch.add(jTextField1);
+
+        jButton1.setText("Tìm kiếm");
+        layerSearch.add(jButton1);
 
         lblStatus.setForeground(new java.awt.Color(40, 147, 59));
         lblStatus.setText("Active now");
-        layer.add(lblStatus);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(layer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(447, Short.MAX_VALUE))
+                .addGap(83, 83, 83)
+                .addComponent(lblStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(354, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(82, 82, 82)
+                    .addComponent(layer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                    .addComponent(layerSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(82, 82, 82)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(3, 3, 3)
-                .addComponent(layer, javax.swing.GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE)
-                .addGap(3, 3, 3))
+                .addContainerGap(35, Short.MAX_VALUE)
+                .addComponent(lblStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(8, 8, 8)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(layer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(25, 25, 25)
+                            .addComponent(layerSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addContainerGap(9, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JLayeredPane layer;
+    private javax.swing.JLayeredPane layerSearch;
     private javax.swing.JLabel lbName;
     private javax.swing.JLabel lblStatus;
     // End of variables declaration//GEN-END:variables

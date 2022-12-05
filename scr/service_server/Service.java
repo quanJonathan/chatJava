@@ -6,6 +6,7 @@ package service_server;
  */
 import database.DAO_BanBe;
 import database.DAO_TaiKhoan;
+import database.DAO_TinNhan;
 import entity.BanBe;
 import entity.TaiKhoan;
 import entity.TinNhan;
@@ -17,6 +18,9 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +29,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -83,6 +89,18 @@ public class Service implements Runnable {
 
             }
         }
+    }
+    
+        private Timestamp convertTime(String d) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+            java.util.Date parseDate = dateFormat.parse(d);
+            Timestamp timestamp = new java.sql.Timestamp(parseDate.getTime());
+            return timestamp;
+        } catch (ParseException ex) {
+            Logger.getLogger(service_client.Service.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     public String removeClient(Socket client) {
@@ -188,7 +206,7 @@ public class Service implements Runnable {
                         String text = object.getString("noiDung");
                         String receiver = object.getString("nguoiNhan");
                         String sender = object.getString("nguoiGui");
-                        Date time = Date.valueOf(object.getString("thoiGian"));
+                        var time = convertTime(object.getString("thoiGian"));
                         String idGroup = object.getString("IDNhom");
                         TinNhan mess = new TinNhan(id, time, text, sender, receiver, idGroup);
 
@@ -211,7 +229,7 @@ public class Service implements Runnable {
                             System.out.println(newObject.toString());
                             temp2.println(newObject.toString());
                         } else {
-                            System.out.println("failed");
+                            System.out.println("User not online");
                             writeMessageToDb(mess);
                         }
                     } else if (action.startsWith("/getFriendList")) {
@@ -226,8 +244,19 @@ public class Service implements Runnable {
                         }
 
                         sendManyObject("/friendListReceived", array);
-                    } else if (action.startsWith("/getChatData")) {
-
+                    } else if (action.startsWith("/getChatData")){
+                        JSONObject object = new JSONObject(list[1]);
+                        TaiKhoan user1 = new TaiKhoan(object.getString("current"), "", "");
+                        TaiKhoan user2 = new TaiKhoan(object.getString("current"), "", "");
+                        ArrayList<TinNhan> messages = getChatData(user1, user2);
+                        JSONArray array = new JSONArray();
+                        
+                        for(TinNhan tn: messages){
+                            var objectMessage = tn.JSONify();
+                            array.put(objectMessage);
+                        }
+                        
+                        sendManyObject("/messagesChatReceived", array);
                     } else if (action.startsWith("/unfriend")) {
 
                     } else if (action.startsWith("/deleteChatRoom")) {
@@ -316,7 +345,8 @@ public class Service implements Runnable {
         }
 
         private void writeMessageToDb(TinNhan message) {
-
+            DAO_TinNhan dao_tn = new DAO_TinNhan();
+            dao_tn.insert(message);
         }
 
         private void logout() {
@@ -343,8 +373,9 @@ public class Service implements Runnable {
 
         }
 
-        private List<TinNhan> getChatData(TaiKhoan user1, TaiKhoan user2) {
-            return null;
+        private ArrayList<TinNhan> getChatData(TaiKhoan user1, TaiKhoan user2) {
+            DAO_TinNhan dao_tn = new DAO_TinNhan();
+            return dao_tn.selectAll(user1.getUsername(), user2.getUsername());         
         }
 
         private void searchWordChat(String text) {

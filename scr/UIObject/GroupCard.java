@@ -4,8 +4,6 @@
  */
 package UIObject;
 
-import entity.NhomChat;
-import entity.ThanhVienNhomChat;
 import java.util.ArrayList;
 
 /**
@@ -14,11 +12,17 @@ import java.util.ArrayList;
  */
 public class GroupCard extends javax.swing.JPanel {
     
-    private NhomChat group;
-    private ArrayList<ThanhVienNhomChat> groupMember;
+    
     public GroupCard(String name) {
         initComponents();
-        this.groupName.setText(name);
+        lblGroupName.setText(name);
+        addAdminButton.setVisible(false);
+        deleteGroupButton.setVisible(false);
+    }
+    
+    public void forAdmin(){
+        addAdminButton.setVisible(true);
+        deleteGroupButton.setVisible(true);
     }
     
     @SuppressWarnings("unchecked")
@@ -26,11 +30,16 @@ public class GroupCard extends javax.swing.JPanel {
     private void initComponents() {
 
         jProgressBar1 = new javax.swing.JProgressBar();
-        groupName = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        lblGroupName = new javax.swing.JLabel();
         deleteChatButton = new javax.swing.JButton();
         leaveGroupButton = new javax.swing.JButton();
+        deleteGroupButton = new javax.swing.JButton();
+        addAdminButton = new javax.swing.JButton();
 
-        groupName.setText("Tên nhóm");
+        jButton1.setText("jButton1");
+
+        lblGroupName.setText("Tên nhóm");
 
         deleteChatButton.setText("Xóa");
         deleteChatButton.addActionListener(new java.awt.event.ActionListener() {
@@ -46,32 +55,46 @@ public class GroupCard extends javax.swing.JPanel {
             }
         });
 
+        deleteGroupButton.setText("Xóa nhóm");
+
+        addAdminButton.setText("Thêm admin");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(groupName)
-                .addGap(43, 43, 43)
-                .addComponent(deleteChatButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(leaveGroupButton)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addComponent(lblGroupName)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(deleteGroupButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(addAdminButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(deleteChatButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(leaveGroupButton)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(groupName)
+                    .addComponent(lblGroupName)
                     .addComponent(deleteChatButton)
                     .addComponent(leaveGroupButton))
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(deleteGroupButton)
+                    .addComponent(addAdminButton))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void deleteChatButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteChatButtonActionPerformed
-        removeAll();
+        
     }//GEN-LAST:event_deleteChatButtonActionPerformed
 
     private void leaveGroupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leaveGroupButtonActionPerformed
@@ -79,9 +102,12 @@ public class GroupCard extends javax.swing.JPanel {
     }//GEN-LAST:event_leaveGroupButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addAdminButton;
     private javax.swing.JButton deleteChatButton;
-    private javax.swing.JLabel groupName;
+    private javax.swing.JButton deleteGroupButton;
+    private javax.swing.JButton jButton1;
     private javax.swing.JProgressBar jProgressBar1;
+    private javax.swing.JLabel lblGroupName;
     private javax.swing.JButton leaveGroupButton;
     // End of variables declaration//GEN-END:variables
 }

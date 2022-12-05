@@ -13,7 +13,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
@@ -40,6 +44,18 @@ public class Service implements Runnable {
             instance = new Service();
         }
         return instance;
+    }
+    
+    private Timestamp convertTime(String d) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+            Date parseDate = dateFormat.parse(d);
+            Timestamp timestamp = new java.sql.Timestamp(parseDate.getTime());
+            return timestamp;
+        } catch (ParseException ex) {
+            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
     
     public String getHost(){
@@ -185,11 +201,29 @@ public class Service implements Runnable {
                                             var object = new JSONObject(command.getString("object"));
                                             String ID = object.getString("ID");
                                             String text = object.getString("noiDung");
-                                            var time = Date.valueOf(object.getString("thoiGian"));
+                                            var time = convertTime(object.getString("thoiGian"));
                                             String sender = object.getString("nguoiGui");
                                             String receiver = object.getString("nguoiNhan");
                                             TinNhan objectMess = new TinNhan(ID, time, text, sender, receiver, "");
                                             PublicEvent.getInstance().getEventChat().receiveMessage(objectMess);
+                                            break;
+                                        }
+                                        
+                                        case "/messagesChatReceived":{
+                                            var object = new JSONArray(command.getString("object"));
+                                            ArrayList<TinNhan> messages = new ArrayList<>();
+                                            for(int i=0;i<object.length(); i++){
+                                                var newObject = object.getJSONObject(i);
+                                                var date = convertTime(newObject.getString("thoiGian"));
+                                                String sender = newObject.getString("nguoiGui");
+                                                String receiver = newObject.getString("nguoiNhan");
+                                                String id = newObject.getString("ID");
+                                                String text = newObject.getString("noiDung");
+                                                TinNhan tn = new TinNhan(id, date, text, sender, receiver, "");
+                                                messages.add(tn);
+                                            }
+                                            System.out.println(messages);
+                                            PublicEvent.getInstance().getEventChat().setChatData(messages);
                                             break;
                                         }
                                         case "/friendListReceived": {
@@ -199,8 +233,8 @@ public class Service implements Runnable {
                                                 var newObject = object.getJSONObject(i);
                                                 String main = newObject.getString("username");
                                                 String friend = newObject.getString("usernameBanBe");
-                                                String date = newObject.getString("ngayKetBan");
-                                                BanBe b = new BanBe(main, friend, Date.valueOf(date));
+                                                var date = convertTime(newObject.getString("ngayKetBan"));
+                                                BanBe b = new BanBe(main, friend, date);
                                                 friendList.add(b);
                                             }
                                             System.out.println(friendList);

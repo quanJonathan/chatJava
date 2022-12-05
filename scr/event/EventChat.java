@@ -9,11 +9,11 @@ public interface EventChat {
     
     public void receiveMessage(TinNhan mess);
     
-    public void setAllChat(ArrayList<TaiKhoan> users);
+    public void setChatData(ArrayList<TinNhan> messages);
     
     public void setUser(TaiKhoan user);
     
-    public void setChatData(ArrayList<TinNhan> messages);
-    
     public void updateUser(TaiKhoan user);
+    
+    public void requestData(TaiKhoan chatter);
 }
