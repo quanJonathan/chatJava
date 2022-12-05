@@ -50,15 +50,14 @@ public class database_helper {
         }
     }
 
-    public static ResultSet insert(String queryString) throws SQLServerException, Exception {
+    public static int insert(String queryString) throws SQLServerException, Exception {
         try {
             System.out.println("");
             System.out.println(queryString);
             PreparedStatement prepsInsertProduct = conn.prepareStatement(queryString, Statement.RETURN_GENERATED_KEYS);
-            prepsInsertProduct.execute();
+            return prepsInsertProduct.executeUpdate();
             // Retrieve the generated key from the insert.
-            ResultSet resultSet = prepsInsertProduct.getGeneratedKeys();
-            return resultSet;
+            
 
             // if size = 0  => error
             // Print the ID of the inserted row.
@@ -71,7 +70,7 @@ public class database_helper {
 
                 throw ex;
             }
-            return null;
+            return 0;
         }
 
     }

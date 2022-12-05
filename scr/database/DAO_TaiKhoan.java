@@ -71,7 +71,7 @@ public class DAO_TaiKhoan implements DAO<TaiKhoan> {
             var rs = database_helper.insert(database_query_builder.insert(tableName,
                     insertQuery
             ));
-            return resultToList(rs);
+            return new ArrayList<>(rs);
         } catch (SQLServerException ex) {
             if (ex.getSQLState().startsWith("23")) {
                 System.out.println("Account already exists.");
@@ -91,7 +91,7 @@ public class DAO_TaiKhoan implements DAO<TaiKhoan> {
             var rs = database_helper.insert(database_query_builder.update(tableName,
                     insertQuery, conditions
             ));
-            return resultToList(rs);
+            return new ArrayList<>(rs);
         } catch (SQLServerException ex) {
 //            if (ex.getSQLState().startsWith("23")) {
 //                System.out.println("Account already exists.");

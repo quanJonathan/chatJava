@@ -5,8 +5,7 @@
 package database;
 
 import com.microsoft.sqlserver.jdbc.SQLServerException;
-import entity.TinNhan;
-import java.sql.Date;
+import entity.NhomChat;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -16,26 +15,28 @@ import java.util.List;
  *
  * @author HMBAO
  */
-public class DAO_TinNhan implements DAO<TinNhan> {
+public class DAO_NhomChat implements DAO<NhomChat> {
 
-    final String tableName = "TinNhan";
-    final String tableName2 = "Danhsachtinnhan";
+    final String tableName = "NhomChat";
+    final String tableName2 = "ThanhVienNhomChat";
+    final String chatTable = "TinNhan";
 
 
-    public DAO_TinNhan() {
+    public DAO_NhomChat() {
     }
 
     @Override
-    public ArrayList<TinNhan> selectAll() {
+    public List<NhomChat> selectAll() {
         return select("");
     }
 
-    public ArrayList<TinNhan> selectAll(String sender, String receiver) {
+    public List<NhomChat> selectAllMessage(String id) {
         try {
+            var messages = database_helper.select("select");
             var condition = "inner join danhsachtinnhan on tinnhan.id = danhsachtinnhan.id where danhsachtinnhan.nguoigui = N'" + sender + "' or danhsachtinnhan.nguoinhan = N'" + receiver + "'" + " or danhsachtinnhan.nguoinhan = N'" + sender + "'" + " or danhsachtinnhan.nguoigui = N'" + receiver + "'";
             var rs = database_helper.select(database_query_builder.get(tableName, condition, "tinnhan.id", "tinnhan.thoiGian", "tinnhan.noidung", "danhsachtinnhan.nguoigui", "danhsachtinnhan.nguoinhan", "danhsachtinnhan.idnhom"));
             var ars = resultToList(rs);
-            ars.sort((TinNhan t1, TinNhan t2) -> t1.getThoiGian().compareTo(t2.getThoiGian()));
+            // ars.sort((NhomChat t1, NhomChat t2) -> t1.getThoiGian().compareTo(t2.getThoiGian()));
             return ars;
         } catch (Throwable ex) {
             return new ArrayList<>();
@@ -43,7 +44,7 @@ public class DAO_TinNhan implements DAO<TinNhan> {
     }
 
     @Override
-    public ArrayList<TinNhan> select(String condition) {
+    public ArrayList<NhomChat> select(String condition) {
         try {
             var rs = database_helper.select(database_query_builder.get(tableName, condition, ""));
             return resultToList(rs);
@@ -53,26 +54,23 @@ public class DAO_TinNhan implements DAO<TinNhan> {
     }
 
     @Override
-    public ArrayList<TinNhan> resultToList(ResultSet rs) throws SQLException {
-        var result = new ArrayList<TinNhan>();
+    public ArrayList<NhomChat> resultToList(ResultSet rs) throws SQLException {
+        var result = new ArrayList<NhomChat>();
         while (rs.next()) {
             if (rs.getMetaData().getColumnCount() == 1) {
                 //
             } else {
-                result.add(new TinNhan(
+                result.add(new NhomChat(
                         rs.getNString(1),
-                        rs.getTimestamp(2),
-                        rs.getNString(3),
-                        rs.getNString(4),
-                        rs.getNString(5),
-                        rs.getNString(6)));
+                        rs.getNString(2),
+                        rs.getTimestamp(3)));
             }
         }
         return result;
     }
 
     @Override
-    public ArrayList<TinNhan> insert(TinNhan t) {
+    public ArrayList<NhomChat> insert(NhomChat t) {
         try {
             String insertQuery = t.toDelimitedList();
 
@@ -80,7 +78,7 @@ public class DAO_TinNhan implements DAO<TinNhan> {
                     insertQuery
             ));
             
-            insertQuery = t.toDelimitedList2();
+            insertQuery = t.toDelimitedList();
 
             rs = database_helper.insert(database_query_builder.insert(tableName2,
                     insertQuery
@@ -96,12 +94,12 @@ public class DAO_TinNhan implements DAO<TinNhan> {
     }
 
     @Override
-    public ArrayList<TinNhan> update(TinNhan t, String conditions) {
+    public ArrayList<NhomChat> update(NhomChat t, String conditions) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public int delete(TinNhan t) {
+    public int delete(NhomChat t) {
         return -1;
     }
 
