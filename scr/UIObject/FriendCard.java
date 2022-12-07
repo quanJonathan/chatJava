@@ -7,7 +7,9 @@ package UIObject;
 import database.DAO_BanBe;
 import entity.BanBe;
 import entity.TaiKhoan;
+import event.PublicEvent;
 import java.awt.Color;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -109,7 +111,13 @@ public class FriendCard extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnUnfriendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnfriendActionPerformed
-        DAO_BanBe dao_friend = new DAO_BanBe();
+        int dialogButton = JOptionPane.YES_NO_OPTION;
+        int result = JOptionPane.showConfirmDialog(getRootPane(), "Bạn có chắc chắn không?", ""
+                + "Hủy kết bạn", dialogButton);
+        if(result == 1){
+            PublicEvent.getInstance().getEventFriend().unfriend(this.user);
+        }
+        
     }//GEN-LAST:event_btnUnfriendActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

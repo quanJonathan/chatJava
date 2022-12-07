@@ -3,7 +3,10 @@ package authentication_ui;
 import entity.TaiKhoan;
 import event.EventLogin;
 import event.PublicEvent;
+import java.awt.event.KeyEvent;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
 import main_ui.main_user_ui;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,7 +28,6 @@ public class LoginUI extends javax.swing.JFrame {
     }
 
     public final void init() {
-
         //Service.getInstance().run();
 
         PublicEvent.getInstance().addEventLogin(new EventLogin() {

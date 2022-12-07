@@ -7,6 +7,7 @@ package service_server;
 import database.DAO_BanBe;
 import database.DAO_TaiKhoan;
 import database.DAO_TinNhan;
+import database.database_helper;
 import entity.BanBe;
 import entity.TaiKhoan;
 import entity.TinNhan;
@@ -18,6 +19,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -200,7 +202,11 @@ public class Service implements Runnable {
 
                     } else if (action.startsWith("resetPassword")) {
 
-                    } else if (action.startsWith("/sendMessage")) {
+                    }else if(action.startsWith("/getChatList")){
+                         JSONObject object = new JSONObject(list[1]);
+                         TaiKhoan user = new TaiKhoan(object.getString("username"), "", "");
+                         
+                    }else if (action.startsWith("/sendMessage")) {
                         JSONObject object = new JSONObject(list[1]);
                         String id = object.getString("ID");
                         String text = object.getString("noiDung");
@@ -208,7 +214,7 @@ public class Service implements Runnable {
                         String sender = object.getString("nguoiGui");
                         var time = convertTime(object.getString("thoiGian"));
                         String idGroup = object.getString("IDNhom");
-                        TinNhan mess = new TinNhan(id, time, text, sender, receiver, idGroup);
+                        TinNhan mess = new TinNhan(id, time, text, sender, receiver, idGroup, sender);
 
                         Socket temp = null;
                         for (Entry<Socket, TaiKhoan> entry : connectionsWithName.entrySet()) {
@@ -229,9 +235,9 @@ public class Service implements Runnable {
                             System.out.println(newObject.toString());
                             temp2.println(newObject.toString());
                         } else {
-                            System.out.println("User not online");
-                            writeMessageToDb(mess);
+                            System.out.println("User not online");  
                         }
+                        writeMessageToDb(mess);
                     } else if (action.startsWith("/getFriendList")) {
                         JSONObject object = new JSONObject(list[1]);
                         TaiKhoan user = new TaiKhoan(object.getString("username"), "", "");
@@ -247,7 +253,7 @@ public class Service implements Runnable {
                     } else if (action.startsWith("/getChatData")){
                         JSONObject object = new JSONObject(list[1]);
                         TaiKhoan user1 = new TaiKhoan(object.getString("current"), "", "");
-                        TaiKhoan user2 = new TaiKhoan(object.getString("current"), "", "");
+                        TaiKhoan user2 = new TaiKhoan(object.getString("chatter"), "", "");
                         ArrayList<TinNhan> messages = getChatData(user1, user2);
                         JSONArray array = new JSONArray();
                         
@@ -258,7 +264,21 @@ public class Service implements Runnable {
                         
                         sendManyObject("/messagesChatReceived", array);
                     } else if (action.startsWith("/unfriend")) {
-
+                        JSONObject object = new JSONObject(list[1]);
+                        BanBe bb = new BanBe(
+                                object.getString("username"),
+                                object.getString("usernameBanBe"), 
+                                    convertTime(object.getString("ngayKetBan"))
+                        );
+                        unfriend(bb);
+                        
+                        for(Entry<Socket, TaiKhoan> entry: connectionsWithName.entrySet()){
+                            if(entry.getValue()!= null){
+                                if(entry.getValue().getUsername() == bb.getUsernameChinh()){
+                                    break;
+                                }
+                            }
+                        }
                     } else if (action.startsWith("/deleteChatRoom")) {
 
                     } else if (action.startsWith("/searchWordInChatRoom")) {
@@ -346,6 +366,7 @@ public class Service implements Runnable {
 
         private void writeMessageToDb(TinNhan message) {
             DAO_TinNhan dao_tn = new DAO_TinNhan();
+
             dao_tn.insert(message);
         }
 
@@ -369,13 +390,28 @@ public class Service implements Runnable {
             return friendList;
         }
 
-        private void unfriend(TaiKhoan user1, TaiKhoan user2) {
-
+        private void unfriend(BanBe bb) {
+            DAO_BanBe dao_bb = new DAO_BanBe();
+            dao_bb.delete(bb);
         }
 
         private ArrayList<TinNhan> getChatData(TaiKhoan user1, TaiKhoan user2) {
             DAO_TinNhan dao_tn = new DAO_TinNhan();
             return dao_tn.selectAll(user1.getUsername(), user2.getUsername());         
+        }
+        
+        private ArrayList<TaiKhoan> getChatList(TaiKhoan user){
+            String name = user.getUsername();
+            var resultSet = database_helper.select("select NguoiNhan from danhsachtinnhan where NguoiGui='" + name + "'");
+            ArrayList<TaiKhoan> tk = new ArrayList<>();
+            try {
+                while(resultSet.next()){
+                    //tk.add(new TaiKhoan(resultSet.getNString("NguoiNhan")));
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return null;
         }
 
         private void searchWordChat(String text) {

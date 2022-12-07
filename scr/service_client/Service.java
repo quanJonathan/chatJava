@@ -204,7 +204,8 @@ public class Service implements Runnable {
                                             var time = convertTime(object.getString("thoiGian"));
                                             String sender = object.getString("nguoiGui");
                                             String receiver = object.getString("nguoiNhan");
-                                            TinNhan objectMess = new TinNhan(ID, time, text, sender, receiver, "");
+                                            String banSao = object.getString("banSao");
+                                            TinNhan objectMess = new TinNhan(ID, time, text, sender, receiver, "", banSao);
                                             PublicEvent.getInstance().getEventChat().receiveMessage(objectMess);
                                             break;
                                         }
@@ -219,7 +220,8 @@ public class Service implements Runnable {
                                                 String receiver = newObject.getString("nguoiNhan");
                                                 String id = newObject.getString("ID");
                                                 String text = newObject.getString("noiDung");
-                                                TinNhan tn = new TinNhan(id, date, text, sender, receiver, "");
+                                                String banSao = newObject.getString("banSao");
+                                                TinNhan tn = new TinNhan(id, date, text, sender, receiver, "", banSao);
                                                 messages.add(tn);
                                             }
                                             System.out.println(messages);

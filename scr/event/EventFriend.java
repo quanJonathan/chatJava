@@ -13,4 +13,6 @@ import java.util.ArrayList;
  */
 public interface EventFriend {
     public void setData(ArrayList<BanBe> friendList);
+    
+    public void unfriend(BanBe user);
 }

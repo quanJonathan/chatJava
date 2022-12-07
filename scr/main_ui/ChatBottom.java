@@ -71,7 +71,7 @@ public class ChatBottom extends javax.swing.JPanel {
             if (!text.equals("")) {
                 TinNhan mess = new TinNhan(IDPrefix.getIDTinNhan(), 
                         new Timestamp(System.currentTimeMillis()), text, user.getUsername(),
-                        currentChatter.getUsername(), "");
+                        currentChatter.getUsername(), "", user.getUsername());
                 PublicEvent.getInstance().getEventChat().sendMessage(mess);
                 txt.setText("");
                 txt.grabFocus();

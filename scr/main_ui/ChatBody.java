@@ -13,37 +13,38 @@ import java.util.ArrayList;
 import javax.swing.JScrollBar;
 
 public class ChatBody extends javax.swing.JPanel {
-    
+
     public TaiKhoan user;
     private ArrayList<TinNhan> currentChatData;
-   
+
     public ChatBody() {
         initComponents();
-        init();
+        body.setLayout(new MigLayout("fill", "", "5[fill]5"));
+        sp.setVerticalScrollBar(new ModifiedScrollBar());
+        sp.getVerticalScrollBar().setBackground(Color.WHITE);
     }
-    
-    public void setUser(TaiKhoan user){
+
+    public void setUser(TaiKhoan user) {
         this.user = user;
     }
-    
 
     private void init() {
-        body.setLayout(new MigLayout("fillx", "", "5[bottom]5"));
-        sp.setVerticalScrollBar(new ModifiedScrollBar());
-        
-        addItemRight(new TinNhan("3", new Date(System.currentTimeMillis()), "Nothing much", "user2", "user1", "")); 
-        addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "hello", "user1", "user2", ""));
-        addItemLeft(new TinNhan("2", new Date(System.currentTimeMillis()), "what are you doing", "user1", "user2", ""));
-        addItemRight(new TinNhan("3", new Date(System.currentTimeMillis()), "Nothing much", "user2", "user1", ""));
+
+//        
+//        addItemRight(new TinNhan("3", new Date(System.currentTimeMillis()), "Nothing much", "user2", "user1", "")); 
+//        addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "hello", "user1", "user2", ""));
+//        addItemLeft(new TinNhan("2", new Date(System.currentTimeMillis()), "what are you doing", "user1", "user2", ""));
+//        addItemRight(new TinNhan("3", new Date(System.currentTimeMillis()), "Nothing much", "user2", "user1", ""));
     }
-    
+
     public void addItemLeft(TinNhan text) {
         ChatLeftWithProfile item = new ChatLeftWithProfile();
         item.setText(text.getNoiDung(), text.getThoiGian().toString());
-        item.setUserProfile(text.getNguoiNhan());
+        item.setUserProfile(text.getNguoiGui());
         body.add(item, "wrap, w 100::80%");
         body.repaint();
         body.revalidate();
+        scrollToBottom();
     }
 
     public void addItemRight(TinNhan text) {
@@ -55,19 +56,20 @@ public class ChatBody extends javax.swing.JPanel {
         body.revalidate();
         scrollToBottom();
     }
-    
-    public void setChatData(ArrayList<TinNhan> messages){
+
+    public void setChatData(ArrayList<TinNhan> messages) {
         clear();
-        for (TinNhan t: messages){
-            if(t.getNguoiGui().equals(this.user.getUsername())){
+        for (TinNhan t : messages) {
+            System.out.println(t);
+            if (t.getNguoiGui().equals(t.getBanSao())) {
                 addItemRight(t);
-            }else{
+            } else {
                 addItemLeft(t);
             }
         }
     }
-    
-    public void clear(){
+
+    public void clear() {
         body.removeAll();
         body.repaint();
         body.revalidate();
@@ -91,7 +93,7 @@ public class ChatBody extends javax.swing.JPanel {
         body.setLayout(bodyLayout);
         bodyLayout.setHorizontalGroup(
             bodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 826, Short.MAX_VALUE)
+            .addGap(0, 1000, Short.MAX_VALUE)
         );
         bodyLayout.setVerticalGroup(
             bodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -104,7 +106,7 @@ public class ChatBody extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(sp, javax.swing.GroupLayout.PREFERRED_SIZE, 553, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(sp, javax.swing.GroupLayout.DEFAULT_SIZE, 1000, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

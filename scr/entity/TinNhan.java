@@ -19,14 +19,16 @@ public class TinNhan extends Serializable {
     String nguoiGui;
     String nguoiNhan;
     String IDNhom;
+    String banSao;
 
-    public TinNhan(String ID, Date d, String noiDung, String nguoiGui, String nguoiNhan, String IDNhom) {
+    public TinNhan(String ID, Date d, String noiDung, String nguoiGui, String nguoiNhan, String IDNhom, String banSao) {
         this.ID = ID;
         this.thoiGian = d;
         this.noiDung = noiDung;
         this.nguoiGui = nguoiGui;
         this.nguoiNhan = nguoiNhan;
         this.IDNhom = IDNhom;
+        this.banSao = banSao;
     }
 
     public String getID() {
@@ -49,6 +51,10 @@ public class TinNhan extends Serializable {
         return nguoiNhan;
     }
 
+    public String getBanSao() {
+        return banSao;
+    }
+
     public String getIDNhom() {
         return IDNhom;
     }
@@ -62,20 +68,31 @@ public class TinNhan extends Serializable {
     }
 
     public String toDelimitedList2() {
-        return String.format("N'%s', N'%s', '%s'",
+        if (IDNhom.isEmpty()) {
+            return String.format("'%s', N'%s', N'%s', %s, N'%s'",
+                ID,
                 nguoiGui,
                 nguoiNhan,
-                IDNhom);
+                null,
+                banSao);
+        }
+        return String.format("'%s', N'%s', N'%s', '%s', N'%s'",
+                ID,
+                nguoiGui,
+                nguoiNhan,
+                IDNhom,
+                banSao);
     }
 
     @Override
     public String toString() {
-        return String.format("%-15s %-15s %-15s %-15s %-15s %-200s",
+        return String.format("%-15s %-25s %-15s %-15s %-15s %-15s %-200s",
                 ID,
                 thoiGian,
                 nguoiGui,
                 nguoiNhan,
                 IDNhom,
+                banSao,
                 noiDung);
 
     }

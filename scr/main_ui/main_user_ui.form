@@ -592,8 +592,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="chatList" min="-2" pref="244" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="chat" min="-2" pref="546" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="chat" pref="568" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>

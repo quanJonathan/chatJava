@@ -21,7 +21,6 @@ public class DAO_TinNhan implements DAO<TinNhan> {
     final String tableName = "TinNhan";
     final String tableName2 = "Danhsachtinnhan";
 
-
     public DAO_TinNhan() {
     }
 
@@ -32,10 +31,13 @@ public class DAO_TinNhan implements DAO<TinNhan> {
 
     public ArrayList<TinNhan> selectAll(String sender, String receiver) {
         try {
-            var condition = "inner join danhsachtinnhan on tinnhan.id = danhsachtinnhan.id where danhsachtinnhan.nguoigui = N'" + sender + "' or danhsachtinnhan.nguoinhan = N'" + receiver + "'" + " or danhsachtinnhan.nguoinhan = N'" + sender + "'" + " or danhsachtinnhan.nguoigui = N'" + receiver + "'";
-            var rs = database_helper.select(database_query_builder.get(tableName, condition, "tinnhan.id", "tinnhan.thoiGian", "tinnhan.noidung", "danhsachtinnhan.nguoigui", "danhsachtinnhan.nguoinhan", "danhsachtinnhan.idnhom"));
+            var condition = "inner join danhsachtinnhan on tinnhan.id = danhsachtinnhan.id where bansao='" + sender + "'" + " and(danhsachtinnhan.nguoigui = N'" + sender + "' or danhsachtinnhan.nguoinhan = N'" + receiver + "'" + " or danhsachtinnhan.nguoinhan = N'" + sender + "'" + " or danhsachtinnhan.nguoigui = N'" + receiver + "')";
+            var rs = database_helper.select(database_query_builder.get(tableName, condition, "tinnhan.id", "tinnhan.thoiGian", "tinnhan.noidung", "danhsachtinnhan.nguoigui", "danhsachtinnhan.nguoinhan", "danhsachtinnhan.idnhom", "banSao"));
             var ars = resultToList(rs);
             ars.sort((TinNhan t1, TinNhan t2) -> t1.getThoiGian().compareTo(t2.getThoiGian()));
+            ars.forEach(item->{
+                System.out.println(item);
+            });
             return ars;
         } catch (Throwable ex) {
             return new ArrayList<>();
@@ -65,7 +67,8 @@ public class DAO_TinNhan implements DAO<TinNhan> {
                         rs.getNString(3),
                         rs.getNString(4),
                         rs.getNString(5),
-                        rs.getNString(6)));
+                        rs.getNString(6),
+                        rs.getNString(7)));
             }
         }
         return result;
@@ -79,15 +82,30 @@ public class DAO_TinNhan implements DAO<TinNhan> {
             var rs = database_helper.insert(database_query_builder.insert(tableName,
                     insertQuery
             ));
-            
+
+            TinNhan messageCopy = new TinNhan(t.getID(),
+                    t.getThoiGian(),
+                    t.getNoiDung(),
+                    t.getNguoiGui(),
+                    t.getNguoiNhan(),
+                    "",
+                    t.getNguoiNhan());
+
             insertQuery = t.toDelimitedList2();
 
-            rs = database_helper.insert(database_query_builder.insert(tableName2,
+            database_helper.insert(database_query_builder.insert(tableName2,
                     insertQuery
             ));
             
+            insertQuery = messageCopy.toDelimitedList2();
+
+            database_helper.insert(database_query_builder.insert(tableName2,
+                    insertQuery
+            ));
+
             return new ArrayList<>(rs);
         } catch (SQLServerException ex) {
+            ex.printStackTrace();
             return new ArrayList<>();
         } catch (Exception ex) {
             ex.printStackTrace();

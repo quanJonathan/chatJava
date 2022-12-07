@@ -9,8 +9,13 @@ import entity.TinNhan;
 import event.EventChat;
 import event.EventFriend;
 import event.PublicEvent;
+import forSubmitOnly.GroupCard;
 import java.awt.CardLayout;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import org.json.JSONObject;
 import service_client.Service;
@@ -20,7 +25,8 @@ public class main_user_ui extends javax.swing.JFrame {
     CardLayout cardLayoutMain;
     CardLayout cardHomePage;
     private static TaiKhoan currentUser;
-    
+    private ArrayList<BanBe> friends;
+
     ArrayList<TaiKhoan> usernames = new ArrayList<>();
     ArrayList<NhomChat> groups = new ArrayList<>();
 
@@ -29,12 +35,9 @@ public class main_user_ui extends javax.swing.JFrame {
         cardLayoutMain = (CardLayout) mainBody.getLayout();
         cardHomePage = (CardLayout) modifiedPanelHome.getLayout();
         cardLayoutMain.show(mainBody, "homeCard");
-
-        // Main function
-         currentUser = username;
-
-        //Test data
-//        currentUser = new TaiKhoan("luutuanquan", "", "");
+        
+        chat.setVisible(false);
+        currentUser = username;
         init();
     }
 
@@ -43,13 +46,12 @@ public class main_user_ui extends javax.swing.JFrame {
         usernames.add(new TaiKhoan("luutuanquan", "", ""));
         usernames.add(new TaiKhoan("bebaoboy", "", ""));
         
-        // UI for chat page
-        //chat.setVisible(false);
         chat.getChatBottom().setSender(currentUser);
-        
+
+        friends = new ArrayList<>();
         readFriendList();
         readChatList();
-        
+
         PublicEvent.getInstance().addEventChat(new EventChat() {
             @Override
             public void sendMessage(TinNhan mess) {
@@ -71,7 +73,7 @@ public class main_user_ui extends javax.swing.JFrame {
             }
 
             @Override
-            public void requestData(TaiKhoan chatter){
+            public void requestData(TaiKhoan chatter) {
                 var user1 = currentUser.getUsername();
                 var user2 = chatter.getUsername();
                 var object = new JSONObject();
@@ -79,9 +81,9 @@ public class main_user_ui extends javax.swing.JFrame {
                 object.put("chatter", user2);
                 Service.getInstance().al.sendCommand("/getChatData", object);
             }
-            
+
             @Override
-            public void setChatData(ArrayList<TinNhan> messages){
+            public void setChatData(ArrayList<TinNhan> messages) {
                 System.out.println(messages);
                 chat.setChatData(messages);
             }
@@ -91,26 +93,30 @@ public class main_user_ui extends javax.swing.JFrame {
                 chat.updateUser(user);
             }
         });
- 
-        PublicEvent.getInstance().addEventFriend(new EventFriend(){
+
+        PublicEvent.getInstance().addEventFriend(new EventFriend() {
             @Override
             public void setData(ArrayList<BanBe> friendList) {
+                friends = friendList;
                 friendListPage.setFriendList(friendList);
                 friendListPage.showAllFriend();
             }
-            
+
+            @Override
+            public void unfriend(BanBe user) {
+                Service.getInstance().al.sendCommand("/unfriend", user.JSONify());
+            }
+
         });
-        
-        //Main function
+
         showAllPersonalChat();
-        
+
         //showAllGroupChat();
-        
     }
 
     private void showAllPersonalChat() {
         chatList.getChatListPanel().removeAll();
-        for (TaiKhoan t: usernames) {
+        for (TaiKhoan t : usernames) {
             if (!t.getUsername().equals(currentUser.getUsername())) {
                 chatList.getChatListPanel().add(new ChatCard(t), "wrap");
             }
@@ -118,20 +124,26 @@ public class main_user_ui extends javax.swing.JFrame {
         chatList.getChatListPanel().revalidate();
         chatList.getChatListPanel().repaint();
     }
-    
-    private void showAllGroupChat(){
-//        groupList.getChatListPanel().removeAll();
-//        for (NhomChat t: groups) {
-//            if (!groups.g.equals(currentUser.getUsername())) {
-//                chatList.getChatListPanel().add(new ChatCard(t), "wrap");
-//            }
-//        }
-//        chatList.getChatListPanel().revalidate();
-//        chatList.getChatListPanel().repaint();
-    }
-    
-    private void readGroupChat(){
+
+    private void showAllGroupChat() {
+        groupList.getChatListPanel().removeAll();
+        for (NhomChat group : groups) {
+            groupList.getChatListPanel().add(new GroupCard(group.getTenNhom()), "wrap");
+        }
+        GroupCard c = (GroupCard) groupList.getChatListPanel().getComponent(0);
+        c.forAdmin();
+
+        groupChat.getGroupChatBody().addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "Hii group", "bebaoboy", "", "groups1", "bebaoboy"));
+        groupChat.getGroupChatBody().addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "Hii group", "reika", "", "groups1", "reika"));
+        groupChat.getGroupChatBody().addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "Hii group", "meow", "", "groups1", "meow"));
         
+        groupChat.getGroupChatBody().addItemRight(new TinNhan("1", new Date(System.currentTimeMillis()), "Hii group", "luutuanquan", "", "groups1", "luutuanquan"));
+
+        //groupChat.getGroupChatTitle().setUserName("groups1");
+    }
+
+    private void readGroupChat() {
+
     }
 
     private void readChatList() {
@@ -139,7 +151,7 @@ public class main_user_ui extends javax.swing.JFrame {
     }
 
     private void readFriendList() {
-       Service.getInstance().al.sendCommand("/getFriendList", currentUser.JSONify());
+        Service.getInstance().al.sendCommand("/getFriendList", currentUser.JSONify());
     }
 
     @SuppressWarnings("unchecked")
@@ -531,8 +543,7 @@ public class main_user_ui extends javax.swing.JFrame {
             .addGroup(chatPageLayout.createSequentialGroup()
                 .addComponent(chatList, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chat, javax.swing.GroupLayout.PREFERRED_SIZE, 546, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(chat, javax.swing.GroupLayout.DEFAULT_SIZE, 568, Short.MAX_VALUE))
         );
         chatPageLayout.setVerticalGroup(
             chatPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -579,6 +590,11 @@ public class main_user_ui extends javax.swing.JFrame {
     }//GEN-LAST:event_groupTabMouseClicked
 
     private void initGroupCreateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initGroupCreateButtonActionPerformed
+        DefaultListModel listModel = new DefaultListModel();
+        for (BanBe b : friends) {
+            listModel.addElement(b.getUsernameChinh().toString());
+        }
+        this.listSelectToGroupCreate = new JList(listModel);
         cardHomePage.show(modifiedPanelHome, "homeCreateGroupCard");
     }//GEN-LAST:event_initGroupCreateButtonActionPerformed
 
