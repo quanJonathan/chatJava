@@ -11,6 +11,24 @@ public class PublicEvent {
     private EventOnChatCard eventChatCard;
     private EventFriend eventFriend;
 
+    public EventGroupChat getEventGroupChat() {
+        return eventGroupChat;
+    }
+
+    public void addEventGroupChat(EventGroupChat eventGroupChat) {
+        this.eventGroupChat = eventGroupChat;
+    }
+    private EventMain eventMain;
+    private EventGroupChat eventGroupChat;
+
+    public EventMain getEventMain() {
+        return eventMain;
+    }
+
+    public void addEventMain(EventMain eventMain) {
+        this.eventMain = eventMain;
+    }
+
     public static PublicEvent getInstance() {
         if (instance == null) {
             instance = new PublicEvent();

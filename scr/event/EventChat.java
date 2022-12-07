@@ -16,4 +16,6 @@ public interface EventChat {
     public void updateUser(TaiKhoan user);
     
     public void requestData(TaiKhoan chatter);
+
+    public void deleteChat(TaiKhoan user);
 }

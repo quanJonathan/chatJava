@@ -68,6 +68,11 @@ public class FriendCard extends javax.swing.JPanel {
         });
 
         btnChat.setText("Chat");
+        btnChat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChatActionPerformed(evt);
+            }
+        });
 
         lblStatus.setForeground(new java.awt.Color(0, 204, 0));
         lblStatus.setText("active");
@@ -116,9 +121,14 @@ public class FriendCard extends javax.swing.JPanel {
                 + "Hủy kết bạn", dialogButton);
         if(result == 1){
             PublicEvent.getInstance().getEventFriend().unfriend(this.user);
-        }
-        
+        }   
     }//GEN-LAST:event_btnUnfriendActionPerformed
+
+    private void btnChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChatActionPerformed
+        PublicEvent.getInstance().getEventChat().requestData(new TaiKhoan(user.getUsernameBanBe(), "", ""));
+        PublicEvent.getInstance().getEventChat().setUser(new TaiKhoan(user.getUsernameBanBe(), "", ""));
+        PublicEvent.getInstance().getEventMain().navigateToChatPage();
+    }//GEN-LAST:event_btnChatActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChat;

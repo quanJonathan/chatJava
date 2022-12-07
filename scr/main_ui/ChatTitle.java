@@ -4,6 +4,7 @@
  */
 package main_ui;
 
+import entity.NhomChat;
 import forSubmitOnly.*;
 import entity.TaiKhoan;
 import java.awt.Color;
@@ -26,6 +27,11 @@ public class ChatTitle extends javax.swing.JPanel {
         lbName.setText(user.getUsername());
         this.user = user;
         setStatus(user);
+    }
+    
+    public void setGroupName(NhomChat group){
+        lbName.setText(group.getTenNhom());
+        lblStatus.setText("");
     }
     
     public TaiKhoan getUser(){

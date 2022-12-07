@@ -31,7 +31,7 @@ public class DAO_TinNhan implements DAO<TinNhan> {
 
     public ArrayList<TinNhan> selectAll(String sender, String receiver) {
         try {
-            var condition = "inner join danhsachtinnhan on tinnhan.id = danhsachtinnhan.id where bansao='" + sender + "'" + " and(danhsachtinnhan.nguoigui = N'" + sender + "' or danhsachtinnhan.nguoinhan = N'" + receiver + "'" + " or danhsachtinnhan.nguoinhan = N'" + sender + "'" + " or danhsachtinnhan.nguoigui = N'" + receiver + "')";
+            var condition = "inner join danhsachtinnhan on tinnhan.id = danhsachtinnhan.id where bansao='" + sender + "'" + " and((danhsachtinnhan.nguoigui = N'" + sender + "' and danhsachtinnhan.nguoinhan = N'" + receiver + "')" + " or (danhsachtinnhan.nguoinhan = N'" + sender + "'" + " and danhsachtinnhan.nguoigui = N'" + receiver + "'))";
             var rs = database_helper.select(database_query_builder.get(tableName, condition, "tinnhan.id", "tinnhan.thoiGian", "tinnhan.noidung", "danhsachtinnhan.nguoigui", "danhsachtinnhan.nguoinhan", "danhsachtinnhan.idnhom", "banSao"));
             var ars = resultToList(rs);
             ars.sort((TinNhan t1, TinNhan t2) -> t1.getThoiGian().compareTo(t2.getThoiGian()));

@@ -8,6 +8,8 @@ import entity.TaiKhoan;
 import entity.TinNhan;
 import event.EventChat;
 import event.EventFriend;
+import event.EventGroupChat;
+import event.EventMain;
 import event.PublicEvent;
 import forSubmitOnly.GroupCard;
 import java.awt.CardLayout;
@@ -17,6 +19,7 @@ import java.util.Date;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import service_client.Service;
 
@@ -35,22 +38,63 @@ public class main_user_ui extends javax.swing.JFrame {
         cardLayoutMain = (CardLayout) mainBody.getLayout();
         cardHomePage = (CardLayout) modifiedPanelHome.getLayout();
         cardLayoutMain.show(mainBody, "homeCard");
-        
+
         chat.setVisible(false);
+        groupChat.setVisible(false);
         currentUser = username;
-        init();
+
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+               Service.getInstance().al.sendCommand("/shutDown", currentUser.JSONify());
+            }
+        });
+
+        initUI();
+        initEvent();
+        PublicEvent.getInstance().getEventMain().navigateToChatPage();
     }
 
-    public final void init() {
+    public final void initUI() {
 
         usernames.add(new TaiKhoan("luutuanquan", "", ""));
         usernames.add(new TaiKhoan("bebaoboy", "", ""));
-        
+
         chat.getChatBottom().setSender(currentUser);
 
         friends = new ArrayList<>();
         readFriendList();
         readChatList();
+        
+        showAllPersonalChat();
+
+      
+
+        //showAllGroupChat();
+    }
+    
+    public final void initEvent(){
+          PublicEvent.getInstance().addEventMain(new EventMain() {
+            @Override
+            public void navigateToChatPage() {
+                cardLayoutMain.show(mainBody, "chatCard");
+            }
+
+            @Override
+            public void navigateToGroupChatPage() {
+                cardLayoutMain.show(mainBody, "groupChatCard");
+            }
+
+            @Override
+            public void navigateToHomePage() {
+                cardLayoutMain.show(mainBody, "homeCard");
+            }
+
+            @Override
+            public void navigateToFriendPage() {
+                cardLayoutMain.show(mainBody, "friendListCard");
+            }
+        });
 
         PublicEvent.getInstance().addEventChat(new EventChat() {
             @Override
@@ -92,6 +136,12 @@ public class main_user_ui extends javax.swing.JFrame {
             public void updateUser(TaiKhoan user) {
                 chat.updateUser(user);
             }
+
+            @Override
+            public void deleteChat(TaiKhoan user) {
+                chat.setVisible(false);
+                Service.getInstance().al.sendCommand("/deleteChatHistory", user.JSONify());
+            }
         });
 
         PublicEvent.getInstance().addEventFriend(new EventFriend() {
@@ -109,9 +159,54 @@ public class main_user_ui extends javax.swing.JFrame {
 
         });
 
-        showAllPersonalChat();
+        PublicEvent.getInstance().addEventGroupChat(new EventGroupChat(){
+              @Override
+              public void getGroupMember(NhomChat group) {
+                  Service.getInstance().al.sendCommand("/getGroupMember", group.JSONify());
+              }
 
-        //showAllGroupChat();
+              @Override
+              public void setGroupChatData(ArrayList<TinNhan> messages) {
+                  groupChat.setGroupData(messages);
+              }
+
+              @Override
+              public void deleteCurrentGroupData(NhomChat user) {
+                 
+              }
+
+              @Override
+              public void setAdmin(NhomChat group, ArrayList<TaiKhoan> users) {
+                  JSONArray array = new JSONArray();
+                  for(TaiKhoan tk: users){
+                      array.put(tk.JSONify());
+                  }
+                  var object = new JSONObject();
+                  object.put("group", group.JSONify());
+                  object.put("dsTk", array.toString());
+                  Service.getInstance().al.sendCommand("/addNewAdmin", object);
+              }
+
+              @Override
+              public void setNewGroupName(NhomChat group, String newName) {
+                 var object = new JSONObject();
+                 object.put("newName", newName);
+                 object.put("group", group.JSONify().toString());
+                 Service.getInstance().al.sendCommand("/changeGroupName", object);
+              }
+
+              @Override
+              public void requestGroupData(NhomChat group) {
+                Service.getInstance().al.sendCommand("/getGroupData", group.JSONify());
+              }
+
+              @Override
+              public void setGroup(NhomChat group) {
+                  groupChat.setGroup(group, currentUser);
+                  groupChat.setVisible(true);
+              }
+            
+        });
     }
 
     private void showAllPersonalChat() {
@@ -136,7 +231,7 @@ public class main_user_ui extends javax.swing.JFrame {
         groupChat.getGroupChatBody().addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "Hii group", "bebaoboy", "", "groups1", "bebaoboy"));
         groupChat.getGroupChatBody().addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "Hii group", "reika", "", "groups1", "reika"));
         groupChat.getGroupChatBody().addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "Hii group", "meow", "", "groups1", "meow"));
-        
+
         groupChat.getGroupChatBody().addItemRight(new TinNhan("1", new Date(System.currentTimeMillis()), "Hii group", "luutuanquan", "", "groups1", "luutuanquan"));
 
         //groupChat.getGroupChatTitle().setUserName("groups1");
@@ -574,19 +669,19 @@ public class main_user_ui extends javax.swing.JFrame {
     }//GEN-LAST:event_initChangeUserNameButtonActionPerformed
 
     private void homeTabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_homeTabMouseClicked
-        cardLayoutMain.show(mainBody, "homeCard");
+        PublicEvent.getInstance().getEventMain().navigateToHomePage();
     }//GEN-LAST:event_homeTabMouseClicked
 
     private void chatTabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chatTabMouseClicked
-        cardLayoutMain.show(mainBody, "chatCard");
+        PublicEvent.getInstance().getEventMain().navigateToChatPage();
     }//GEN-LAST:event_chatTabMouseClicked
 
     private void friendListTabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_friendListTabMouseClicked
-        cardLayoutMain.show(mainBody, "friendListCard");
+        PublicEvent.getInstance().getEventMain().navigateToFriendPage();
     }//GEN-LAST:event_friendListTabMouseClicked
 
     private void groupTabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_groupTabMouseClicked
-        cardLayoutMain.show(mainBody, "groupCard");
+        PublicEvent.getInstance().getEventMain().navigateToGroupChatPage();
     }//GEN-LAST:event_groupTabMouseClicked
 
     private void initGroupCreateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initGroupCreateButtonActionPerformed

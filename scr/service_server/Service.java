@@ -9,6 +9,7 @@ import database.DAO_TaiKhoan;
 import database.DAO_TinNhan;
 import database.database_helper;
 import entity.BanBe;
+import entity.NhomChat;
 import entity.TaiKhoan;
 import entity.TinNhan;
 import java.awt.Color;
@@ -92,8 +93,8 @@ public class Service implements Runnable {
             }
         }
     }
-    
-        private Timestamp convertTime(String d) {
+
+    private Timestamp convertTime(String d) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
             java.util.Date parseDate = dateFormat.parse(d);
@@ -193,7 +194,7 @@ public class Service implements Runnable {
 //                          }
 //                        }
 //                    }).start();
-                    
+
                     } else if (action.startsWith("/logout")) {
 
                     } else if (action.startsWith("/register")) {
@@ -202,11 +203,11 @@ public class Service implements Runnable {
 
                     } else if (action.startsWith("resetPassword")) {
 
-                    }else if(action.startsWith("/getChatList")){
-                         JSONObject object = new JSONObject(list[1]);
-                         TaiKhoan user = new TaiKhoan(object.getString("username"), "", "");
-                         
-                    }else if (action.startsWith("/sendMessage")) {
+                    } else if (action.startsWith("/getChatList")) {
+                        JSONObject object = new JSONObject(list[1]);
+                        TaiKhoan user = new TaiKhoan(object.getString("username"), "", "");
+                        getChatList(user);
+                    } else if (action.startsWith("/sendMessage")) {
                         JSONObject object = new JSONObject(list[1]);
                         String id = object.getString("ID");
                         String text = object.getString("noiDung");
@@ -235,7 +236,7 @@ public class Service implements Runnable {
                             System.out.println(newObject.toString());
                             temp2.println(newObject.toString());
                         } else {
-                            System.out.println("User not online");  
+                            System.out.println("User not online");
                         }
                         writeMessageToDb(mess);
                     } else if (action.startsWith("/getFriendList")) {
@@ -250,31 +251,31 @@ public class Service implements Runnable {
                         }
 
                         sendManyObject("/friendListReceived", array);
-                    } else if (action.startsWith("/getChatData")){
+                    } else if (action.startsWith("/getChatData")) {
                         JSONObject object = new JSONObject(list[1]);
                         TaiKhoan user1 = new TaiKhoan(object.getString("current"), "", "");
                         TaiKhoan user2 = new TaiKhoan(object.getString("chatter"), "", "");
                         ArrayList<TinNhan> messages = getChatData(user1, user2);
                         JSONArray array = new JSONArray();
-                        
-                        for(TinNhan tn: messages){
+
+                        for (TinNhan tn : messages) {
                             var objectMessage = tn.JSONify();
                             array.put(objectMessage);
                         }
-                        
+
                         sendManyObject("/messagesChatReceived", array);
                     } else if (action.startsWith("/unfriend")) {
                         JSONObject object = new JSONObject(list[1]);
                         BanBe bb = new BanBe(
                                 object.getString("username"),
-                                object.getString("usernameBanBe"), 
-                                    convertTime(object.getString("ngayKetBan"))
+                                object.getString("usernameBanBe"),
+                                convertTime(object.getString("ngayKetBan"))
                         );
                         unfriend(bb);
-                        
-                        for(Entry<Socket, TaiKhoan> entry: connectionsWithName.entrySet()){
-                            if(entry.getValue()!= null){
-                                if(entry.getValue().getUsername() == bb.getUsernameChinh()){
+
+                        for (Entry<Socket, TaiKhoan> entry : connectionsWithName.entrySet()) {
+                            if (entry.getValue() != null) {
+                                if (entry.getValue().getUsername().equals(bb.getUsernameChinh())) {
                                     break;
                                 }
                             }
@@ -283,14 +284,21 @@ public class Service implements Runnable {
 
                     } else if (action.startsWith("/searchWordInChatRoom")) {
 
-                    }else if(action.startsWith("/shutdown")){
+                    } else if (action.startsWith("/shutDown")) {
                         JSONObject object = new JSONObject(list[1]);
-                        var host = object.getString("host");
-                        var localPort = object.getInt("localPort");
-                        var port = object.getInt("port");
-                        Socket client = new Socket(host, port);
-                        removeClient(client);
-                        this.shutDown();
+                        var name = object.getString("username");
+                        for (Entry<Socket, TaiKhoan> entry : connectionsWithName.entrySet()) {
+                            if (entry.getValue() != null) {
+                                if (entry.getValue().getUsername().equals(name)) {
+                                    removeClient(entry.getKey());
+                                }
+                            }
+                        }
+                    }else if(action.equals("/getGroupData")){
+                        JSONObject object = new JSONObject(list[1]);
+                        var groupName = object.getString("tenNhom");
+                        var groupID = object.getString("IDNhom");
+                        getGroupData(new NhomChat(groupName,groupID, null));
                     }
                 }
 
@@ -397,16 +405,33 @@ public class Service implements Runnable {
 
         private ArrayList<TinNhan> getChatData(TaiKhoan user1, TaiKhoan user2) {
             DAO_TinNhan dao_tn = new DAO_TinNhan();
-            return dao_tn.selectAll(user1.getUsername(), user2.getUsername());         
+            return dao_tn.selectAll(user1.getUsername(), user2.getUsername());
         }
-        
-        private ArrayList<TaiKhoan> getChatList(TaiKhoan user){
-            String name = user.getUsername();
-            var resultSet = database_helper.select("select NguoiNhan from danhsachtinnhan where NguoiGui='" + name + "'");
-            ArrayList<TaiKhoan> tk = new ArrayList<>();
+
+        private void searchWordChat(String text) {
+
+        }
+
+        private ArrayList<TinNhan> getGroupData(NhomChat nhomChat) {
+            var resultSet = database_helper.select("select TinNhan.ID, TinNhan.noidung, TinNhan.ThoiGian" +
+                     " DanhSachTinNhan.NguoiGui, " +
+                     " DanhSachTinNhan.BanSao, DanhSachTinNhan.IDNhom from TinNhan " + " "
+                    + " inner join DanhSachTinNhan "
+                    + " where DanhSachTinNhan.ID = TinNhan.ID and DanhSachTinNhan.IDNhom = N'" + nhomChat.getIDNhom() + "'");
+            JSONArray messages = new JSONArray();
             try {
-                while(resultSet.next()){
-                    //tk.add(new TaiKhoan(resultSet.getNString("NguoiNhan")));
+                while (resultSet.next()) {
+                    messages.put(
+                       (new TinNhan(resultSet.getNString("ID"),
+                                    convertTime(resultSet.getNString("ThoiGian")),
+                               resultSet.getNString("noiDung"),
+                               resultSet.getNString("nguoiGui"),
+                               "",
+                    resultSet.getNString("IDNhom"),
+                    resultSet.getNString("BanSao"))
+                    ).JSONify()
+                    );
+                    sendManyObject("/groupDataReceived", messages);
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
@@ -414,8 +439,8 @@ public class Service implements Runnable {
             return null;
         }
 
-        private void searchWordChat(String text) {
-
+        private void getChatList(TaiKhoan user) {
+            // ToDo
         }
 
     }

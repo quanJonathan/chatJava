@@ -7,6 +7,7 @@ import event.PublicEvent;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JOptionPane;
 
 public class ChatCard extends javax.swing.JPanel {
 
@@ -100,8 +101,13 @@ public class ChatCard extends javax.swing.JPanel {
     }//GEN-LAST:event_formMouseClicked
 
     private void deleteChatButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteChatButtonActionPerformed
-          removeAll();
-//        PublicEvent.getInstance().getEventChat().deleteChat();
+        int dialogButton = JOptionPane.YES_NO_OPTION;
+        int result = JOptionPane.showConfirmDialog(getRootPane(), "Bạn có chắc chắn không?", ""
+                + "Xóa lịch sử chat", dialogButton);
+        if(result == 1){
+            removeAll();
+            PublicEvent.getInstance().getEventChat().deleteChat(user);   
+        }   
     }//GEN-LAST:event_deleteChatButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

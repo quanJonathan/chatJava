@@ -228,6 +228,26 @@ public class Service implements Runnable {
                                             PublicEvent.getInstance().getEventChat().setChatData(messages);
                                             break;
                                         }
+                                        
+                                        case "/groupDataReceived":{
+                                            var object = new JSONArray(command.getString("object"));
+                                            ArrayList<TinNhan> messages = new ArrayList<>();
+                                            for(int i=0;i<object.length(); i++){
+                                                var newObject = object.getJSONObject(i);
+                                                var date = convertTime(newObject.getString("thoiGian"));
+                                                String sender = newObject.getString("nguoiGui");
+                                                String receiver = newObject.getString("nguoiNhan");
+                                                String id = newObject.getString("ID");
+                                                String text = newObject.getString("noiDung");
+                                                String banSao = newObject.getString("banSao");
+                                                String idNhom = newObject.getString("IDNhom");
+                                                TinNhan tn = new TinNhan(id, date, text, sender, receiver, idNhom, banSao);
+                                                messages.add(tn);
+                                            }
+                                            System.out.println(messages);
+                                            PublicEvent.getInstance().getEventGroupChat().setGroupChatData(messages);
+                                            break;
+                                        }
                                         case "/friendListReceived": {
                                             var object = new JSONArray(command.getString("object"));
                                             ArrayList<BanBe> friendList = new ArrayList<>();

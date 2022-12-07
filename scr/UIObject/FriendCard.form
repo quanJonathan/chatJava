@@ -85,6 +85,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Chat"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnChatActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lblStatus">
       <Properties>

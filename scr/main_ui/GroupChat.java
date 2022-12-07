@@ -4,7 +4,11 @@
  */
 package main_ui;
 
+import entity.NhomChat;
+import entity.TaiKhoan;
+import entity.TinNhan;
 import net.miginfocom.swing.MigLayout;
+import java.util.ArrayList;
 
 /**
  *
@@ -34,12 +38,14 @@ public class GroupChat extends javax.swing.JPanel {
         
     }
     
-    public void setGroupData(){
-        
+    public void setGroupData(ArrayList<TinNhan> messages){
+        groupChatBody.setChatData(messages);
     }
     
-    public void setUser(){
-        
+    public void setGroup(NhomChat group, TaiKhoan user){
+        groupChatTitle.setGroupName(group);
+        groupChatBody.clear();
+        groupChatBottom.setUser(user);
     }
     
     public ChatBody getGroupChatBody() {
