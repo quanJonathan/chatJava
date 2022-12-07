@@ -203,7 +203,7 @@ public class GroupCard extends javax.swing.JPanel {
         int result = JOptionPane.showConfirmDialog(getRootPane(), "Bạn có chắc chắn không?", ""
                 + "Rời nhóm", dialogButton);
         if(result == 1){
-           PublicEvent.getInstance().getEventGroupChat().leaveGroup(group);
+//           PublicEvent.getInstance().getEventGroupChat().leaveGroup(group);
         }   
     }//GEN-LAST:event_leaveGroupButtonActionPerformed
 
@@ -213,7 +213,7 @@ public class GroupCard extends javax.swing.JPanel {
     }//GEN-LAST:event_formMouseClicked
 
     private void addAdminButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAdminButtonActionPerformed
-        PublicEvent.getInstance().getEventGroupChat().setAdmin(group, user);
+//        PublicEvent.getInstance().getEventGroupChat().setAdmin(group, user);
     }//GEN-LAST:event_addAdminButtonActionPerformed
 
     private void txtGroupNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGroupNameActionPerformed
