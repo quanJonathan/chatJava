@@ -29,8 +29,6 @@ public class main_user_ui extends javax.swing.JFrame {
     CardLayout cardHomePage;
     private static TaiKhoan currentUser;
     private ArrayList<BanBe> friends;
-
-    ArrayList<TaiKhoan> usernames = new ArrayList<>();
     ArrayList<NhomChat> groups = new ArrayList<>();
 
     public main_user_ui(TaiKhoan username) {
@@ -56,20 +54,11 @@ public class main_user_ui extends javax.swing.JFrame {
     }
 
     public final void initUI() {
-
-        usernames.add(new TaiKhoan("luutuanquan", "", ""));
-        usernames.add(new TaiKhoan("bebaoboy", "", ""));
-
         chat.getChatBottom().setSender(currentUser);
 
         friends = new ArrayList<>();
         readFriendList();
         readChatList();
-        
-        showAllPersonalChat();
-
-      
-
         //showAllGroupChat();
     }
     
@@ -82,7 +71,7 @@ public class main_user_ui extends javax.swing.JFrame {
 
             @Override
             public void navigateToGroupChatPage() {
-                cardLayoutMain.show(mainBody, "groupChatCard");
+                cardLayoutMain.show(mainBody, "groupCard");
             }
 
             @Override
@@ -208,17 +197,17 @@ public class main_user_ui extends javax.swing.JFrame {
             
         });
     }
-
-    private void showAllPersonalChat() {
-        chatList.getChatListPanel().removeAll();
-        for (TaiKhoan t : usernames) {
-            if (!t.getUsername().equals(currentUser.getUsername())) {
-                chatList.getChatListPanel().add(new ChatCard(t), "wrap");
-            }
-        }
-        chatList.getChatListPanel().revalidate();
-        chatList.getChatListPanel().repaint();
-    }
+//
+//    private void showAllPersonalChat() {
+//        chatList.getChatListPanel().removeAll();
+//        for (TaiKhoan t : usernames) {
+//            if (!t.getUsername().equals(currentUser.getUsername())) {
+//                chatList.getChatListPanel().add(new ChatCard(t), "wrap");
+//            }
+//        }
+//        chatList.getChatListPanel().revalidate();
+//        chatList.getChatListPanel().repaint();
+//    }
 
     private void showAllGroupChat() {
         groupList.getChatListPanel().removeAll();

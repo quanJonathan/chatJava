@@ -178,8 +178,7 @@ public class Service implements Runnable {
                                         case "/login": {
                                             var object = new JSONObject(command.getString("object"));
                                             if (result == 0) {
-//                                                var error = object.getJSONObject("object").getString("error");
-//                                                System.out.println("error" + error);
+                                               shutDown();
                                             } else {
 //                                          System.out.println(resultSet.get("object").getClass());
                                                 TaiKhoan user = new TaiKhoan(object.getString("username"), object.getString("password"), object.getString("email"));
@@ -194,6 +193,18 @@ public class Service implements Runnable {
                                             TaiKhoan user = new TaiKhoan(object.getString("username"), object.getString("password"), object.getString("email"));
                                             user.setTrangThai(object.getInt("trangThai"));
                                            // PublicEvent.getInstance().getEventChatList().userConnect(user);
+                                            break;
+                                        }
+                                        
+                                        case "/chatListReceived":{
+                                            var object = new JSONArray(command.getString("object"));
+                                            ArrayList<TaiKhoan> users = new ArrayList<>();
+                                            for(int i=0;i<object.length(); i++){
+                                                var newObject = object.getJSONObject(i);
+                                                String username = newObject.getString("username");
+                                                users.add(new TaiKhoan(username, "", ""));
+                                            }
+                                            PublicEvent.getInstance().getEventChatList().newUser(users);
                                             break;
                                         }
                                             

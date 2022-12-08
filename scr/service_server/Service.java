@@ -106,16 +106,21 @@ public class Service implements Runnable {
         return null;
     }
 
-    public String removeClient(Socket client) {
-        for (ConnectionHandler c : connections) {
-            if (c.client == client) {
-                connections.remove(c);
-                String username = connectionsWithName.get(client).getUsername();
-                connectionsWithName.remove(client);
-                return username;
+    public void removeClient(String name) {
+        for (Entry<Socket, TaiKhoan> entry : connectionsWithName.entrySet()) {
+            if (entry.getValue() != null) {
+                if (entry.getValue().getUsername().equals(name)) {
+                    connectionsWithName.remove(entry.getKey(), entry.getValue());
+                    break;
+                }
             }
         }
-        return "";
+        connectionsWithName.forEach((key, value) -> {
+            System.out.print(key);
+            System.out.println(" = " + value);
+            System.out.println("");
+        });
+
     }
 
     class ConnectionHandler implements Runnable {
@@ -174,8 +179,14 @@ public class Service implements Runnable {
                                 connectionsWithName.replace(client, user);
                                 sendMessage(list[0], result, userObject);
 
+                                connectionsWithName.forEach((key, value) -> {
+                                    System.out.print(key);
+                                    System.out.println(" = " + value);
+                                    System.out.println("");
+                                });
                             } else {
                                 sendMessage(list[0], result, new JSONObject().put("error", "Wrong credentials"));
+                                shutDown();
                             }
 
                         } catch (JSONException ex) {
@@ -206,7 +217,14 @@ public class Service implements Runnable {
                     } else if (action.startsWith("/getChatList")) {
                         JSONObject object = new JSONObject(list[1]);
                         TaiKhoan user = new TaiKhoan(object.getString("username"), "", "");
-                        getChatList(user);
+                        ArrayList<TaiKhoan> users = getChatList(user);
+                        JSONArray array = new JSONArray();
+
+                        for (TaiKhoan tk : users) {
+                            var objectMessage = tk.JSONify();
+                            array.put(objectMessage);
+                        }
+                        sendManyObject("/chatListReceived", array);
                     } else if (action.startsWith("/sendMessage")) {
                         JSONObject object = new JSONObject(list[1]);
                         String id = object.getString("ID");
@@ -287,18 +305,13 @@ public class Service implements Runnable {
                     } else if (action.startsWith("/shutDown")) {
                         JSONObject object = new JSONObject(list[1]);
                         var name = object.getString("username");
-                        for (Entry<Socket, TaiKhoan> entry : connectionsWithName.entrySet()) {
-                            if (entry.getValue() != null) {
-                                if (entry.getValue().getUsername().equals(name)) {
-                                    removeClient(entry.getKey());
-                                }
-                            }
-                        }
-                    }else if(action.equals("/getGroupData")){
+                        removeClient(name);
+
+                    } else if (action.equals("/getGroupData")) {
                         JSONObject object = new JSONObject(list[1]);
                         var groupName = object.getString("tenNhom");
                         var groupID = object.getString("IDNhom");
-                        getGroupData(new NhomChat(groupName,groupID, null));
+                        getGroupData(new NhomChat(groupName, groupID, null));
                     }
                 }
 
@@ -413,23 +426,22 @@ public class Service implements Runnable {
         }
 
         private ArrayList<TinNhan> getGroupData(NhomChat nhomChat) {
-            var resultSet = database_helper.select("select TinNhan.ID, TinNhan.noidung, TinNhan.ThoiGian" +
-                     " DanhSachTinNhan.NguoiGui, " +
-                     " DanhSachTinNhan.BanSao, DanhSachTinNhan.IDNhom from TinNhan " + " "
+            var resultSet = database_helper.select("select TinNhan.ID, TinNhan.noidung, TinNhan.ThoiGian"
+                    + " DanhSachTinNhan.NguoiGui, "
+                    + " DanhSachTinNhan.BanSao, DanhSachTinNhan.IDNhom from TinNhan " + " "
                     + " inner join DanhSachTinNhan "
                     + " where DanhSachTinNhan.ID = TinNhan.ID and DanhSachTinNhan.IDNhom = N'" + nhomChat.getIDNhom() + "'");
             JSONArray messages = new JSONArray();
             try {
                 while (resultSet.next()) {
                     messages.put(
-                       (new TinNhan(resultSet.getNString("ID"),
+                            (new TinNhan(resultSet.getNString("ID"),
                                     convertTime(resultSet.getNString("ThoiGian")),
-                               resultSet.getNString("noiDung"),
-                               resultSet.getNString("nguoiGui"),
-                               "",
-                    resultSet.getNString("IDNhom"),
-                    resultSet.getNString("BanSao"))
-                    ).JSONify()
+                                    resultSet.getNString("noiDung"),
+                                    resultSet.getNString("nguoiGui"),
+                                    "",
+                                    resultSet.getNString("IDNhom"),
+                                    resultSet.getNString("BanSao"))).JSONify()
                     );
                     sendManyObject("/groupDataReceived", messages);
                 }
@@ -439,8 +451,25 @@ public class Service implements Runnable {
             return null;
         }
 
-        private void getChatList(TaiKhoan user) {
-            // ToDo
+        private ArrayList<TaiKhoan> getChatList(TaiKhoan user) {
+            try {
+                String name = user.getUsername();
+                var resultset = database_helper.select(String.format("select distinct nguoigui from DanhSachTinNhan where (nguoigui!=N'%s' and bansao=N'%s') union select distinct nguoinhan from DanhSachTinNhan where (nguoinhan!=N'%s' and bansao=N'%s')",
+                        name, name, name, name));
+
+                ArrayList<TaiKhoan> users = new ArrayList<>();
+                while (resultset.next()) {
+                    try {
+                        users.add(new TaiKhoan(resultset.getNString(1), "", ""));
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                return users;
+            } catch (SQLException ex) {
+                Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return null;
         }
 
     }
