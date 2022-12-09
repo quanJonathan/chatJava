@@ -7,7 +7,6 @@ import swing.ModifiedScrollBar;
 import java.awt.Color;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
-import java.sql.Date;
 import net.miginfocom.swing.MigLayout;
 import java.util.ArrayList;
 import javax.swing.JScrollBar;
@@ -26,15 +25,6 @@ public class ChatBody extends javax.swing.JPanel {
 
     public void setUser(TaiKhoan user) {
         this.user = user;
-    }
-
-    private void init() {
-
-//        
-//        addItemRight(new TinNhan("3", new Date(System.currentTimeMillis()), "Nothing much", "user2", "user1", "")); 
-//        addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "hello", "user1", "user2", ""));
-//        addItemLeft(new TinNhan("2", new Date(System.currentTimeMillis()), "what are you doing", "user1", "user2", ""));
-//        addItemRight(new TinNhan("3", new Date(System.currentTimeMillis()), "Nothing much", "user2", "user1", ""));
     }
 
     public void addItemLeft(TinNhan text) {
