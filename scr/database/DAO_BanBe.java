@@ -72,25 +72,6 @@ public class DAO_BanBe implements DAO<BanBe> {
     }
 
     @Override
-    public ArrayList<BanBe> update(BanBe t, String conditions) {
-                var insertQuery = t.toPair();
-        try {
-            var rs = database_helper.insert(database_query_builder.update(tableName,
-                    insertQuery, conditions
-            ));
-            return new ArrayList<>(rs);
-        } catch (SQLServerException ex) {
-//            if (ex.getSQLState().startsWith("23")) {
-//                System.out.println("Account already exists.");
-//            }
-            return new ArrayList<>();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
-    @Override
         public int delete(BanBe t) {
         return -1;
     }
@@ -100,5 +81,10 @@ public class DAO_BanBe implements DAO<BanBe> {
                 conditions
         ));
         return rs;
+    }
+
+    @Override
+    public ArrayList<BanBe> update(BanBe t) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

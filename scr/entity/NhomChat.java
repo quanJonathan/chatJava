@@ -10,16 +10,17 @@ import java.util.Date;
  *
  * @author HMBAO
  */
-public class NhomChat extends Serializable{
- 
+public class NhomChat extends Serializable {
+
     String IDNhom;
-    String tenNhom;
     Date ngayTao = new Date(System.currentTimeMillis());
 
-    public NhomChat(String IDNhom, String tenNhom, Date ngayTao) {
+    String tenNhom;
+
+    public NhomChat(String IDNhom, String tenNhom, Date d) {
         this.IDNhom = IDNhom;
         this.tenNhom = tenNhom;
-        this.ngayTao = ngayTao;
+        this.ngayTao = d;
     }
 
     public String getIDNhom() {

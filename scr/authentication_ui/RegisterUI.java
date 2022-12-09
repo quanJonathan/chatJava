@@ -4,8 +4,10 @@
  */
 package authentication_ui;
 
+import database.DAO_NhomChat;
 import database.DAO_TaiKhoan;
 import database.DAO_TinNhan;
+import entity.NhomChat;
 import entity.TaiKhoan;
 import event.EventRegister;
 import event.PublicEvent;
@@ -13,6 +15,8 @@ import java.awt.GridLayout;
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -98,6 +102,22 @@ public class RegisterUI extends javax.swing.JFrame {
                 var daoTN = new DAO_TinNhan();
                 var rs = daoTN.selectAll("bebaoboy", "luutuanquan");
                 rs.forEach((item) -> {
+                    System.out.println(item);
+                });
+
+                var dnc = new DAO_NhomChat();
+//                dnc.insertMember(new NhomChat("grp212s", "", new Timestamp(System.currentTimeMillis())),
+//                        new ArrayList<>() {
+//                    {
+//                        add(new TaiKhoan("laiminhphu", "", ""));
+//                        add(new TaiKhoan("kimthanh", "", ""));
+//
+//                    }
+//                });
+
+                dnc.selectAllGroupOfAUser("bebaoboy");
+                dnc.updateAdmin("grp212s", "bebaoboy", true);
+                dnc.selectAllMembers("grp212s").forEach(item -> {
                     System.out.println(item);
                 });
 

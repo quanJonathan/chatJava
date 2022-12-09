@@ -85,11 +85,11 @@ public class DAO_TaiKhoan implements DAO<TaiKhoan> {
     }
 
     @Override
-    public ArrayList<TaiKhoan> update(TaiKhoan t, String conditions) {
+    public ArrayList<TaiKhoan> update(TaiKhoan t) {
         var insertQuery = t.toPair();
         try {
             var rs = database_helper.insert(database_query_builder.update(tableName,
-                    insertQuery, conditions
+                    insertQuery, "where username=N'" + t.getUsername() + "'"
             ));
             return new ArrayList<>(rs);
         } catch (SQLServerException ex) {
@@ -101,6 +101,10 @@ public class DAO_TaiKhoan implements DAO<TaiKhoan> {
             ex.printStackTrace();
             return new ArrayList<>();
         }
+    }
+    
+    public ArrayList<TaiKhoan> updateStatus(TaiKhoan t, int status) {
+        return update(t.setTrangThai(status));
     }
 
     @Override

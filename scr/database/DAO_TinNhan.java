@@ -88,7 +88,7 @@ public class DAO_TinNhan implements DAO<TinNhan> {
                     t.getNoiDung(),
                     t.getNguoiGui(),
                     t.getNguoiNhan(),
-                    "",
+                    t.getIDNhom(),
                     t.getNguoiNhan());
 
             insertQuery = t.toDelimitedList2();
@@ -114,7 +114,7 @@ public class DAO_TinNhan implements DAO<TinNhan> {
     }
 
     @Override
-    public ArrayList<TinNhan> update(TinNhan t, String conditions) {
+    public ArrayList<TinNhan> update(TinNhan t) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

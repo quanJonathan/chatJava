@@ -73,11 +73,11 @@ public class DAO_LSDangNhap implements DAO<LichSuDangNhap>{
     }
 
     @Override
-    public ArrayList<LichSuDangNhap> update(LichSuDangNhap t, String conditions) {
+    public ArrayList<LichSuDangNhap> update(LichSuDangNhap t) {
         var insertQuery = t.toPair();
         try {
             var rs = database_helper.insert(database_query_builder.update(tableName,
-                    insertQuery, conditions
+                    insertQuery, "where username=N'" + t.getUsername() + "'"
             ));
             return new ArrayList<>(rs);
         } catch (SQLServerException ex) {

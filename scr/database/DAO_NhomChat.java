@@ -6,11 +6,16 @@ package database;
 
 import com.microsoft.sqlserver.jdbc.SQLServerException;
 import entity.NhomChat;
+import entity.TaiKhoan;
 import entity.ThanhVienNhomChat;
 import entity.TinNhan;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -22,7 +27,6 @@ public class DAO_NhomChat implements DAO<NhomChat> {
     final String tableName2 = "ThanhVienNhomChat";
     final String chatTable = "TinNhan";
 
-
     public DAO_NhomChat() {
     }
 
@@ -31,24 +35,42 @@ public class DAO_NhomChat implements DAO<NhomChat> {
         return select("");
     }
 
-    public ArrayList<TinNhan> selectAllMessage(String id) {
+    public ArrayList<NhomChat> selectAllGroupOfAUser(String user) {
         try {
-            var messages = new DAO_TinNhan().select("where idNhom=" + id);
-            return messages;
-        } catch (Throwable ex) {
-            return new ArrayList<>();
+            var condition = "inner join thanhviennhomchat on nhomchat.idnhom = thanhviennhomchat.idnhom where username=N'" + user + "'";
+            var rs = database_helper.select(database_query_builder.get(tableName, condition, "nhomchat.idnhom", "nhomchat.tennhom", "nhomchat.ngaytao"));
+            var ars = resultToList(rs);
+            ars.sort((NhomChat t1, NhomChat t2) -> t1.getNgayTao().compareTo(t2.getNgayTao()));
+            ars.forEach(item -> {
+                System.out.println(item);
+            });
+            return ars;
+        } catch (SQLException ex) {
         }
+        return new ArrayList<>();
     }
-    
+
     public ArrayList<ThanhVienNhomChat> selectAllMembers(String id) {
         try {
-            var messages = new DAO_TinNhan().select("where id=" + id);
-            return new ArrayList<>();
+            var rs = database_helper.select(database_query_builder.get(tableName2, "where idNhom=N'" + id + "'", ""));
+            var result = new ArrayList<ThanhVienNhomChat>();
+            while (rs.next()) {
+                if (rs.getMetaData().getColumnCount() == 1) {
+                    //
+                } else {
+                    result.add(new ThanhVienNhomChat(
+                            rs.getNString(1),
+                            rs.getNString(2),
+                            rs.getBoolean(3),
+                            rs.getTimestamp(4)));
+                }
+            }
+            return result;
         } catch (Throwable ex) {
             return new ArrayList<>();
         }
     }
-    
+
     @Override
     public ArrayList<NhomChat> select(String condition) {
         try {
@@ -83,13 +105,39 @@ public class DAO_NhomChat implements DAO<NhomChat> {
             var rs = database_helper.insert(database_query_builder.insert(tableName,
                     insertQuery
             ));
-            
-            insertQuery = t.toDelimitedList();
 
-            rs = database_helper.insert(database_query_builder.insert(tableName2,
-                    insertQuery
-            ));
-            
+            return new ArrayList<>(rs);
+        } catch (SQLServerException ex) {
+            return new ArrayList<>();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public ArrayList<NhomChat> insertMember(NhomChat t, ArrayList<TaiKhoan> members) {
+        try {
+            members.forEach(mem -> {
+                var m = new ThanhVienNhomChat(t.getIDNhom(), mem.getUsername(), false, new Timestamp(System.currentTimeMillis()));
+                var q = m.toDelimitedList();
+                try {
+                    database_helper.insert(database_query_builder.insert(tableName2, q));
+                } catch (Exception ex) {
+                }
+
+            });
+            return new ArrayList<>();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+    
+    public ArrayList<NhomChat> updateAdmin(String id, String user, boolean isAdmin) {
+        try {
+            var rs = database_helper.insert(
+                "update thanhviennhomchat set chucnang='" + isAdmin + "' where username=N'" + user + "' and idNhom=N'" + id + "'"
+            );
             return new ArrayList<>(rs);
         } catch (SQLServerException ex) {
             return new ArrayList<>();
@@ -100,8 +148,19 @@ public class DAO_NhomChat implements DAO<NhomChat> {
     }
 
     @Override
-    public ArrayList<NhomChat> update(NhomChat t, String conditions) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public ArrayList<NhomChat> update(NhomChat t) {
+        var insertQuery = t.toPair();
+        try {
+            var rs = database_helper.insert(database_query_builder.update(tableName,
+                    insertQuery, "where idNhom=N'" + t.getIDNhom()+ "'"
+            ));
+            return new ArrayList<>(rs);
+        } catch (SQLServerException ex) {
+            return new ArrayList<>();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
     @Override

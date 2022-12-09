@@ -5,7 +5,6 @@
 package database;
 
 import java.util.List;
-import java.util.Optional;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -24,7 +23,7 @@ public interface DAO<T> {
 
     List<T> insert(T t);
 
-    List<T> update(T t, String conditions);
+    List<T> update(T t);
 
     int delete(T t);
 }

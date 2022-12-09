@@ -42,7 +42,7 @@ public class ThanhVienNhomChat extends Serializable{
 
     @Override
     public String toDelimitedList() {
-        return String.format("N'%s', N'%s', '%b', '%s",
+        return String.format("N'%s', N'%s', '%b', '%s'",
                 IDNhom,
                 username,
                 chucNang,
