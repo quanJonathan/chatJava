@@ -32,12 +32,6 @@ public class GroupChat extends javax.swing.JPanel {
         add(groupChatBottom, "h ::50%");
     }
     
-    
-    
-    public void setSetAdmin(){
-        
-    }
-    
     public void setGroupData(ArrayList<TinNhan> messages){
         groupChatBody.setChatData(messages);
     }

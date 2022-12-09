@@ -15,15 +15,15 @@ public class ChatCard extends javax.swing.JPanel {
     public ChatCard(TaiKhoan user) {
         initComponents();
         this.user = user;
-        lblUserName.setText(user.getUsername());
-        
+        lblUserName.setText(user.getUsername()); 
+        setStatus();
     }
     
     public TaiKhoan getUser(){
         return this.user;
     }
     
-    public void setStatus(){
+    public final void setStatus(){
          if(user.getTrangThai() == 1){
             lblStatus.setText("Active now");
             lblStatus.setForeground(new java.awt.Color(40, 147, 59));

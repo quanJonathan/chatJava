@@ -48,6 +48,7 @@ public class LoginUI extends javax.swing.JFrame {
             public void goLogin(TaiKhoan username, String error){
                if(username == null){
                    lblError.setText(error);
+                   Service.getInstance().shutDown();
                }else{
                    dispose();
                    new main_user_ui(username).setVisible(true);

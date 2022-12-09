@@ -44,9 +44,11 @@ public class main_user_ui extends javax.swing.JFrame {
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-               Service.getInstance().al.sendCommand("/shutDown", currentUser.JSONify());
+                Service.getInstance().al.sendCommand("/shutDown", currentUser.JSONify());
             }
         });
+
+        System.out.println(currentUser);
 
         initUI();
         initEvent();
@@ -55,15 +57,17 @@ public class main_user_ui extends javax.swing.JFrame {
 
     public final void initUI() {
         chat.getChatBottom().setSender(currentUser);
-
         friends = new ArrayList<>();
+
+        lblUsername.setText(currentUser.getUsername());
+        
         readFriendList();
         readChatList();
-        //showAllGroupChat();
+        readGroupChatList();
     }
-    
-    public final void initEvent(){
-          PublicEvent.getInstance().addEventMain(new EventMain() {
+
+    public final void initEvent() {
+        PublicEvent.getInstance().addEventMain(new EventMain() {
             @Override
             public void navigateToChatPage() {
                 cardLayoutMain.show(mainBody, "chatCard");
@@ -117,7 +121,7 @@ public class main_user_ui extends javax.swing.JFrame {
 
             @Override
             public void setChatData(ArrayList<TinNhan> messages) {
-                System.out.println(messages);
+                //System.out.println(messages);
                 chat.setChatData(messages);
             }
 
@@ -145,59 +149,59 @@ public class main_user_ui extends javax.swing.JFrame {
             public void unfriend(BanBe user) {
                 Service.getInstance().al.sendCommand("/unfriend", user.JSONify());
             }
-
         });
 
-        PublicEvent.getInstance().addEventGroupChat(new EventGroupChat(){
-              @Override
-              public void getGroupMember(NhomChat group) {
-                  Service.getInstance().al.sendCommand("/getGroupMember", group.JSONify());
-              }
+        PublicEvent.getInstance().addEventGroupChat(new EventGroupChat() {
+            @Override
+            public void getGroupMember(NhomChat group) {
+                Service.getInstance().al.sendCommand("/getGroupMember", group.JSONify());
+            }
 
-              @Override
-              public void setGroupChatData(ArrayList<TinNhan> messages) {
-                  groupChat.setGroupData(messages);
-              }
+            @Override
+            public void setGroupChatData(ArrayList<TinNhan> messages) {
+                groupChat.setGroupData(messages);
+            }
 
-              @Override
-              public void deleteCurrentGroupData(NhomChat user) {
-                 
-              }
+            @Override
+            public void deleteCurrentGroupData(NhomChat user) {
 
-              @Override
-              public void setAdmin(NhomChat group, ArrayList<TaiKhoan> users) {
-                  JSONArray array = new JSONArray();
-                  for(TaiKhoan tk: users){
-                      array.put(tk.JSONify());
-                  }
-                  var object = new JSONObject();
-                  object.put("group", group.JSONify());
-                  object.put("dsTk", array.toString());
-                  Service.getInstance().al.sendCommand("/addNewAdmin", object);
-              }
+            }
 
-              @Override
-              public void setNewGroupName(NhomChat group, String newName) {
-                 var object = new JSONObject();
-                 object.put("newName", newName);
-                 object.put("group", group.JSONify().toString());
-                 Service.getInstance().al.sendCommand("/changeGroupName", object);
-              }
+            @Override
+            public void setAdmin(NhomChat group, ArrayList<TaiKhoan> users) {
+                JSONArray array = new JSONArray();
+                for (TaiKhoan tk : users) {
+                    array.put(tk.JSONify());
+                }
+                var object = new JSONObject();
+                object.put("group", group.JSONify());
+                object.put("dsTk", array.toString());
+                Service.getInstance().al.sendCommand("/addNewAdmin", object);
+            }
 
-              @Override
-              public void requestGroupData(NhomChat group) {
+            @Override
+            public void setNewGroupName(NhomChat group, String newName) {
+                var object = new JSONObject();
+                object.put("newName", newName);
+                object.put("group", group.JSONify().toString());
+                Service.getInstance().al.sendCommand("/changeGroupName", object);
+            }
+
+            @Override
+            public void requestGroupData(NhomChat group) {
                 Service.getInstance().al.sendCommand("/getGroupData", group.JSONify());
-              }
+            }
 
-              @Override
-              public void setGroup(NhomChat group) {
-                  groupChat.setGroup(group, currentUser);
-                  groupChat.setVisible(true);
-              }
-            
+            @Override
+            public void setGroup(NhomChat group) {
+                groupChat.setGroup(group, currentUser);
+                groupChat.setVisible(true);
+            }
+
         });
     }
-//
+
+//  chat demo data
 //    private void showAllPersonalChat() {
 //        chatList.getChatListPanel().removeAll();
 //        for (TaiKhoan t : usernames) {
@@ -208,26 +212,25 @@ public class main_user_ui extends javax.swing.JFrame {
 //        chatList.getChatListPanel().revalidate();
 //        chatList.getChatListPanel().repaint();
 //    }
-
-    private void showAllGroupChat() {
-        groupList.getChatListPanel().removeAll();
-        for (NhomChat group : groups) {
-            groupList.getChatListPanel().add(new GroupCard(group.getTenNhom()), "wrap");
-        }
-        GroupCard c = (GroupCard) groupList.getChatListPanel().getComponent(0);
-        c.forAdmin();
-
-        groupChat.getGroupChatBody().addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "Hii group", "bebaoboy", "", "groups1", "bebaoboy"));
-        groupChat.getGroupChatBody().addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "Hii group", "reika", "", "groups1", "reika"));
-        groupChat.getGroupChatBody().addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "Hii group", "meow", "", "groups1", "meow"));
-
-        groupChat.getGroupChatBody().addItemRight(new TinNhan("1", new Date(System.currentTimeMillis()), "Hii group", "luutuanquan", "", "groups1", "luutuanquan"));
-
-        //groupChat.getGroupChatTitle().setUserName("groups1");
-    }
-
-    private void readGroupChat() {
-
+    //Group chat demo data
+//    private void showAllGroupChat() {
+//        groupList.getChatListPanel().removeAll();
+//        for (NhomChat group : groups) {
+//            groupList.getChatListPanel().add(new GroupCard(group.getTenNhom()), "wrap");
+//        }
+//        GroupCard c = (GroupCard) groupList.getChatListPanel().getComponent(0);
+//        c.forAdmin();
+//
+//        groupChat.getGroupChatBody().addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "Hii group", "bebaoboy", "", "groups1", "bebaoboy"));
+//        groupChat.getGroupChatBody().addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "Hii group", "reika", "", "groups1", "reika"));
+//        groupChat.getGroupChatBody().addItemLeft(new TinNhan("1", new Date(System.currentTimeMillis()), "Hii group", "meow", "", "groups1", "meow"));
+//
+//        groupChat.getGroupChatBody().addItemRight(new TinNhan("1", new Date(System.currentTimeMillis()), "Hii group", "luutuanquan", "", "groups1", "luutuanquan"));
+//
+//        //groupChat.getGroupChatTitle().setUserName("groups1");
+//    }
+    private void readGroupChatList() {
+        Service.getInstance().al.sendCommand("/getGroupChatList", currentUser.JSONify());
     }
 
     private void readChatList() {
@@ -242,7 +245,6 @@ public class main_user_ui extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel8 = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
         sideNavBar = new javax.swing.JPanel();
         homeTab = new javax.swing.JLabel();
@@ -252,8 +254,8 @@ public class main_user_ui extends javax.swing.JFrame {
         mainBody = new javax.swing.JPanel();
         friendListPage = new main_ui.FriendPage();
         groupPage = new javax.swing.JPanel();
-        groupList = new main_ui.chatListAndSearch();
         groupChat = new main_ui.GroupChat();
+        groupChatList = new main_ui.GroupChatListAndSearch();
         homePage = new javax.swing.JPanel();
         initGroupCreateButton = new javax.swing.JButton();
         initChangePassButton = new javax.swing.JButton();
@@ -267,11 +269,12 @@ public class main_user_ui extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         txtConfirmNewPass = new javax.swing.JTextField();
         changePassButton = new javax.swing.JButton();
+        lblError = new javax.swing.JLabel();
         changeUserNamePage = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtNewName = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        txtChangePass = new javax.swing.JTextField();
+        txtConfirmPass = new javax.swing.JTextField();
         changeUsernameButton = new javax.swing.JButton();
         createGroupPage = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -280,24 +283,14 @@ public class main_user_ui extends javax.swing.JFrame {
         listSelectToGroupCreate = new javax.swing.JList<>();
         jLabel2 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        textAreaAdmin = new javax.swing.JTextArea();
         createGroupButton = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<>();
         logoutButton = new javax.swing.JButton();
+        lblUsername = new javax.swing.JLabel();
         chatPage = new javax.swing.JPanel();
-        chatList = new main_ui.chatListAndSearch();
+        chatList = new main_ui.ChatListAndSearch();
         chat = new main_ui.Chat();
-
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -352,15 +345,15 @@ public class main_user_ui extends javax.swing.JFrame {
         sideNavBarLayout.setVerticalGroup(
             sideNavBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sideNavBarLayout.createSequentialGroup()
-                .addGap(78, 78, 78)
+                .addGap(109, 109, 109)
                 .addComponent(homeTab)
-                .addGap(51, 51, 51)
+                .addGap(90, 90, 90)
                 .addComponent(chatTab)
-                .addGap(53, 53, 53)
+                .addGap(91, 91, 91)
                 .addComponent(friendListTab)
-                .addGap(58, 58, 58)
+                .addGap(98, 98, 98)
                 .addComponent(groupTab)
-                .addContainerGap(362, Short.MAX_VALUE))
+                .addContainerGap(214, Short.MAX_VALUE))
         );
 
         jSplitPane1.setLeftComponent(sideNavBar);
@@ -372,11 +365,11 @@ public class main_user_ui extends javax.swing.JFrame {
         groupChat.setLayout(groupChatLayout);
         groupChatLayout.setHorizontalGroup(
             groupChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 582, Short.MAX_VALUE)
+            .addGap(0, 706, Short.MAX_VALUE)
         );
         groupChatLayout.setVerticalGroup(
             groupChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 730, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout groupPageLayout = new javax.swing.GroupLayout(groupPage);
@@ -384,17 +377,19 @@ public class main_user_ui extends javax.swing.JFrame {
         groupPageLayout.setHorizontalGroup(
             groupPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(groupPageLayout.createSequentialGroup()
-                .addComponent(groupList, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2)
+                .addComponent(groupChatList, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(groupChat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         groupPageLayout.setVerticalGroup(
             groupPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(groupList, javax.swing.GroupLayout.DEFAULT_SIZE, 730, Short.MAX_VALUE)
             .addComponent(groupChat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(groupChatList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         mainBody.add(groupPage, "groupCard");
+
+        homePage.setBackground(new java.awt.Color(255, 255, 255));
 
         initGroupCreateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-add-user-group-woman-man-32.png"))); // NOI18N
         initGroupCreateButton.setText("Tạo nhóm");
@@ -404,6 +399,7 @@ public class main_user_ui extends javax.swing.JFrame {
             }
         });
 
+        initChangePassButton.setBackground(new java.awt.Color(204, 204, 204));
         initChangePassButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-password-reset-32.png"))); // NOI18N
         initChangePassButton.setText("Đổi mật khẩu");
         initChangePassButton.addActionListener(new java.awt.event.ActionListener() {
@@ -433,24 +429,35 @@ public class main_user_ui extends javax.swing.JFrame {
         jLabel10.setText("Xác nhận mật khẩu mới");
 
         changePassButton.setText("Đổi mật khẩu");
+        changePassButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changePassButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout changePassPageLayout = new javax.swing.GroupLayout(changePassPage);
         changePassPage.setLayout(changePassPageLayout);
         changePassPageLayout.setHorizontalGroup(
             changePassPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, changePassPageLayout.createSequentialGroup()
-                .addContainerGap(24, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(changePassPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtOldPass, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtNewPass, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtConfirmNewPass, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(changePassPageLayout.createSequentialGroup()
-                        .addGap(52, 52, 52)
-                        .addComponent(changePassButton)))
+                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(21, 21, 21))
+            .addGroup(changePassPageLayout.createSequentialGroup()
+                .addGroup(changePassPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(changePassPageLayout.createSequentialGroup()
+                        .addGap(74, 74, 74)
+                        .addComponent(changePassButton))
+                    .addGroup(changePassPageLayout.createSequentialGroup()
+                        .addGap(105, 105, 105)
+                        .addComponent(lblError, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         changePassPageLayout.setVerticalGroup(
             changePassPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -467,9 +474,11 @@ public class main_user_ui extends javax.swing.JFrame {
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtConfirmNewPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
+                .addComponent(lblError)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(changePassButton)
-                .addContainerGap(56, Short.MAX_VALUE))
+                .addGap(22, 22, 22))
         );
 
         modifiedPanelHome.add(changePassPage, "homeChangePassCard");
@@ -479,18 +488,23 @@ public class main_user_ui extends javax.swing.JFrame {
         jLabel7.setText("Nhập mật khẩu xác nhận");
 
         changeUsernameButton.setText("Đổi tên hiển thị");
+        changeUsernameButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeUsernameButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout changeUserNamePageLayout = new javax.swing.GroupLayout(changeUserNamePage);
         changeUserNamePage.setLayout(changeUserNamePageLayout);
         changeUserNamePageLayout.setHorizontalGroup(
             changeUserNamePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, changeUserNamePageLayout.createSequentialGroup()
-                .addContainerGap(26, Short.MAX_VALUE)
+                .addContainerGap(24, Short.MAX_VALUE)
                 .addGroup(changeUserNamePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNewName, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7)
-                    .addComponent(txtChangePass, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtConfirmPass, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(changeUserNamePageLayout.createSequentialGroup()
                         .addGap(49, 49, 49)
                         .addComponent(changeUsernameButton)))
@@ -502,14 +516,14 @@ public class main_user_ui extends javax.swing.JFrame {
                 .addGap(66, 66, 66)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtNewName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtChangePass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtConfirmPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(46, 46, 46)
                 .addComponent(changeUsernameButton)
-                .addContainerGap(94, Short.MAX_VALUE))
+                .addContainerGap(116, Short.MAX_VALUE))
         );
 
         modifiedPanelHome.add(changeUserNamePage, "homeChangeUsernameCard");
@@ -527,53 +541,66 @@ public class main_user_ui extends javax.swing.JFrame {
 
         jLabel5.setText("Chọn admin");
 
-        textAreaAdmin.setColumns(20);
-        textAreaAdmin.setRows(5);
-        jScrollPane2.setViewportView(textAreaAdmin);
-
         createGroupButton.setText("Tạo nhóm");
+        createGroupButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createGroupButtonActionPerformed(evt);
+            }
+        });
+
+        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane3.setViewportView(jList1);
 
         javax.swing.GroupLayout createGroupPageLayout = new javax.swing.GroupLayout(createGroupPage);
         createGroupPage.setLayout(createGroupPageLayout);
         createGroupPageLayout.setHorizontalGroup(
             createGroupPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, createGroupPageLayout.createSequentialGroup()
-                .addContainerGap(30, Short.MAX_VALUE)
+            .addGroup(createGroupPageLayout.createSequentialGroup()
                 .addGroup(createGroupPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel5)
                     .addGroup(createGroupPageLayout.createSequentialGroup()
-                        .addGap(55, 55, 55)
-                        .addComponent(createGroupButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, createGroupPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(createGroupPageLayout.createSequentialGroup()
-                            .addGap(6, 6, 6)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(createGroupPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2)
-                            .addComponent(txtGroupName)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jLabel5)))
-                .addGap(22, 22, 22))
+                        .addContainerGap()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(createGroupPageLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1))
+                    .addGroup(createGroupPageLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(createGroupPageLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(createGroupPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(createGroupPageLayout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(jLabel2))
+                            .addComponent(txtGroupName, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(createGroupPageLayout.createSequentialGroup()
+                        .addGap(75, 75, 75)
+                        .addComponent(createGroupButton)))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
         createGroupPageLayout.setVerticalGroup(
             createGroupPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, createGroupPageLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtGroupName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtGroupName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addGap(11, 11, 11)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(createGroupButton)
-                .addGap(14, 14, 14))
+                .addGap(72, 72, 72))
         );
 
         modifiedPanelHome.add(createGroupPage, "homeCreateGroupCard");
@@ -586,36 +613,46 @@ public class main_user_ui extends javax.swing.JFrame {
             }
         });
 
+        lblUsername.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        lblUsername.setText("username");
+
         javax.swing.GroupLayout homePageLayout = new javax.swing.GroupLayout(homePage);
         homePage.setLayout(homePageLayout);
         homePageLayout.setHorizontalGroup(
             homePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(homePageLayout.createSequentialGroup()
-                .addGap(171, 171, 171)
-                .addGroup(homePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(initGroupCreateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(initChangePassButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(initChangeUserNameButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(logoutButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(47, 47, 47)
-                .addComponent(modifiedPanelHome, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 171, Short.MAX_VALUE))
+                .addGap(285, 285, 285)
+                .addGroup(homePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(homePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(initChangePassButton)
+                        .addComponent(initChangeUserNameButton, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(initGroupCreateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(logoutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(90, 90, 90)
+                .addComponent(modifiedPanelHome, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 242, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, homePageLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(386, 386, 386))
         );
         homePageLayout.setVerticalGroup(
             homePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(homePageLayout.createSequentialGroup()
-                .addGap(48, 48, 48)
+                .addGap(38, 38, 38)
+                .addComponent(lblUsername)
+                .addGap(52, 52, 52)
                 .addGroup(homePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(modifiedPanelHome, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(homePageLayout.createSequentialGroup()
                         .addComponent(initGroupCreateButton)
-                        .addGap(56, 56, 56)
+                        .addGap(80, 80, 80)
                         .addComponent(initChangePassButton)
-                        .addGap(61, 61, 61)
+                        .addGap(76, 76, 76)
                         .addComponent(initChangeUserNameButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(logoutButton))
-                    .addComponent(modifiedPanelHome, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(339, Short.MAX_VALUE))
+                        .addGap(76, 76, 76)
+                        .addComponent(logoutButton)))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
 
         mainBody.add(homePage, "homeCard");
@@ -627,7 +664,7 @@ public class main_user_ui extends javax.swing.JFrame {
             .addGroup(chatPageLayout.createSequentialGroup()
                 .addComponent(chatList, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chat, javax.swing.GroupLayout.DEFAULT_SIZE, 568, Short.MAX_VALUE))
+                .addComponent(chat, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE))
         );
         chatPageLayout.setVerticalGroup(
             chatPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -643,7 +680,7 @@ public class main_user_ui extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 920, Short.MAX_VALUE)
+            .addComponent(jSplitPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -689,10 +726,50 @@ public class main_user_ui extends javax.swing.JFrame {
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
         var input = JOptionPane.showConfirmDialog(rootPane, "Đăng xuất tải khoản?", "Xác nhận", JOptionPane.YES_NO_OPTION);
         if (input == JOptionPane.YES_OPTION) {
+            Service.getInstance().al.sendCommand("/logout", currentUser.JSONify());
             this.dispose();
             new LoginUI().setVisible(true);
         }
     }//GEN-LAST:event_logoutButtonActionPerformed
+
+    private void changePassButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changePassButtonActionPerformed
+        String oldPass = txtOldPass.getText();
+        String newPass = txtNewPass.getText();
+        String newPassConfirm = txtConfirmNewPass.getText();
+
+        if (!newPass.equals(newPassConfirm)) {
+            lblError.setText("Mật khẩu mới không khớp");
+        } else {
+            JSONObject object = new JSONObject();
+            object.put("oldPass", oldPass);
+            object.put("newPass", newPass);
+            object.put("user", currentUser.JSONify());
+            Service.getInstance().al.sendCommand("/changePass", object);
+        }
+    }//GEN-LAST:event_changePassButtonActionPerformed
+
+    private void changeUsernameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeUsernameButtonActionPerformed
+        String newName = txtNewName.getText();
+        String passWord = txtConfirmPass.getText();
+
+        JSONObject object = new JSONObject();
+        object.put("password", passWord);
+        object.put("newName", newName);
+        object.put("user", currentUser.JSONify());
+
+        Service.getInstance().al.sendCommand("/changeUsername", object);
+    }//GEN-LAST:event_changeUsernameButtonActionPerformed
+
+    private void createGroupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createGroupButtonActionPerformed
+        int[] indices = listSelectToGroupCreate.getSelectedIndices();
+
+        ArrayList<String> names = new ArrayList<>();
+        for (int i = 0; i < indices.length; i++) {
+            names.add(listSelectToGroupCreate.getModel().getElementAt(indices[i]));
+        }
+        
+        
+    }//GEN-LAST:event_createGroupButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -735,7 +812,7 @@ public class main_user_ui extends javax.swing.JFrame {
     private javax.swing.JPanel changeUserNamePage;
     private javax.swing.JButton changeUsernameButton;
     private main_ui.Chat chat;
-    private main_ui.chatListAndSearch chatList;
+    private main_ui.ChatListAndSearch chatList;
     private javax.swing.JPanel chatPage;
     private javax.swing.JLabel chatTab;
     private javax.swing.JButton createGroupButton;
@@ -743,7 +820,7 @@ public class main_user_ui extends javax.swing.JFrame {
     private main_ui.FriendPage friendListPage;
     private javax.swing.JLabel friendListTab;
     private main_ui.GroupChat groupChat;
-    private main_ui.chatListAndSearch groupList;
+    private main_ui.GroupChatListAndSearch groupChatList;
     private javax.swing.JPanel groupPage;
     private javax.swing.JLabel groupTab;
     private javax.swing.JPanel homePage;
@@ -759,20 +836,21 @@ public class main_user_ui extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel8;
+    private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel lblError;
+    private javax.swing.JLabel lblUsername;
     private javax.swing.JList<String> listSelectToGroupCreate;
     private javax.swing.JButton logoutButton;
     private javax.swing.JPanel mainBody;
     private javax.swing.JPanel modifiedPanelHome;
     private javax.swing.JPanel sideNavBar;
-    private javax.swing.JTextArea textAreaAdmin;
-    private javax.swing.JTextField txtChangePass;
     private javax.swing.JTextField txtConfirmNewPass;
+    private javax.swing.JTextField txtConfirmPass;
     private javax.swing.JTextField txtGroupName;
+    private javax.swing.JTextField txtNewName;
     private javax.swing.JTextField txtNewPass;
     private javax.swing.JTextField txtOldPass;
     // End of variables declaration//GEN-END:variables

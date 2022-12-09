@@ -4,7 +4,9 @@
  */
 package service_client;
 
+import com.microsoft.sqlserver.jdbc.StringUtils;
 import entity.BanBe;
+import entity.NhomChat;
 import entity.TaiKhoan;
 import entity.TinNhan;
 import event.PublicEvent;
@@ -46,7 +48,7 @@ public class Service implements Runnable {
         }
         return instance;
     }
-    
+
     private Timestamp convertTime(String d) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
@@ -58,8 +60,8 @@ public class Service implements Runnable {
         }
         return null;
     }
-    
-    public String getHost(){
+
+    public String getHost() {
         return HOST;
     }
 
@@ -77,7 +79,7 @@ public class Service implements Runnable {
             client = new Socket(HOST, PORT_NUMBER);
             cmd = new PriorityBlockingQueue<>();
             al = new ActionListener(client);
-            if(t!=null){
+            if (t != null) {
                 t.interrupt();
                 t = null;
             }
@@ -182,37 +184,46 @@ public class Service implements Runnable {
                                         case "/login": {
                                             var object = new JSONObject(command.getString("object"));
                                             if (result == 0) {
-                                               var error = object.getString("object");
-                                               PublicEvent.getInstance().getEventLogin().goLogin(null, error);
+                                                var error = object.getString("error");
+                                                PublicEvent.getInstance().getEventLogin().goLogin(null, error);
                                             } else {
 //                                          System.out.println(resultSet.get("object").getClass());
                                                 TaiKhoan user = new TaiKhoan(object.getString("username"), object.getString("password"), object.getString("email"));
+                                                user.setGioiTinh(object.getBoolean("gioiTinh"));
+                                                user.setDiaChi(object.getString("diaChi"));
+                                                user.setTrangThai(1);
                                                 System.out.println(username + " login successfully");
 
                                                 PublicEvent.getInstance().getEventLogin().goLogin(user, username + " login successfully");
                                             }
                                             break;
                                         }
-                                        case "/newUserLogin":{
+                                        case "/newUserLogin": {
                                             var object = new JSONObject(command.getString("object"));
                                             TaiKhoan user = new TaiKhoan(object.getString("username"), object.getString("password"), object.getString("email"));
-                                            user.setTrangThai(object.getInt("trangThai"));
-                                           // PublicEvent.getInstance().getEventChatList().userConnect(user);
+                                            user.setTrangThai(1);
+                                            PublicEvent.getInstance().getEventChatList().userConnect(user);
                                             break;
                                         }
-                                        
-                                        case "/chatListReceived":{
+
+                                        case "/chatListReceived": {
                                             var object = new JSONArray(command.getString("object"));
                                             ArrayList<TaiKhoan> users = new ArrayList<>();
-                                            for(int i=0;i<object.length(); i++){
+                                            for (int i = 0; i < object.length(); i++) {
                                                 var newObject = object.getJSONObject(i);
                                                 String username = newObject.getString("username");
-                                                users.add(new TaiKhoan(username, "", ""));
+                                                int status = newObject.getInt("trangThai");
+                                                if (username.isBlank() || StringUtils.isEmpty(username) || username.isEmpty() || username.equals("/")
+                                                                                        ) {
+                                                    continue;                   
+                                                }
+                                                System.out.println(username);
+                                                users.add((new TaiKhoan(username, "", "")).setTrangThai(status));
                                             }
                                             PublicEvent.getInstance().getEventChatList().newUser(users);
                                             break;
                                         }
-                                            
+
                                         case "/messageReceived": {
                                             var object = new JSONObject(command.getString("object"));
                                             String ID = object.getString("ID");
@@ -225,11 +236,11 @@ public class Service implements Runnable {
                                             PublicEvent.getInstance().getEventChat().receiveMessage(objectMess);
                                             break;
                                         }
-                                        
-                                        case "/messagesChatReceived":{
+
+                                        case "/messagesChatReceived": {
                                             var object = new JSONArray(command.getString("object"));
                                             ArrayList<TinNhan> messages = new ArrayList<>();
-                                            for(int i=0;i<object.length(); i++){
+                                            for (int i = 0; i < object.length(); i++) {
                                                 var newObject = object.getJSONObject(i);
                                                 var date = convertTime(newObject.getString("thoiGian"));
                                                 String sender = newObject.getString("nguoiGui");
@@ -245,10 +256,28 @@ public class Service implements Runnable {
                                             break;
                                         }
                                         
-                                        case "/groupDataReceived":{
+                                        case "/groupChatListReceived":{
+                                            var object = new JSONArray(command.getString("object"));
+                                            var roleList = new ArrayList<Boolean>();
+                                            ArrayList<NhomChat> groups = new ArrayList<>();
+                                            for (int i = 0; i < object.length(); i++) {
+                                                var newObject = object.getJSONObject(i);
+                                                var groupObject = newObject.getJSONObject("group");
+                                                String idGroup = groupObject.getString("IDNhom");
+                                                String nameGroup = groupObject.getString("tenNhom");
+                                                var date = groupObject.getString("ngayTao");
+                                                roleList.add(newObject.getBoolean("role"));
+                                                groups.add(new NhomChat(idGroup, nameGroup, convertTime(date)));
+                                            }
+                                            System.out.println(groups);
+                                            PublicEvent.getInstance().getEventGroupChatList().setData(groups, roleList);
+                                            break;
+                                        }
+
+                                        case "/groupDataReceived": {
                                             var object = new JSONArray(command.getString("object"));
                                             ArrayList<TinNhan> messages = new ArrayList<>();
-                                            for(int i=0;i<object.length(); i++){
+                                            for (int i = 0; i < object.length(); i++) {
                                                 var newObject = object.getJSONObject(i);
                                                 var date = convertTime(newObject.getString("thoiGian"));
                                                 String sender = newObject.getString("nguoiGui");
@@ -267,7 +296,7 @@ public class Service implements Runnable {
                                         case "/friendListReceived": {
                                             var object = new JSONArray(command.getString("object"));
                                             ArrayList<BanBe> friendList = new ArrayList<>();
-                                            for(int i=0;i<object.length(); i++){
+                                            for (int i = 0; i < object.length(); i++) {
                                                 var newObject = object.getJSONObject(i);
                                                 String main = newObject.getString("username");
                                                 String friend = newObject.getString("usernameBanBe");
@@ -285,7 +314,7 @@ public class Service implements Runnable {
                                 }
                             }
                         } catch (IOException ex) {
-                            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+
                             break;
                         }
                     }

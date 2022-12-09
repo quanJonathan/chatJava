@@ -10,6 +10,15 @@ public class PublicEvent {
     private EventChatList eventChatList;
     private EventOnChatCard eventChatCard;
     private EventFriend eventFriend;
+    private EventGroupChatList eventGroupChatList;
+
+    public EventGroupChatList getEventGroupChatList() {
+        return eventGroupChatList;
+    }
+
+    public void addEventGroupChatList(EventGroupChatList eventGroupChatList) {
+        this.eventGroupChatList = eventGroupChatList;
+    }
 
     public EventGroupChat getEventGroupChat() {
         return eventGroupChat;

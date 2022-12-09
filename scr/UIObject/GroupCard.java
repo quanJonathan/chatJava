@@ -17,23 +17,20 @@ import javax.swing.JOptionPane;
  */
 public class GroupCard extends javax.swing.JPanel {
     
-    TaiKhoan user;
     boolean role;
     NhomChat group;
     
-    public GroupCard(NhomChat group, TaiKhoan name, boolean role) {
+    public GroupCard(NhomChat group, boolean role) {
         initComponents();
         txtGroupName.setText(group.getTenNhom());
         
         if(!role){
             txtGroupName.setEditable(false);
         }  
-        listGroupMemberTable.setVisible(false);
         this.group = group;
-       
+        listGroupMemberTable.setVisible(false);
         addAdminButton.setVisible(false);
         deleteGroupChatMemberButton.setVisible(false);
-        listGroupMemberTable.setVisible(true);
     }
     
     public void forAdmin(){
@@ -80,6 +77,7 @@ public class GroupCard extends javax.swing.JPanel {
             }
         });
 
+        setBackground(new java.awt.Color(255, 255, 255));
         addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 formMouseClicked(evt);

@@ -4,21 +4,15 @@ package service_server;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-import database.DAO_BanBe;
-import database.DAO_TaiKhoan;
-import database.DAO_TinNhan;
-import database.database_helper;
-import entity.BanBe;
-import entity.NhomChat;
-import entity.TaiKhoan;
-import entity.TinNhan;
-import java.awt.Color;
+import database.*;
+import entity.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -138,7 +132,19 @@ public class Service implements Runnable {
             for (Entry<Socket, TaiKhoan> entry : connectionsWithName.entrySet()) {
                 if (entry.getValue() != null) {
                     if (!username.equals(entry.getValue().getUsername())) {
-                        sendMessage("/newUserLogin", 1, entry.getValue().JSONify());
+                        PrintWriter temp2 = null;
+                        try {
+                            temp2 = new PrintWriter(entry.getKey().getOutputStream(), true);
+                            JSONObject newObject = new JSONObject();
+                            newObject.put("message", "/newUserLogin");
+                            newObject.put("result", 1);
+                            newObject.put("object", entry.getValue().JSONify().toString());
+                            temp2.println(newObject.toString());
+                        } catch (IOException ex) {
+                            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+                        } finally {
+                            System.out.println("succeed");
+                        }
                     }
                 }
             }
@@ -153,7 +159,7 @@ public class Service implements Runnable {
             try {
                 //getGroupData(new NhomChat("grp212s", "", null));
                 // send message to client/user
-                out = new PrintWriter(client.getOutputStream(), true);
+                out = new PrintWriter(client.getOutputStream(), true, StandardCharsets.UTF_8);
 
                 //get message from client/user
                 in = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -174,21 +180,19 @@ public class Service implements Runnable {
                                 List<TaiKhoan> listAcc = dao_acc.select(" where '" + email + "' = Email");
 
                                 TaiKhoan user = listAcc.get(0);
-                                JSONObject userObject = user.JSONify();
+                                updateStatus(user, 1);
                                 user.setTrangThai(1);
-                                userConnect(user.getUsername());
-                                System.out.println(user);
+                                JSONObject userObject = user.JSONify();  
+                                
+                                Date time = new Date(System.currentTimeMillis());
+                                writeLoginHistory(user, time);
+
                                 connectionsWithName.replace(client, user);
                                 sendMessage(list[0], result, userObject);
-
-                                connectionsWithName.forEach((key, value) -> {
-                                    System.out.print(key);
-                                    System.out.println(" = " + value);
-                                    System.out.println("");
-                                });
+                                userConnect(user.getUsername());
+//                               
                             } else {
                                 sendMessage(list[0], result, new JSONObject().put("error", "Wrong credentials"));
-                                shutDown();
                             }
 
                         } catch (JSONException ex) {
@@ -209,7 +213,14 @@ public class Service implements Runnable {
 //                    }).start();
 
                     } else if (action.startsWith("/logout")) {
-
+                        JSONObject object = new JSONObject(list[1]);
+                        String name = object.getString("username");
+                        removeClient(name);
+                        updateStatus((new TaiKhoan(name, object.getString("password"), object.getString("email"))
+                                    .setDiaChi(object.getString("diaChi"))
+                                     .setGioiTinh(object.getBoolean("gioiTinh"))
+                                     )
+                                , 0);
                     } else if (action.startsWith("/register")) {
 
                     } else if (action.startsWith("/changePassword")) {
@@ -307,7 +318,37 @@ public class Service implements Runnable {
                     } else if (action.startsWith("/shutDown")) {
                         JSONObject object = new JSONObject(list[1]);
                         var name = object.getString("username");
+                        updateStatus((new TaiKhoan(name, object.getString("password"), object.getString("email"))
+                                    .setDiaChi(object.getString("diaChi"))
+                                     .setGioiTinh(object.getBoolean("gioiTinh"))
+                                     )
+                                , 0);
                         removeClient(name);
+                    } else if (action.equals("/getGroupChatList")) {
+                        JSONObject object = new JSONObject(list[1]);
+                        var name = object.getString("username");
+                        ArrayList<NhomChat> groupChatList = getGroupChatList(name);
+                        JSONArray array = new JSONArray();
+                        //System.out.println(groupChatList);
+                        for(NhomChat g: groupChatList){
+                            String id = g.getIDNhom();
+                            
+                            var rs = database_helper.select("select Chucnang from ThanhVienNhomChat where username = N'" + name + "' and idNhom=N'" + id + "'");
+                            try {
+                                while(rs.next()){
+                                    boolean role = rs.getBoolean("chucNang");
+                                    JSONObject newObject = new JSONObject();
+                                    newObject.put("role", role);
+                                    newObject.put("group", g.JSONify());
+                                    array.put(newObject);
+                                }
+                            } catch (SQLException ex) {
+                                Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                        
+                        System.out.println(array);
+                        sendManyObject("/groupChatListReceived", array);
 
                     } else if (action.equals("/getGroupData")) {
                         JSONObject object = new JSONObject(list[1]);
@@ -469,18 +510,39 @@ public class Service implements Runnable {
                 ArrayList<TaiKhoan> users = new ArrayList<>();
                 while (resultset.next()) {
                     try {
-                        users.add(new TaiKhoan(resultset.getNString(1), "", ""));
+                        var username = resultset.getNString(1);
+                        var rs = database_helper.select("Select trangThai from taikhoan where username=N'"+ username +"'");
+                        while(rs.next()){
+                            System.out.println(rs.getInt(1));
+                            users.add((
+                                new TaiKhoan(username, "", "")
+                                    ).setTrangThai(rs.getInt(1)));
+                        }
+                        
                     } catch (SQLException ex) {
-                        Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+
                     }
                 }
                 return users;
             } catch (SQLException ex) {
-                Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+
             }
             return null;
         }
 
+        private ArrayList<NhomChat> getGroupChatList(String name) {
+            DAO_NhomChat dao_nc = new DAO_NhomChat();
+            return dao_nc.selectAllGroupOfAUser(name); 
+        }
+
+        private void writeLoginHistory(TaiKhoan user, Date time) {
+
+        }
+
+        private void updateStatus(TaiKhoan user, int i) {
+            DAO_TaiKhoan dao_tn = new DAO_TaiKhoan();
+            dao_tn.updateStatus(user, 1);
+        }
     }
 
     public static void main(String[] args) {
