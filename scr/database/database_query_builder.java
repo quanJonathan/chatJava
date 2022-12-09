@@ -34,6 +34,12 @@ public class database_query_builder {
         query = String.join(" ", SELECT, (tableColumn.length > 0 && !tableColumn[0].isEmpty()) ? String.join(",", tableColumn) : "*", "from", tableName, conditions);
         return query;
     }
+    
+    public static String getDistinct(String tableName, String conditions, String... tableColumn) {
+        String query;
+        query = String.join(" ", SELECT, "distinct", (tableColumn.length > 0 && !tableColumn[0].isEmpty()) ? String.join(",", tableColumn) : "*", "from", tableName, conditions);
+        return query;
+    }
 
     public static String delete(String tableName, String conditions) {
         String query;

@@ -29,12 +29,12 @@ public class DAO_TaiKhoan implements DAO<TaiKhoan> {
 //
 //    }
     @Override
-    public List<TaiKhoan> selectAll() {
+    public ArrayList<TaiKhoan> selectAll() {
         return select("");
     }
 
     @Override
-    public List<TaiKhoan> select(String condition) {
+    public ArrayList<TaiKhoan> select(String condition) {
         try {
             var rs = database_helper.select(database_query_builder.get(tableName,condition, ""));
             return resultToList(rs);
@@ -44,7 +44,7 @@ public class DAO_TaiKhoan implements DAO<TaiKhoan> {
     }
 
     @Override
-    public List<TaiKhoan> resultToList(ResultSet rs) throws SQLException {
+    public ArrayList<TaiKhoan> resultToList(ResultSet rs) throws SQLException {
         var result = new ArrayList<TaiKhoan>();
         while (rs != null && rs.next()) {
             if (rs.getMetaData().getColumnCount() == 1) {
@@ -65,7 +65,7 @@ public class DAO_TaiKhoan implements DAO<TaiKhoan> {
     }
 
     @Override
-    public List<TaiKhoan> insert(TaiKhoan t) {
+    public ArrayList<TaiKhoan> insert(TaiKhoan t) {
         String insertQuery = t.toDelimitedList();
         try {
             var rs = database_helper.insert(database_query_builder.insert(tableName,
@@ -85,7 +85,7 @@ public class DAO_TaiKhoan implements DAO<TaiKhoan> {
     }
 
     @Override
-    public List<TaiKhoan> update(TaiKhoan t, String conditions) {
+    public ArrayList<TaiKhoan> update(TaiKhoan t, String conditions) {
         var insertQuery = t.toPair();
         try {
             var rs = database_helper.insert(database_query_builder.update(tableName,

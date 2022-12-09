@@ -68,6 +68,7 @@ public class Service implements Runnable {
             server = new ServerSocket(9999);
             System.out.println("SERVER CONNECTED SUCCESSFULLY!");
             pool = Executors.newCachedThreadPool();
+            // new ConnectionHandler(new Socket()).run();
             while (!done) {
                 Socket client = server.accept();
                 ConnectionHandler handler = new ConnectionHandler(client);
@@ -150,6 +151,7 @@ public class Service implements Runnable {
         @Override
         public void run() {
             try {
+                //getGroupData(new NhomChat("grp212s", "", null));
                 // send message to client/user
                 out = new PrintWriter(client.getOutputStream(), true);
 
@@ -426,17 +428,17 @@ public class Service implements Runnable {
         }
 
         private ArrayList<TinNhan> getGroupData(NhomChat nhomChat) {
-            var resultSet = database_helper.select("select TinNhan.ID, TinNhan.noidung, TinNhan.ThoiGian"
+            var resultSet = database_helper.select("select TinNhan.ID, TinNhan.noidung, TinNhan.ThoiGian,"
                     + " DanhSachTinNhan.NguoiGui, "
                     + " DanhSachTinNhan.BanSao, DanhSachTinNhan.IDNhom from TinNhan " + " "
                     + " inner join DanhSachTinNhan "
-                    + " where DanhSachTinNhan.ID = TinNhan.ID and DanhSachTinNhan.IDNhom = N'" + nhomChat.getIDNhom() + "'");
+                    + " on DanhSachTinNhan.ID = TinNhan.ID where DanhSachTinNhan.IDNhom = N'" + nhomChat.getIDNhom() + "'");
             JSONArray messages = new JSONArray();
             try {
                 while (resultSet.next()) {
                     messages.put(
                             (new TinNhan(resultSet.getNString("ID"),
-                                    convertTime(resultSet.getNString("ThoiGian")),
+                                    resultSet.getTimestamp("ThoiGian"),
                                     resultSet.getNString("noiDung"),
                                     resultSet.getNString("nguoiGui"),
                                     "",
@@ -444,6 +446,13 @@ public class Service implements Runnable {
                                     resultSet.getNString("BanSao"))).JSONify()
                     );
                     sendManyObject("/groupDataReceived", messages);
+//                    System.out.println(new TinNhan(resultSet.getNString("ID"),
+//                                    resultSet.getTimestamp("ThoiGian"),
+//                                    resultSet.getNString("noiDung"),
+//                                    resultSet.getNString("nguoiGui"),
+//                                    "",
+//                                    resultSet.getNString("IDNhom"),
+//                                    resultSet.getNString("BanSao")));
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);

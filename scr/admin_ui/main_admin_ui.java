@@ -4,14 +4,21 @@
  */
 package admin_ui;
 
+import database.DAO_LSDangNhap;
+import database.DAO_TaiKhoan;
+import database.database_helper;
 import entity.TaiKhoan;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import static java.lang.Math.abs;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Properties;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import main_ui.DateLabelFormatter;
 import net.miginfocom.swing.MigLayout;
@@ -31,81 +38,129 @@ public class main_admin_ui extends javax.swing.JFrame {
      */
     CardLayout cardLayout;
     CardLayout cardLayOutHomePage;
-
+    
     public main_admin_ui() {
         initComponents();
-
+        
         cardLayout = (CardLayout) pnlCard.getLayout();
-
         cardLayOutHomePage = (CardLayout) pnlCardEdit.getLayout();
-
+        
         DefaultTableModel model = (DefaultTableModel) userTable.getModel();
         userTable.setModel(model);
         for (int count = 1; count <= 10; count++) {
             model.addRow(new Object[]{"", ""});
         }
-
+        
+        db = new database_helper();
+        
         init();
     }
-
+    
     public void init() {
         groupDetailPanel.setLayout(new MigLayout());
         lbHome.setForeground(Color.white);
-        this.model = new SqlDateModel();
-        model.setDate(2002, 0, 1);
-        model.setSelected(true);
+        this.dateModel = new SqlDateModel();
+        dateModel.setDate(2002, 0, 1);
+        dateModel.setSelected(true);
         p.put("text.today", "Today");
         p.put("text.month", "Month");
         p.put("text.year", "Year");
-        datePanel = new JDatePanelImpl(model, p);
+        datePanel = new JDatePanelImpl(dateModel, p);
         datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
         jDatePanel.setLayout(new GridLayout(1, 5));
         jDatePanel.add(datePicker);
-
+        
+        this.dateModel2 = new SqlDateModel();
+        dateModel2.setDate(2002, 0, 1);
+        dateModel2.setSelected(true);
+        datePanel2 = new JDatePanelImpl(dateModel2, p);
+        datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
         jDatePanel2.setLayout(new GridLayout(1, 5));
-        jDatePanel2.add(datePicker);
-
+        jDatePanel2.add(datePicker2);
+        
         jDatePanel2.revalidate();
         jDatePanel2.repaint();
         showAllUser();
     }
-
+    
     public ArrayList<TaiKhoan> getAllUser() {
         return null;
     }
-
+    
     public void showAllUser() {
-        userTable.setValueAt("luutuanquan", 0, 0);
-        userTable.setValueAt("01-12-2022 20:05:36", 0, 1);
-                userTable.setValueAt("Offline", 0, 2);
-        userTable.setRowSelectionInterval(0, 0);
-        userTable.setValueAt("bebaoboy", 1, 0);
-        userTable.setValueAt("22-11-2022 05:31:02", 1, 1);
-        userTable.setValueAt("Offline", 1, 2);
-        
-        friendTable.setValueAt("bebaoboy", 0, 0);
-        friendTable.setValueAt("01-12-2022 22:05:36", 0, 1);
-        friendTable.setValueAt("reika", 1, 0);
-        friendTable.setValueAt("08-11-2022 13:05:36", 1, 1);
-        groupTable.setRowSelectionInterval(0, 0);
+//        userTable.setValueAt("luutuanquan", 0, 0);
+//        userTable.setValueAt("01-12-2022 20:05:36", 0, 1);
+//                userTable.setValueAt("Offline", 0, 2);
+//        userTable.setRowSelectionInterval(0, 0);
+//        userTable.setValueAt("bebaoboy", 1, 0);
+//        userTable.setValueAt("22-11-2022 05:31:02", 1, 1);
+//        userTable.setValueAt("Offline", 1, 2);
+//        
+//        friendTable.setValueAt("bebaoboy", 0, 0);
+//        friendTable.setValueAt("01-12-2022 22:05:36", 0, 1);
+//        friendTable.setValueAt("reika", 1, 0);
+//        friendTable.setValueAt("08-11-2022 13:05:36", 1, 1);
+//        groupTable.setRowSelectionInterval(0, 0);
 //        userTable.setValueAt("minhphu", 2, 0);
 //        userTable.setValueAt("20-11-2022 17:22:20", 2, 1);
 //                userTable.setValueAt("reika", 3, 0);
 //        userTable.setValueAt("11-11-2022 6:01:18", 3, 1);
-    }
 
+        DAO_LSDangNhap log = new DAO_LSDangNhap();
+        var result = log.select("ls1\n"
+                + "where ls1.NgayDangXuat >= all (\n"
+                + "	select ls2.ngaydangxuat from LichSuDangNhap ls2\n"
+                + "	where ls2.Username = ls1.Username\n"
+                + ")\n"
+                + "order by NgayDangXuat desc");
+
+        addRow(userTable, result.size());
+                
+        for(int i = 0; i < result.size(); i++) {
+            System.out.println(result.get(i));
+            var acc = new DAO_TaiKhoan().select("where username=N'" + result.get(i).getUsername() + "'");
+            var status = acc.get(0).getTrangThai();
+            userTable.setValueAt( status == 1 ? "Active" : status == 0 ? "Offline": "Locked", i, 2);
+        }
+        
+        
+        for (int i = 0; i < result.size(); i++) {
+            userTable.setValueAt(result.get(i).getUsername(), i, 0);
+            userTable.setValueAt(DateLabelFormatter.dateToTime(result.get(i).getNgayDangXuat()), i, 1);
+            
+        }
+    }
+    
+    private void addRow(JTable table, int size) {
+        model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+        int adds = abs(size - model.getRowCount());
+        for (int count = 1; count <= adds; count++) {
+            model.addRow(new Object[]{"", "", "", "", ""});
+            // System.out.println(table.getRowCount());
+        }
+        table.setModel(model);
+        
+        for (int i = 0; i < model.getRowCount(); i++) {
+            for (int j = 0; j < model.getColumnCount(); j++) {
+                table.setValueAt("", i, j);
+            }
+        }
+        
+    }
+    
     public ArrayList<TaiKhoan> getUserWithFilter(String... fields) {
         return null;
     }
-
+    
     public void filterAllGroupChatMember() {
-
+        
     }
-
+    
     public void showAllGroupChatMember() {
-
+        
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -132,7 +187,7 @@ public class main_admin_ui extends javax.swing.JFrame {
         pnlCardEdit = new javax.swing.JPanel();
         loginHistoryPage = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        historyTable = new javax.swing.JTable();
         friendListPage = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         friendTable = new javax.swing.JTable();
@@ -149,8 +204,8 @@ public class main_admin_ui extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         updateButton = new javax.swing.JButton();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
+        maleBtn = new javax.swing.JRadioButton();
+        femaleBtn = new javax.swing.JRadioButton();
         jDatePanel = new javax.swing.JPanel();
         addPage = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
@@ -165,8 +220,8 @@ public class main_admin_ui extends javax.swing.JFrame {
         addButton = new javax.swing.JButton();
         jScrollPane6 = new javax.swing.JScrollPane();
         textAreaAddr1 = new javax.swing.JTextArea();
-        jRadioButton3 = new javax.swing.JRadioButton();
-        jRadioButton4 = new javax.swing.JRadioButton();
+        maleBtn2 = new javax.swing.JRadioButton();
+        femaleBtn2 = new javax.swing.JRadioButton();
         jDatePanel2 = new javax.swing.JPanel();
         addUserButton = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
@@ -316,11 +371,9 @@ public class main_admin_ui extends javax.swing.JFrame {
         pnlCardEdit.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         pnlCardEdit.setLayout(new java.awt.CardLayout());
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        historyTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"01-12-2022 20:05:36"},
-                {"23-11-2022 14:18:01"},
-                {"05-11-2022 07:11:11"}
+
             },
             new String [] {
                 "Thời gian đăng nhập"
@@ -334,7 +387,7 @@ public class main_admin_ui extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane4.setViewportView(jTable1);
+        jScrollPane4.setViewportView(historyTable);
 
         javax.swing.GroupLayout loginHistoryPageLayout = new javax.swing.GroupLayout(loginHistoryPage);
         loginHistoryPage.setLayout(loginHistoryPageLayout);
@@ -429,11 +482,11 @@ public class main_admin_ui extends javax.swing.JFrame {
             }
         });
 
-        buttonGroup1.add(jRadioButton1);
-        jRadioButton1.setText("Nam");
+        buttonGroup1.add(maleBtn);
+        maleBtn.setText("Nam");
 
-        buttonGroup1.add(jRadioButton2);
-        jRadioButton2.setText("Nữ");
+        buttonGroup1.add(femaleBtn);
+        femaleBtn.setText("Nữ");
 
         javax.swing.GroupLayout jDatePanelLayout = new javax.swing.GroupLayout(jDatePanel);
         jDatePanel.setLayout(jDatePanelLayout);
@@ -479,9 +532,9 @@ public class main_admin_ui extends javax.swing.JFrame {
                                         .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(jLabel11)
                                     .addGroup(editPageLayout.createSequentialGroup()
-                                        .addComponent(jRadioButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(maleBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jRadioButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(femaleBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(0, 1, Short.MAX_VALUE)))
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, editPageLayout.createSequentialGroup()
@@ -516,8 +569,8 @@ public class main_admin_ui extends javax.swing.JFrame {
                 .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(editPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButton1)
-                    .addComponent(jRadioButton2))
+                    .addComponent(maleBtn)
+                    .addComponent(femaleBtn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(22, 22, 22))
@@ -560,12 +613,12 @@ public class main_admin_ui extends javax.swing.JFrame {
         textAreaAddr1.setRows(5);
         jScrollPane6.setViewportView(textAreaAddr1);
 
-        buttonGroup1.add(jRadioButton3);
-        jRadioButton3.setSelected(true);
-        jRadioButton3.setText("Nam");
+        buttonGroup1.add(maleBtn2);
+        maleBtn2.setSelected(true);
+        maleBtn2.setText("Nam");
 
-        buttonGroup1.add(jRadioButton4);
-        jRadioButton4.setText("Nữ");
+        buttonGroup1.add(femaleBtn2);
+        femaleBtn2.setText("Nữ");
 
         javax.swing.GroupLayout jDatePanel2Layout = new javax.swing.GroupLayout(jDatePanel2);
         jDatePanel2.setLayout(jDatePanel2Layout);
@@ -618,9 +671,9 @@ public class main_admin_ui extends javax.swing.JFrame {
                                 .addComponent(jLabel17)
                                 .addGap(59, 59, 59))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, addPageLayout.createSequentialGroup()
-                                .addComponent(jRadioButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(maleBtn2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jRadioButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(femaleBtn2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, addPageLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -654,8 +707,8 @@ public class main_admin_ui extends javax.swing.JFrame {
                 .addComponent(jLabel17)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(addPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButton3)
-                    .addComponent(jRadioButton4))
+                    .addComponent(maleBtn2)
+                    .addComponent(femaleBtn2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
                 .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -940,6 +993,20 @@ public class main_admin_ui extends javax.swing.JFrame {
     }//GEN-LAST:event_btnHistoryActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        int index = userTable.getSelectedRow();
+        var r = new DAO_TaiKhoan().select("where username=N'" + userTable.getValueAt(index, 0) + "'");
+        txtName.setText(r.get(0).getUsername());
+        txtPass.setText(r.get(0).getPassword());
+        txtEmail.setText(r.get(0).getEmail());
+        var d = r.get(0).getNgaySinh();
+        datePicker.getModel().setDate(d.getMonth(), d.getDay(), d.getYear());
+        textAreaAddr.setText(r.get(0).getDiaChi());
+        if (r.get(0).getGioiTinh()) {
+            maleBtn.setSelected(true);
+        } else {
+            femaleBtn.setSelected(true);
+        }
+        
         cardLayOutHomePage.show(pnlCardEdit, "editCard");
     }//GEN-LAST:event_btnEditActionPerformed
 
@@ -949,6 +1016,7 @@ public class main_admin_ui extends javax.swing.JFrame {
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         JOptionPane.showMessageDialog(rootPane, "Hoàn tất thêm tài khoản?", "Xác nhận thông tin", JOptionPane.OK_CANCEL_OPTION);
+        Date selectedDate = (java.sql.Date) datePicker.getModel().getValue();
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void txtName1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtName1ActionPerformed
@@ -965,6 +1033,11 @@ public class main_admin_ui extends javax.swing.JFrame {
 
     private void userTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_userTableMouseClicked
         int index = userTable.getSelectedRow();
+        var r = new DAO_LSDangNhap().select("where username=N'" + userTable.getValueAt(index, 0) + "' order by ngaydangxuat desc");
+        addRow(historyTable, r.size());
+        for(int i = 0; i < r.size(); i++) {
+            historyTable.setValueAt(DateLabelFormatter.dateToTime(r.get(i).getNgayDangXuat()), i, 0);
+        }
         cardLayOutHomePage.show(pnlCardEdit, "historyCard");
     }//GEN-LAST:event_userTableMouseClicked
 
@@ -1032,14 +1105,18 @@ public class main_admin_ui extends javax.swing.JFrame {
             }
         });
     }
-
-    SqlDateModel model;
+    
+    SqlDateModel dateModel, dateModel2;
     //model.setDate(20,04,2014);
     // Need this...
     Properties p = new Properties();
-
+    
     JDatePanelImpl datePanel;
     JDatePickerImpl datePicker;
+        JDatePanelImpl datePanel2;
+    JDatePickerImpl datePicker2;
+    database_helper db;
+    DefaultTableModel model;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField AdminUserSearch_home;
@@ -1059,11 +1136,14 @@ public class main_admin_ui extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cbCreateDateGroup;
     private javax.swing.JComboBox<String> cbGroupName;
     private javax.swing.JPanel editPage;
+    private javax.swing.JRadioButton femaleBtn;
+    private javax.swing.JRadioButton femaleBtn2;
     private javax.swing.JPanel friendListPage;
     private javax.swing.JTable friendTable;
     private javax.swing.JPanel groupDetailPanel;
     private javax.swing.JTable groupDetailTable;
     private javax.swing.JTable groupTable;
+    private javax.swing.JTable historyTable;
     private javax.swing.JPanel jDatePanel;
     private javax.swing.JPanel jDatePanel2;
     private javax.swing.JLabel jLabel10;
@@ -1082,10 +1162,6 @@ public class main_admin_ui extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JRadioButton jRadioButton4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -1094,11 +1170,12 @@ public class main_admin_ui extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JLabel lbGroup;
     private javax.swing.JLabel lbHome;
     private javax.swing.JPanel loginHistoryPage;
+    private javax.swing.JRadioButton maleBtn;
+    private javax.swing.JRadioButton maleBtn2;
     private javax.swing.JPanel pnlCard;
     private javax.swing.JPanel pnlCardEdit;
     private javax.swing.JTextArea textAreaAddr;

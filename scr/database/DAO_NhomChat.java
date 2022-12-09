@@ -11,7 +11,6 @@ import entity.TinNhan;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -34,7 +33,7 @@ public class DAO_NhomChat implements DAO<NhomChat> {
 
     public ArrayList<TinNhan> selectAllMessage(String id) {
         try {
-            var messages = new DAO_TinNhan().select("where id=" + id);
+            var messages = new DAO_TinNhan().select("where idNhom=" + id);
             return messages;
         } catch (Throwable ex) {
             return new ArrayList<>();
@@ -49,7 +48,7 @@ public class DAO_NhomChat implements DAO<NhomChat> {
             return new ArrayList<>();
         }
     }
-
+    
     @Override
     public ArrayList<NhomChat> select(String condition) {
         try {
@@ -116,5 +115,4 @@ public class DAO_NhomChat implements DAO<NhomChat> {
         ));
         return rs;
     }
-
 }

@@ -25,7 +25,7 @@ public class DAO_LSDangNhap implements DAO<LichSuDangNhap>{
     }
 
     @Override
-    public List<LichSuDangNhap> selectAll() {
+    public ArrayList<LichSuDangNhap> selectAll() {
         return select("");
     }
 
