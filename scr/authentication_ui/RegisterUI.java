@@ -106,7 +106,7 @@ public class RegisterUI extends javax.swing.JFrame {
                 });
 
                 var dnc = new DAO_NhomChat();
-//                dnc.insertMember(new NhomChat("grp212s", "", new Timestamp(System.currentTimeMillis())),
+//                dnc.insertMember("grp212s",
 //                        new ArrayList<>() {
 //                    {
 //                        add(new TaiKhoan("laiminhphu", "", ""));
