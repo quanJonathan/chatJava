@@ -115,10 +115,10 @@ public class DAO_NhomChat implements DAO<NhomChat> {
         }
     }
 
-    public ArrayList<NhomChat> insertMember(NhomChat t, ArrayList<TaiKhoan> members) {
+    public ArrayList<NhomChat> insertMember(String id, ArrayList<TaiKhoan> members) {
         try {
             members.forEach(mem -> {
-                var m = new ThanhVienNhomChat(t.getIDNhom(), mem.getUsername(), false, new Timestamp(System.currentTimeMillis()));
+                var m = new ThanhVienNhomChat(id, mem.getUsername(), false, new Timestamp(System.currentTimeMillis()));
                 var q = m.toDelimitedList();
                 try {
                     database_helper.insert(database_query_builder.insert(tableName2, q));
