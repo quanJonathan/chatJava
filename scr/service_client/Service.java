@@ -37,6 +37,7 @@ public class Service implements Runnable {
     public ActionListener al;
     public BlockingQueue<String> cmd;
     public String username;
+    Thread t;
     private database.database_helper dbh = new database.database_helper();
 
     public static Service getInstance() {
@@ -76,8 +77,11 @@ public class Service implements Runnable {
             client = new Socket(HOST, PORT_NUMBER);
             cmd = new PriorityBlockingQueue<>();
             al = new ActionListener(client);
-
-            Thread t = new Thread(al);
+            if(t!=null){
+                t.interrupt();
+                t = null;
+            }
+            t = new Thread(al);
             t.start();
 
         } catch (IOException ex) {
@@ -178,13 +182,14 @@ public class Service implements Runnable {
                                         case "/login": {
                                             var object = new JSONObject(command.getString("object"));
                                             if (result == 0) {
-                                               shutDown();
+                                               var error = object.getString("object");
+                                               PublicEvent.getInstance().getEventLogin().goLogin(null, error);
                                             } else {
 //                                          System.out.println(resultSet.get("object").getClass());
                                                 TaiKhoan user = new TaiKhoan(object.getString("username"), object.getString("password"), object.getString("email"));
                                                 System.out.println(username + " login successfully");
 
-                                                PublicEvent.getInstance().getEventLogin().goLogin(user);
+                                                PublicEvent.getInstance().getEventLogin().goLogin(user, username + " login successfully");
                                             }
                                             break;
                                         }

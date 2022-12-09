@@ -11,5 +11,5 @@ public interface EventLogin {
     
     public void forgetPass();
     
-    public void goLogin(TaiKhoan user);
+    public void goLogin(TaiKhoan user, String result);
 }
