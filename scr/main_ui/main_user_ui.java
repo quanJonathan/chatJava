@@ -289,7 +289,7 @@ public class main_user_ui extends javax.swing.JFrame {
         logoutButton = new javax.swing.JButton();
         lblUsername = new javax.swing.JLabel();
         chatPage = new javax.swing.JPanel();
-        chatList = new main_ui.ChatListAndSearch();
+        chatList = new main_ui.chatListAndSearch();
         chat = new main_ui.Chat();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -812,7 +812,7 @@ public class main_user_ui extends javax.swing.JFrame {
     private javax.swing.JPanel changeUserNamePage;
     private javax.swing.JButton changeUsernameButton;
     private main_ui.Chat chat;
-    private main_ui.ChatListAndSearch chatList;
+    private main_ui.chatListAndSearch chatList;
     private javax.swing.JPanel chatPage;
     private javax.swing.JLabel chatTab;
     private javax.swing.JButton createGroupButton;

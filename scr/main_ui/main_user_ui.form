@@ -652,7 +652,7 @@
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="main_ui.ChatListAndSearch" name="chatList">
+                <Component class="main_ui.chatListAndSearch" name="chatList">
                 </Component>
                 <Component class="main_ui.Chat" name="chat">
                 </Component>

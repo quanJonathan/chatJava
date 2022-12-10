@@ -22,12 +22,12 @@ import java.util.ArrayList;
  *
  * @author ADMIN
  */
-public class ChatListAndSearch extends javax.swing.JPanel {
+public class chatListAndSearch extends javax.swing.JPanel {
 
     private ArrayList<TaiKhoan> userAccounts;
     
     
-    public ChatListAndSearch() {
+    public chatListAndSearch() {
         initComponents();
         init();
         sp.setVerticalScrollBar(new ModifiedScrollBar());
