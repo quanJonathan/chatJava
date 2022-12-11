@@ -18,6 +18,7 @@ public class ForgetPassUI extends javax.swing.JFrame {
      */
     public ForgetPassUI() {
         initComponents();
+        setLocationRelativeTo(null);
         init();
     }
     

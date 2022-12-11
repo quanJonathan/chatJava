@@ -33,6 +33,8 @@ public class main_user_ui extends javax.swing.JFrame {
 
     public main_user_ui(TaiKhoan username) {
         initComponents();
+        setLocationRelativeTo(null);
+        
         cardLayoutMain = (CardLayout) mainBody.getLayout();
         cardHomePage = (CardLayout) modifiedPanelHome.getLayout();
         cardLayoutMain.show(mainBody, "homeCard");

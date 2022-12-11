@@ -18,6 +18,7 @@ public class LoginUI extends javax.swing.JFrame {
     private String username;
     public LoginUI() {
         initComponents();
+        setLocationRelativeTo(null);
         init();
         
         addWindowListener(new java.awt.event.WindowAdapter() {
