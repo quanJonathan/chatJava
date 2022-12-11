@@ -76,7 +76,7 @@
                       <Component id="friendListTab" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="98" max="-2" attributes="0"/>
                       <Component id="groupTab" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="214" max="32767" attributes="0"/>
+                      <EmptySpace pref="237" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -157,34 +157,25 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="groupChatList" min="-2" pref="321" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="groupChat" max="32767" attributes="0"/>
+                          <Component id="groupChat" min="-2" pref="636" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="groupChat" max="32767" attributes="0"/>
-                      <Component id="groupChatList" alignment="0" max="32767" attributes="0"/>
+                      <Component id="groupChatList" pref="753" max="32767" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="groupChat" pref="0" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Container class="main_ui.GroupChat" name="groupChat">
-
-                  <Layout>
-                    <DimensionLayout dim="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <EmptySpace min="0" pref="706" max="32767" attributes="0"/>
-                      </Group>
-                    </DimensionLayout>
-                    <DimensionLayout dim="1">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <EmptySpace min="0" pref="730" max="32767" attributes="0"/>
-                      </Group>
-                    </DimensionLayout>
-                  </Layout>
-                </Container>
                 <Component class="main_ui.GroupChatListAndSearch" name="groupChatList">
+                </Component>
+                <Component class="main_ui.GroupChat" name="groupChat">
                 </Component>
               </SubComponents>
             </Container>
@@ -215,7 +206,7 @@
                           </Group>
                           <EmptySpace min="-2" pref="90" max="-2" attributes="0"/>
                           <Component id="modifiedPanelHome" min="-2" pref="264" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="242" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="178" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="32767" attributes="0"/>
@@ -242,7 +233,7 @@
                                   <Component id="logoutButton" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace pref="47" max="32767" attributes="0"/>
+                          <EmptySpace pref="247" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -640,14 +631,14 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="chatList" min="-2" pref="244" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="chat" pref="557" max="32767" attributes="0"/>
+                          <Component id="chat" pref="719" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="chatList" alignment="0" max="32767" attributes="0"/>
-                      <Component id="chat" alignment="0" pref="730" max="32767" attributes="0"/>
+                      <Component id="chat" alignment="0" pref="753" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>

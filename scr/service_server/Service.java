@@ -150,14 +150,31 @@ public class Service implements Runnable {
             }
         }
 
-        private void userDisconnect(int userID) {
-
+        private void userDisconnect(String username) {
+            for (Entry<Socket, TaiKhoan> entry : connectionsWithName.entrySet()) {
+                if (entry.getValue() != null) {
+                    if (!username.equals(entry.getValue().getUsername())) {
+                        PrintWriter temp2 = null;
+                        try {
+                            temp2 = new PrintWriter(entry.getKey().getOutputStream(), true);
+                            JSONObject newObject = new JSONObject();
+                            newObject.put("message", "/newUserLogin");
+                            newObject.put("result", 1);
+                            newObject.put("object", entry.getValue().JSONify().toString());
+                            temp2.println(newObject.toString());
+                        } catch (IOException ex) {
+                            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+                        } finally {
+                            System.out.println("succeed");
+                        }
+                    }
+                }
+            }
         }
 
         @Override
         public void run() {
             try {
-                //getGroupData(new NhomChat("grp212s", "", null));
                 // send message to client/user
                 out = new PrintWriter(client.getOutputStream(), true, StandardCharsets.UTF_8);
 
@@ -182,8 +199,8 @@ public class Service implements Runnable {
                                 TaiKhoan user = listAcc.get(0);
                                 updateStatus(user, 1);
                                 user.setTrangThai(1);
-                                JSONObject userObject = user.JSONify();  
-                                
+                                JSONObject userObject = user.JSONify();
+
                                 Date time = new Date(System.currentTimeMillis());
                                 writeLoginHistory(user, time);
 
@@ -198,29 +215,16 @@ public class Service implements Runnable {
                         } catch (JSONException ex) {
                             System.out.println("Null object");
                         }
-//                    (new Thread() {
-//                        public void run() {
-//                          while(true) {
-//                              try {
-//                                  sleep(5000);
-//                                  sendMessage("Testing", 1, new JSONObject().put("e", "e"));
-//                              } catch (InterruptedException ex) {
-//                                  Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
-//                              }
-//
-//                          }
-//                        }
-//                    }).start();
 
                     } else if (action.startsWith("/logout")) {
                         JSONObject object = new JSONObject(list[1]);
                         String name = object.getString("username");
+                        userDisconnect(name);
                         removeClient(name);
                         updateStatus((new TaiKhoan(name, object.getString("password"), object.getString("email"))
-                                    .setDiaChi(object.getString("diaChi"))
-                                     .setGioiTinh(object.getBoolean("gioiTinh"))
-                                     )
-                                , 0);
+                                .setDiaChi(object.getString("diaChi"))
+                                .setGioiTinh(object.getBoolean("gioiTinh"))),
+                                0);
                     } else if (action.startsWith("/register")) {
 
                     } else if (action.startsWith("/changePassword")) {
@@ -319,10 +323,9 @@ public class Service implements Runnable {
                         JSONObject object = new JSONObject(list[1]);
                         var name = object.getString("username");
                         updateStatus((new TaiKhoan(name, object.getString("password"), object.getString("email"))
-                                    .setDiaChi(object.getString("diaChi"))
-                                     .setGioiTinh(object.getBoolean("gioiTinh"))
-                                     )
-                                , 0);
+                                .setDiaChi(object.getString("diaChi"))
+                                .setGioiTinh(object.getBoolean("gioiTinh"))),
+                                0);
                         removeClient(name);
                     } else if (action.equals("/getGroupChatList")) {
                         JSONObject object = new JSONObject(list[1]);
@@ -330,12 +333,12 @@ public class Service implements Runnable {
                         ArrayList<NhomChat> groupChatList = getGroupChatList(name);
                         JSONArray array = new JSONArray();
                         //System.out.println(groupChatList);
-                        for(NhomChat g: groupChatList){
+                        for (NhomChat g : groupChatList) {
                             String id = g.getIDNhom();
-                            
+
                             var rs = database_helper.select("select Chucnang from ThanhVienNhomChat where username = N'" + name + "' and idNhom=N'" + id + "'");
                             try {
-                                while(rs.next()){
+                                while (rs.next()) {
                                     boolean role = rs.getBoolean("chucNang");
                                     JSONObject newObject = new JSONObject();
                                     newObject.put("role", role);
@@ -346,15 +349,67 @@ public class Service implements Runnable {
                                 Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
-                        
+
                         System.out.println(array);
                         sendManyObject("/groupChatListReceived", array);
 
                     } else if (action.equals("/getGroupData")) {
                         JSONObject object = new JSONObject(list[1]);
-                        var groupName = object.getString("tenNhom");
-                        var groupID = object.getString("IDNhom");
-                        getGroupData(new NhomChat(groupName, groupID, null));
+                        var name = object.getString("name");
+                        var groupObject = object.getJSONObject("group");
+                        var groupName = groupObject.getString("tenNhom");
+                        var groupID = groupObject.getString("IDNhom");
+                        getGroupData(new NhomChat(groupID, groupName, null), name);
+                    } else if (action.equals("/groupChatSendMessage")) {
+                        JSONObject object = new JSONObject(list[1]);
+                        var groupObject = object.getJSONObject("group");
+                        var groupID = groupObject.getString("IDNhom");
+                        var groupName = groupObject.getString("tenNhom");
+
+                        var messageObject = object.getJSONObject("mess");
+
+                        String id = messageObject.getString("ID");
+                        String text = messageObject.getString("noiDung");
+                        String receiver = messageObject.getString("nguoiNhan");
+                        String sender = messageObject.getString("nguoiGui");
+                        var time = convertTime(messageObject.getString("thoiGian"));
+                        String idGroup = messageObject.getString("IDNhom");
+                        TinNhan mess = new TinNhan(id, time, text, sender, receiver, idGroup, sender);
+
+                        var members = getGroupMember(groupID);
+                        for(int i=0;i<members.size();i++){
+                            if(members.get(i).getUsername() == sender){
+                                members.remove(i);
+                            }
+                        }
+                        
+                        for (Entry<Socket, TaiKhoan> entry : connectionsWithName.entrySet()) {
+                            if (entry.getValue() != null) {
+                                for (int i = 0; i< members.size(); i++) {
+                                    if(entry.getValue().getUsername().equals( members.get(i).getUsername())){
+                                        if(entry.getValue().getUsername().equals(sender)){
+                                            continue;
+                                        }
+                                        PrintWriter temp2 = null;
+                                        try {
+                                            temp2 = new PrintWriter(entry.getKey().getOutputStream(), true);
+                                            JSONObject newObject = new JSONObject();
+                                            newObject.put("message", "/groupChatMessageReceived");
+                                            newObject.put("result", 1);
+                                            newObject.put("object", object);
+                                            temp2.println(newObject.toString());
+                                            members.remove(i);
+                                            break;
+                                        } catch (IOException ex) {
+                                            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+                                        } finally {
+                                            System.out.println("succeed");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        writeGroupMessageToDb(mess, members);
                     }
                 }
 
@@ -468,12 +523,13 @@ public class Service implements Runnable {
 
         }
 
-        private ArrayList<TinNhan> getGroupData(NhomChat nhomChat) {
+        private ArrayList<TinNhan> getGroupData(NhomChat nhomChat, String name) {
             var resultSet = database_helper.select("select TinNhan.ID, TinNhan.noidung, TinNhan.ThoiGian,"
                     + " DanhSachTinNhan.NguoiGui, "
                     + " DanhSachTinNhan.BanSao, DanhSachTinNhan.IDNhom from TinNhan " + " "
                     + " inner join DanhSachTinNhan "
-                    + " on DanhSachTinNhan.ID = TinNhan.ID where DanhSachTinNhan.IDNhom = N'" + nhomChat.getIDNhom() + "'");
+                    + " on DanhSachTinNhan.ID = TinNhan.ID where DanhSachTinNhan.IDNhom = N'" + nhomChat.getIDNhom() + "' and "
+                    + " DanhSachTinNhan.BanSao = N'" + name + "' order by TinNhan.ThoiGian asc");
             JSONArray messages = new JSONArray();
             try {
                 while (resultSet.next()) {
@@ -486,7 +542,6 @@ public class Service implements Runnable {
                                     resultSet.getNString("IDNhom"),
                                     resultSet.getNString("BanSao"))).JSONify()
                     );
-                    sendManyObject("/groupDataReceived", messages);
 //                    System.out.println(new TinNhan(resultSet.getNString("ID"),
 //                                    resultSet.getTimestamp("ThoiGian"),
 //                                    resultSet.getNString("noiDung"),
@@ -495,6 +550,7 @@ public class Service implements Runnable {
 //                                    resultSet.getNString("IDNhom"),
 //                                    resultSet.getNString("BanSao")));
                 }
+                sendManyObject("/groupDataReceived", messages);
             } catch (SQLException ex) {
                 Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -511,14 +567,12 @@ public class Service implements Runnable {
                 while (resultset.next()) {
                     try {
                         var username = resultset.getNString(1);
-                        var rs = database_helper.select("Select trangThai from taikhoan where username=N'"+ username +"'");
-                        while(rs.next()){
+                        var rs = database_helper.select("Select trangThai from taikhoan where username=N'" + username + "'");
+                        while (rs.next()) {
                             System.out.println(rs.getInt(1));
-                            users.add((
-                                new TaiKhoan(username, "", "")
-                                    ).setTrangThai(rs.getInt(1)));
+                            users.add((new TaiKhoan(username, "", "")).setTrangThai(rs.getInt(1)));
                         }
-                        
+
                     } catch (SQLException ex) {
 
                     }
@@ -532,7 +586,7 @@ public class Service implements Runnable {
 
         private ArrayList<NhomChat> getGroupChatList(String name) {
             DAO_NhomChat dao_nc = new DAO_NhomChat();
-            return dao_nc.selectAllGroupOfAUser(name); 
+            return dao_nc.selectAllGroupOfAUser(name);
         }
 
         private void writeLoginHistory(TaiKhoan user, Date time) {
@@ -542,6 +596,40 @@ public class Service implements Runnable {
         private void updateStatus(TaiKhoan user, int i) {
             DAO_TaiKhoan dao_tn = new DAO_TaiKhoan();
             dao_tn.updateStatus(user, 1);
+        }
+
+        private ArrayList<ThanhVienNhomChat> getGroupMember(String groupID) {
+            DAO_NhomChat daonc = new DAO_NhomChat();
+            ArrayList<ThanhVienNhomChat> members = daonc.selectAllMembers(groupID);
+            return members;
+        }
+
+        private void writeGroupMessageToDb(TinNhan mess, ArrayList<ThanhVienNhomChat> members) {
+            try {
+                var rs = database_helper.insert(database_query_builder.insert("TinNhan",
+                        mess.toDelimitedList()));
+                for (ThanhVienNhomChat m : members) {
+                    try {
+                        TinNhan temp = new TinNhan(
+                                mess.getID(),
+                                mess.getThoiGian(),
+                                mess.getNoiDung(),
+                                mess.getNguoiGui(),
+                                "/",
+                                m.getIDNhom(),
+                                m.getUsername());
+
+                        String insertQuery = temp.toDelimitedList2();
+                        database_helper.insert(database_query_builder.insert("DanhSachTinNhan",
+                                insertQuery));
+                    } catch (Exception ex) {
+                        Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 

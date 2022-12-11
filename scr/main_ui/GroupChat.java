@@ -16,16 +16,16 @@ import java.util.ArrayList;
  */
 public class GroupChat extends javax.swing.JPanel {
 
-    private ChatTitle groupChatTitle;
-    private ChatBody groupChatBody;
-    private ChatBottom groupChatBottom;
+    private GroupChatTitle groupChatTitle;
+    private GroupChatBody groupChatBody;
+    private GroupChatBottom groupChatBottom;
     public GroupChat() {
         initComponents();
         
-        setLayout(new MigLayout("fillx", "0[fill]0", "0[]0[100%, bottom]0[shrink 0]0"));
-        groupChatTitle = new ChatTitle();
-        groupChatBody = new ChatBody();
-        groupChatBottom = new ChatBottom();
+        setLayout(new MigLayout("fillx", "0[fill]0", "0[]0[100%, fill]0[shrink 0]0"));
+        groupChatTitle = new GroupChatTitle();
+        groupChatBody = new GroupChatBody();
+        groupChatBottom = new GroupChatBottom();
         
         add(groupChatTitle, "wrap");
         add(groupChatBody, "wrap");
@@ -39,15 +39,20 @@ public class GroupChat extends javax.swing.JPanel {
     public void setGroup(NhomChat group, TaiKhoan user){
         groupChatTitle.setGroupName(group);
         groupChatBody.clear();
-        groupChatBottom.setUser(user);
+        groupChatBottom.setSender(user);
+        groupChatBottom.setGroup(group);
     }
     
-    public ChatBody getGroupChatBody() {
+    public GroupChatBody getGroupChatBody() {
         return groupChatBody;
     }
 
-    public ChatTitle getGroupChatTitle() {
+    public GroupChatTitle getGroupChatTitle() {
         return groupChatTitle;
+    }
+    
+    public void addMessage(TinNhan mess){
+        groupChatBody.addItemRight(mess);
     }
    
     
@@ -66,6 +71,12 @@ public class GroupChat extends javax.swing.JPanel {
             .addGap(0, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    void setUser(TaiKhoan currentUser) {
+        groupChatBody.user = currentUser;
+        groupChatBottom.setSender(currentUser);
+        groupChatTitle.setUser(currentUser);
+    }
 
     
 

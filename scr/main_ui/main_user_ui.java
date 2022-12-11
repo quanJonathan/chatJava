@@ -60,7 +60,7 @@ public class main_user_ui extends javax.swing.JFrame {
         friends = new ArrayList<>();
 
         lblUsername.setText(currentUser.getUsername());
-        
+
         readFriendList();
         readChatList();
         readGroupChatList();
@@ -159,7 +159,10 @@ public class main_user_ui extends javax.swing.JFrame {
 
             @Override
             public void setGroupChatData(ArrayList<TinNhan> messages) {
+                
+                groupChat.setVisible(true);
                 groupChat.setGroupData(messages);
+                
             }
 
             @Override
@@ -189,13 +192,32 @@ public class main_user_ui extends javax.swing.JFrame {
 
             @Override
             public void requestGroupData(NhomChat group) {
-                Service.getInstance().al.sendCommand("/getGroupData", group.JSONify());
+                JSONObject object = new JSONObject();
+                object.put("name", currentUser.getUsername());
+                object.put("group", group.JSONify());
+                Service.getInstance().al.sendCommand("/getGroupData", object);
             }
 
             @Override
             public void setGroup(NhomChat group) {
                 groupChat.setGroup(group, currentUser);
                 groupChat.setVisible(true);
+                groupChat.setUser(currentUser);
+//                System.out.println(group);
+            }
+
+            @Override
+            public void sendMessage(NhomChat group, TinNhan message) {
+                groupChat.addMessage(message);
+                JSONObject object = new JSONObject();
+                object.put("group", group.JSONify());
+                object.put("mess", message.JSONify());
+                Service.getInstance().al.sendCommand("/groupChatSendMessage", object);
+            }
+
+            @Override
+            public void receiveMessage(NhomChat group, TinNhan messages) {
+                groupChat.getGroupChatBody().addItemLeft(messages);
             }
 
         });
@@ -254,8 +276,8 @@ public class main_user_ui extends javax.swing.JFrame {
         mainBody = new javax.swing.JPanel();
         friendListPage = new main_ui.FriendPage();
         groupPage = new javax.swing.JPanel();
-        groupChat = new main_ui.GroupChat();
         groupChatList = new main_ui.GroupChatListAndSearch();
+        groupChat = new main_ui.GroupChat();
         homePage = new javax.swing.JPanel();
         initGroupCreateButton = new javax.swing.JButton();
         initChangePassButton = new javax.swing.JButton();
@@ -353,24 +375,13 @@ public class main_user_ui extends javax.swing.JFrame {
                 .addComponent(friendListTab)
                 .addGap(98, 98, 98)
                 .addComponent(groupTab)
-                .addContainerGap(214, Short.MAX_VALUE))
+                .addContainerGap(237, Short.MAX_VALUE))
         );
 
         jSplitPane1.setLeftComponent(sideNavBar);
 
         mainBody.setLayout(new java.awt.CardLayout());
         mainBody.add(friendListPage, "friendListCard");
-
-        javax.swing.GroupLayout groupChatLayout = new javax.swing.GroupLayout(groupChat);
-        groupChat.setLayout(groupChatLayout);
-        groupChatLayout.setHorizontalGroup(
-            groupChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 706, Short.MAX_VALUE)
-        );
-        groupChatLayout.setVerticalGroup(
-            groupChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 730, Short.MAX_VALUE)
-        );
 
         javax.swing.GroupLayout groupPageLayout = new javax.swing.GroupLayout(groupPage);
         groupPage.setLayout(groupPageLayout);
@@ -379,12 +390,15 @@ public class main_user_ui extends javax.swing.JFrame {
             .addGroup(groupPageLayout.createSequentialGroup()
                 .addComponent(groupChatList, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(groupChat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(groupChat, javax.swing.GroupLayout.PREFERRED_SIZE, 636, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         groupPageLayout.setVerticalGroup(
             groupPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(groupChat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(groupChatList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(groupChatList, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
+            .addGroup(groupPageLayout.createSequentialGroup()
+                .addComponent(groupChat, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         mainBody.add(groupPage, "groupCard");
@@ -630,7 +644,7 @@ public class main_user_ui extends javax.swing.JFrame {
                     .addComponent(logoutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(90, 90, 90)
                 .addComponent(modifiedPanelHome, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 242, Short.MAX_VALUE))
+                .addGap(0, 178, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, homePageLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -652,7 +666,7 @@ public class main_user_ui extends javax.swing.JFrame {
                         .addComponent(initChangeUserNameButton)
                         .addGap(76, 76, 76)
                         .addComponent(logoutButton)))
-                .addContainerGap(47, Short.MAX_VALUE))
+                .addContainerGap(247, Short.MAX_VALUE))
         );
 
         mainBody.add(homePage, "homeCard");
@@ -664,12 +678,12 @@ public class main_user_ui extends javax.swing.JFrame {
             .addGroup(chatPageLayout.createSequentialGroup()
                 .addComponent(chatList, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chat, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE))
+                .addComponent(chat, javax.swing.GroupLayout.DEFAULT_SIZE, 719, Short.MAX_VALUE))
         );
         chatPageLayout.setVerticalGroup(
             chatPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(chatList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(chat, javax.swing.GroupLayout.DEFAULT_SIZE, 730, Short.MAX_VALUE)
+            .addComponent(chat, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
         );
 
         mainBody.add(chatPage, "chatCard");
@@ -680,7 +694,7 @@ public class main_user_ui extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1082, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -767,8 +781,8 @@ public class main_user_ui extends javax.swing.JFrame {
         for (int i = 0; i < indices.length; i++) {
             names.add(listSelectToGroupCreate.getModel().getElementAt(indices[i]));
         }
-        
-        
+
+
     }//GEN-LAST:event_createGroupButtonActionPerformed
 
     /**

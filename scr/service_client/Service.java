@@ -213,9 +213,8 @@ public class Service implements Runnable {
                                                 var newObject = object.getJSONObject(i);
                                                 String username = newObject.getString("username");
                                                 int status = newObject.getInt("trangThai");
-                                                if (username.isBlank() || StringUtils.isEmpty(username) || username.isEmpty() || username.equals("/")
-                                                                                        ) {
-                                                    continue;                   
+                                                if (username.isBlank() || StringUtils.isEmpty(username) || username.isEmpty() || username.equals("/")) {
+                                                    continue;
                                                 }
                                                 System.out.println(username);
                                                 users.add((new TaiKhoan(username, "", "")).setTrangThai(status));
@@ -255,8 +254,8 @@ public class Service implements Runnable {
                                             PublicEvent.getInstance().getEventChat().setChatData(messages);
                                             break;
                                         }
-                                        
-                                        case "/groupChatListReceived":{
+
+                                        case "/groupChatListReceived": {
                                             var object = new JSONArray(command.getString("object"));
                                             var roleList = new ArrayList<Boolean>();
                                             ArrayList<NhomChat> groups = new ArrayList<>();
@@ -274,6 +273,26 @@ public class Service implements Runnable {
                                             break;
                                         }
 
+                                        case "/groupChatMessageReceived": {
+                                            var object = command.getJSONObject("object");
+                                            var groupObject = object.getJSONObject("group");
+                                            var groupID = groupObject.getString("IDNhom");
+                                            var groupName = groupObject.getString("tenNhom");
+
+                                            var messageObject = object.getJSONObject("mess");
+
+                                            String id = messageObject.getString("ID");
+                                            String text = messageObject.getString("noiDung");
+                                            String receiver = messageObject.getString("nguoiNhan");
+                                            String sender = messageObject.getString("nguoiGui");
+                                            var time = convertTime(messageObject.getString("thoiGian"));
+                                            String idGroup = messageObject.getString("IDNhom");
+                                            TinNhan mess = new TinNhan(id, time, text, sender, receiver, idGroup, sender);
+
+                                            PublicEvent.getInstance().getEventGroupChat().receiveMessage(new NhomChat(groupID, groupName, null ), mess);
+                                            break;
+                                        }
+
                                         case "/groupDataReceived": {
                                             var object = new JSONArray(command.getString("object"));
                                             ArrayList<TinNhan> messages = new ArrayList<>();
@@ -286,10 +305,11 @@ public class Service implements Runnable {
                                                 String text = newObject.getString("noiDung");
                                                 String banSao = newObject.getString("banSao");
                                                 String idNhom = newObject.getString("IDNhom");
-                                                TinNhan tn = new TinNhan(id, date, text, sender, receiver, idNhom, banSao);
-                                                messages.add(tn);
+
+                                                messages.add(new TinNhan(id, date, text, sender, receiver, idNhom, banSao));
                                             }
-                                            System.out.println(messages);
+
+//                                            System.out.println(messages);
                                             PublicEvent.getInstance().getEventGroupChat().setGroupChatData(messages);
                                             break;
                                         }

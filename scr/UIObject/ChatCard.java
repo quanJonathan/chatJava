@@ -31,6 +31,9 @@ public class ChatCard extends javax.swing.JPanel {
              lblStatus.setText("Offline");
              lblStatus.setForeground(new Color(160, 160, 160));
         }
+        
+        lblStatus.repaint();
+        lblStatus.revalidate();
     }
     
     public void init(){
