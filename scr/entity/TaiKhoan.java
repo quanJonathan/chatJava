@@ -87,9 +87,10 @@ public class TaiKhoan extends Serializable{
 
     @Override
     public String toDelimitedList() {
-        return String.format("N'%s', '%s', '%s', '%s', '%b', N'%s', '%d'",
+        return String.format("N'%s', '%s', '%s', '%s', '%s', '%b', N'%s', '%d'",
                 username,
                 password,
+                fullName,
                 email,
                 ngaySinh,
                 gioiTinh,
@@ -99,8 +100,8 @@ public class TaiKhoan extends Serializable{
 
     @Override
     public String toString() {
-        return String.format("%-15s %-15s %-30s %-15s %-1s %-15s %-1s",
-                username, password, email, ngaySinh != null ? ngaySinh.toString() : "",
+        return String.format("%-15s %-15s %-30s %-35s %-15s %-1s %-15s %-1s",
+                username, password, email, fullName, ngaySinh != null ? ngaySinh.toString() : "",
                 gioiTinh ? "Female" : "Male", diaChi, trangThai == 1 ? "Online" : "Offline");
 
     }

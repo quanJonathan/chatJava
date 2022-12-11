@@ -50,9 +50,9 @@ public class DAO_NhomChat implements DAO<NhomChat> {
         return new ArrayList<>();
     }
 
-    public ArrayList<ThanhVienNhomChat> selectAllMembers(String id) {
+    public ArrayList<ThanhVienNhomChat> selectAllMembers(String id, String conditions) {
         try {
-            var rs = database_helper.select(database_query_builder.get(tableName2, "where idNhom=N'" + id + "'", ""));
+            var rs = database_helper.select(database_query_builder.get(tableName2, "where idNhom=N'" + id + "' " + conditions, ""));
             var result = new ArrayList<ThanhVienNhomChat>();
             while (rs.next()) {
                 if (rs.getMetaData().getColumnCount() == 1) {

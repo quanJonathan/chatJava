@@ -35,6 +35,7 @@ public class DateLabelFormatter extends AbstractFormatter {
     }
 
     public static String dateToTime(java.util.Date d) {
+        if (d == null) return "";
         return new SimpleDateFormat("dd-MM-yyyy hh:mm:ss").format(d);
     }
 
