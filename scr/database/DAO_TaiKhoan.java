@@ -53,11 +53,12 @@ public class DAO_TaiKhoan implements DAO<TaiKhoan> {
                 result.add(new TaiKhoan(
                         rs.getNString(1),
                         rs.getNString(2),
-                        rs.getNString(3))
-                        .setNgaySinh(rs.getDate(4))
-                        .setGioiTinh(rs.getBoolean(5))
-                        .setDiaChi(rs.getNString(6))
-                        .setTrangThai(rs.getInt(7)));
+                        rs.getNString(4)
+                        ).setFullName(rs.getNString(3))
+                        .setNgaySinh(rs.getDate(5))
+                        .setGioiTinh(rs.getBoolean(6))
+                        .setDiaChi(rs.getNString(7))
+                        .setTrangThai(rs.getInt(8)));
             }
         }
         return result;
@@ -85,11 +86,16 @@ public class DAO_TaiKhoan implements DAO<TaiKhoan> {
     }
 
     @Override
+    // UNUSED
     public ArrayList<TaiKhoan> update(TaiKhoan t) {
+        return new ArrayList<>();
+    }
+    
+    public ArrayList<TaiKhoan> update(TaiKhoan t, String oldUsername) {
         var insertQuery = t.toPair();
         try {
             var rs = database_helper.insert(database_query_builder.update(tableName,
-                    insertQuery, "where username=N'" + t.getUsername() + "'"
+                    insertQuery, "where username=N'" + oldUsername + "'"
             ));
             return new ArrayList<>(rs);
         } catch (SQLServerException ex) {

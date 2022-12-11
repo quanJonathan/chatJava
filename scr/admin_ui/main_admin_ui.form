@@ -262,7 +262,7 @@
                     <Property name="toolTipText" type="java.lang.String" value="T&#xec;m t&#xe0;i kho&#x1ea3;n"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="AdminUserSearch_homeActionPerformed"/>
+                    <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="AdminUserSearch_homeKeyReleased"/>
                   </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnFriend">
@@ -838,9 +838,6 @@
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JTextField" name="txtEmail1">
-                          <Events>
-                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtEmail1ActionPerformed"/>
-                          </Events>
                         </Component>
                         <Component class="javax.swing.JLabel" name="jLabel15">
                           <Properties>
@@ -1036,7 +1033,8 @@
                     <Component class="javax.swing.JTable" name="groupTable">
                       <Properties>
                         <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                          <Table columnCount="2" rowCount="6">
+                          <Table columnCount="3" rowCount="6">
+                            <Column editable="false" title="ID" type="java.lang.String"/>
                             <Column editable="false" title="T&#xea;n Nh&#xf3;m" type="java.lang.String">
                               <Data value="nhomchat1"/>
                               <Data value="nhomchat2"/>
@@ -1057,6 +1055,11 @@
                         </Property>
                         <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                           <TableColumnModel selectionModel="0">
+                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                              <Title/>
+                              <Editor/>
+                              <Renderer/>
+                            </Column>
                             <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                               <Title/>
                               <Editor/>

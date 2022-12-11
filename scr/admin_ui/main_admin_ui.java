@@ -4,7 +4,9 @@
  */
 package admin_ui;
 
+import database.DAO_BanBe;
 import database.DAO_LSDangNhap;
+import database.DAO_NhomChat;
 import database.DAO_TaiKhoan;
 import database.database_helper;
 import entity.TaiKhoan;
@@ -12,10 +14,13 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.KeyEvent;
 import static java.lang.Math.abs;
+import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -38,24 +43,24 @@ public class main_admin_ui extends javax.swing.JFrame {
      */
     CardLayout cardLayout;
     CardLayout cardLayOutHomePage;
-    
+
     public main_admin_ui() {
         initComponents();
-        
+
         cardLayout = (CardLayout) pnlCard.getLayout();
         cardLayOutHomePage = (CardLayout) pnlCardEdit.getLayout();
-        
+
         DefaultTableModel model = (DefaultTableModel) userTable.getModel();
         userTable.setModel(model);
         for (int count = 1; count <= 10; count++) {
             model.addRow(new Object[]{"", ""});
         }
-        
+
         db = new database_helper();
-        
+
         init();
     }
-    
+
     public void init() {
         groupDetailPanel.setLayout(new MigLayout());
         lbHome.setForeground(Color.white);
@@ -69,7 +74,7 @@ public class main_admin_ui extends javax.swing.JFrame {
         datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
         jDatePanel.setLayout(new GridLayout(1, 5));
         jDatePanel.add(datePicker);
-        
+
         this.dateModel2 = new SqlDateModel();
         dateModel2.setDate(2002, 0, 1);
         dateModel2.setSelected(true);
@@ -77,16 +82,17 @@ public class main_admin_ui extends javax.swing.JFrame {
         datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
         jDatePanel2.setLayout(new GridLayout(1, 5));
         jDatePanel2.add(datePicker2);
-        
+
         jDatePanel2.revalidate();
         jDatePanel2.repaint();
         showAllUser();
+        showAllGroup();
     }
-    
+
     public ArrayList<TaiKhoan> getAllUser() {
         return null;
     }
-    
+
     public void showAllUser() {
 //        userTable.setValueAt("luutuanquan", 0, 0);
 //        userTable.setValueAt("01-12-2022 20:05:36", 0, 1);
@@ -114,23 +120,29 @@ public class main_admin_ui extends javax.swing.JFrame {
                 + ")\n"
                 + "order by NgayDangXuat desc");
 
-        addRow(userTable, result.size());
-                
-        for(int i = 0; i < result.size(); i++) {
+        var result2 = new DAO_TaiKhoan().select("where username not in (select distinct username from lichsudangnhap)");
+        addRow(userTable, result2.size() + result.size());
+
+        for (int i = 0; i < result.size(); i++) {
             System.out.println(result.get(i));
             var acc = new DAO_TaiKhoan().select("where username=N'" + result.get(i).getUsername() + "'");
             var status = acc.get(0).getTrangThai();
-            userTable.setValueAt( status == 1 ? "Active" : status == 0 ? "Offline": "Locked", i, 2);
+            userTable.setValueAt(status == 1 ? "Active" : status == 0 ? "Offline" : "Locked", i, 2);
         }
-        
-        
+
         for (int i = 0; i < result.size(); i++) {
             userTable.setValueAt(result.get(i).getUsername(), i, 0);
             userTable.setValueAt(DateLabelFormatter.dateToTime(result.get(i).getNgayDangXuat()), i, 1);
-            
+        }
+
+        for (int i = 0; i < result2.size(); i++) {
+            //System.out.println(result2.get(i));
+            userTable.setValueAt(result2.get(i).getUsername(), i + result.size(), 0);
+            var status = result2.get(i).getTrangThai();
+            userTable.setValueAt(status == 1 ? "Active" : status == 0 ? "Offline" : "Locked", i + result.size(), 2);
         }
     }
-    
+
     private void addRow(JTable table, int size) {
         model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
@@ -140,27 +152,51 @@ public class main_admin_ui extends javax.swing.JFrame {
             // System.out.println(table.getRowCount());
         }
         table.setModel(model);
-        
+
         for (int i = 0; i < model.getRowCount(); i++) {
             for (int j = 0; j < model.getColumnCount(); j++) {
                 table.setValueAt("", i, j);
             }
         }
-        
+
     }
-    
+
     public ArrayList<TaiKhoan> getUserWithFilter(String... fields) {
         return null;
     }
-    
+
+    public void showAllGroup() {
+        var result = new DAO_NhomChat().selectAll();
+        addRow(groupTable, result.size());
+        for (int i = 0; i < result.size(); i++) {
+            groupTable.setValueAt(result.get(i).getIDNhom(), i, 0);
+            groupTable.setValueAt(result.get(i).getTenNhom(), i, 1);
+            groupTable.setValueAt(result.get(i).getNgayTao(), i, 2);
+
+        }
+    }
+
     public void filterAllGroupChatMember() {
-        
+
     }
-    
-    public void showAllGroupChatMember() {
-        
+
+    public void showAllGroupChatMember(String groupID) {
+        var result = new DAO_NhomChat().selectAllMembers(groupID);
+        addRow(groupDetailTable, result.size() + 1);
+        groupDetailTable.setValueAt(groupTable.getValueAt(groupTable.getSelectedRow(), 0).toString(), 0, NORMAL);
+                groupDetailTable.setValueAt(groupTable.getValueAt(groupTable.getSelectedRow(), 2).toString(), 0, 3);
+
+        for (int i = 0; i < result.size(); i++) {
+            groupDetailTable.setValueAt(result.get(i).getChucNang() ? "Admin" : "Member", i + 1, 2);
+            groupDetailTable.setValueAt(result.get(i).getUsername(), i + 1, 1);
+            groupDetailTable.setValueAt(result.get(i).getNgayThem(), i + 1, 3);
+        }
     }
-    
+
+    public String getCurrentSelect() {
+        return userTable.getValueAt(userTable.getSelectedRow(), 0).toString();
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -291,9 +327,9 @@ public class main_admin_ui extends javax.swing.JFrame {
         jPanel3.setLayout(new java.awt.GridLayout(1, 0));
 
         AdminUserSearch_home.setToolTipText("Tìm tài khoản");
-        AdminUserSearch_home.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AdminUserSearch_homeActionPerformed(evt);
+        AdminUserSearch_home.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                AdminUserSearch_homeKeyReleased(evt);
             }
         });
 
@@ -590,12 +626,6 @@ public class main_admin_ui extends javax.swing.JFrame {
 
         jLabel14.setText("Email");
 
-        txtEmail1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtEmail1ActionPerformed(evt);
-            }
-        });
-
         jLabel15.setText("Địa chỉ");
 
         jLabel16.setText("Ngày sinh");
@@ -822,22 +852,22 @@ public class main_admin_ui extends javax.swing.JFrame {
 
         groupTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"nhomchat1", "25-11-2022 12:00:00"},
-                {"nhomchat2", "20-11-2022 00:00:00"},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null, "nhomchat1", "25-11-2022 12:00:00"},
+                {null, "nhomchat2", "20-11-2022 00:00:00"},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Tên Nhóm", "Ngày tạo"
+                "ID", "Tên Nhóm", "Ngày tạo"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -957,23 +987,30 @@ public class main_admin_ui extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_NameSortActionPerformed
 
-    private void AdminUserSearch_homeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AdminUserSearch_homeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_AdminUserSearch_homeActionPerformed
-
     private void lbHomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbHomeMouseClicked
         cardLayout.show(pnlCard, "homeAdmin");
         lbHome.setForeground(Color.white);
         lbGroup.setForeground(Color.black);
+        showAllUser();
     }//GEN-LAST:event_lbHomeMouseClicked
 
     private void lbGroupMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbGroupMouseClicked
         cardLayout.show(pnlCard, "groupAdmin");
         lbGroup.setForeground(Color.white);
         lbHome.setForeground(Color.black);
+        showAllGroup();
     }//GEN-LAST:event_lbGroupMouseClicked
 
     private void btnFriendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFriendActionPerformed
+        if (userTable.getSelectedRow() == -1) {
+            return;
+        }
+        var result = new DAO_BanBe().select("where username=N'" + getCurrentSelect() + "' order by ngayketban desc");
+        addRow(friendTable, result.size());
+        for (int i = 0; i < result.size(); i++) {
+            friendTable.setValueAt(result.get(i).getUsernameBanBe(), i, 0);
+            friendTable.setValueAt(DateLabelFormatter.dateToTime(result.get(i).getNgayKetBan()), i, 1);
+        }
         cardLayOutHomePage.show(pnlCardEdit, "friendListCard");
     }//GEN-LAST:event_btnFriendActionPerformed
 
@@ -989,6 +1026,15 @@ public class main_admin_ui extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLockAccountActionPerformed
 
     private void btnHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistoryActionPerformed
+        int index = userTable.getSelectedRow();
+        if (index == -1) {
+            return;
+        }
+        var r = new DAO_LSDangNhap().select("where username=N'" + userTable.getValueAt(index, 0) + "' order by ngaydangxuat desc");
+        addRow(historyTable, r.size());
+        for (int i = 0; i < r.size(); i++) {
+            historyTable.setValueAt(DateLabelFormatter.dateToTime(r.get(i).getNgayDangXuat()), i, 0);
+        }
         cardLayOutHomePage.show(pnlCardEdit, "historyCard");
     }//GEN-LAST:event_btnHistoryActionPerformed
 
@@ -999,24 +1045,38 @@ public class main_admin_ui extends javax.swing.JFrame {
         txtPass.setText(r.get(0).getPassword());
         txtEmail.setText(r.get(0).getEmail());
         var d = r.get(0).getNgaySinh();
-        datePicker.getModel().setDate(d.getMonth(), d.getDay(), d.getYear());
+        datePicker.getModel().setDay(DateLabelFormatter.getDay(d));
+        datePicker.getModel().setMonth(DateLabelFormatter.getMonth(d));
+        datePicker.getModel().setYear(DateLabelFormatter.getYear(d));
+
         textAreaAddr.setText(r.get(0).getDiaChi());
-        if (r.get(0).getGioiTinh()) {
+        if (!r.get(0).getGioiTinh()) {
             maleBtn.setSelected(true);
         } else {
             femaleBtn.setSelected(true);
         }
-        
+
         cardLayOutHomePage.show(pnlCardEdit, "editCard");
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
-        JOptionPane.showMessageDialog(rootPane, "Hoàn tất cập nhật thông tin?", "Xác nhận cập nhật", JOptionPane.OK_CANCEL_OPTION);
+        var input = JOptionPane.showConfirmDialog(rootPane, "Hoàn tất cập nhật thông tin?", "Xác nhận cập nhật", JOptionPane.YES_NO_OPTION);
+        if (input == JOptionPane.YES_OPTION && userTable.getSelectedRow() > -1) {
+            new DAO_TaiKhoan().update(new TaiKhoan(txtName.getText(), String.valueOf(txtPass.getPassword()), txtEmail.getText())
+                    .setDiaChi(new String(textAreaAddr.getText().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8)).setGioiTinh(!maleBtn.isSelected()).setNgaySinh((Date) datePicker.getModel().getValue()), getCurrentSelect());
+            showAllUser();
+            cardLayOutHomePage.show(pnlCardEdit, "historyCard");
+        }
     }//GEN-LAST:event_updateButtonActionPerformed
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        JOptionPane.showMessageDialog(rootPane, "Hoàn tất thêm tài khoản?", "Xác nhận thông tin", JOptionPane.OK_CANCEL_OPTION);
-        Date selectedDate = (java.sql.Date) datePicker.getModel().getValue();
+        var input = JOptionPane.showConfirmDialog(rootPane, "Hoàn tất thêm tài khoản?", "Xác nhận thông tin", JOptionPane.YES_NO_OPTION);
+        Date selectedDate = (java.sql.Date) datePicker2.getModel().getValue();
+        if (input == JOptionPane.YES_OPTION) {
+            new DAO_TaiKhoan().insert(new TaiKhoan(txtName1.getText(), String.valueOf(txtPass1.getPassword()), txtEmail1.getText())
+                    .setDiaChi(new String(textAreaAddr1.getText().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8)).setGioiTinh(!maleBtn2.isSelected()).setNgaySinh(selectedDate));
+            showAllUser();
+        }
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void txtName1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtName1ActionPerformed
@@ -1035,7 +1095,7 @@ public class main_admin_ui extends javax.swing.JFrame {
         int index = userTable.getSelectedRow();
         var r = new DAO_LSDangNhap().select("where username=N'" + userTable.getValueAt(index, 0) + "' order by ngaydangxuat desc");
         addRow(historyTable, r.size());
-        for(int i = 0; i < r.size(); i++) {
+        for (int i = 0; i < r.size(); i++) {
             historyTable.setValueAt(DateLabelFormatter.dateToTime(r.get(i).getNgayDangXuat()), i, 0);
         }
         cardLayOutHomePage.show(pnlCardEdit, "historyCard");
@@ -1046,27 +1106,75 @@ public class main_admin_ui extends javax.swing.JFrame {
     }//GEN-LAST:event_txtNameActionPerformed
 
     private void addUserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addUserButtonActionPerformed
+        txtName1.setText("");
+        txtPass1.setText("");
+        txtEmail1.setText("");
+        textAreaAddr1.setText("");
         cardLayOutHomePage.show(pnlCardEdit, "addCard");
     }//GEN-LAST:event_addUserButtonActionPerformed
 
-    private void txtEmail1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEmail1ActionPerformed
-
-    }//GEN-LAST:event_txtEmail1ActionPerformed
-
     private void groupTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_groupTableMouseClicked
-        // TODO add your handling code here:
+        showAllGroupChatMember(groupTable.getValueAt(groupTable.getSelectedRow(), 0).toString());
     }//GEN-LAST:event_groupTableMouseClicked
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         var input = JOptionPane.showConfirmDialog(rootPane, "Xóa " + userTable.getSelectedRowCount() + " tài khoản?", "Xác nhận xóa tài khoản", JOptionPane.YES_NO_CANCEL_OPTION);
         if (input == JOptionPane.YES_OPTION) {
+            var dtk = new DAO_TaiKhoan();
             DefaultTableModel model = (DefaultTableModel) this.userTable.getModel();
             int[] rows = userTable.getSelectedRows();
             for (int i = 0; i < rows.length; i++) {
+                dtk.delete("where username=N'" + userTable.getValueAt(rows[i], 0) + "'");
                 model.removeRow(rows[i] - i);
             }
+            showAllUser();
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void AdminUserSearch_homeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_AdminUserSearch_homeKeyReleased
+        if (evt.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+            showAllUser();
+            return;
+        }
+        if (AdminUserSearch_home.getText().strip().isEmpty()) {
+            showAllUser();
+            return;
+        }
+        var query = AdminUserSearch_home.getText().split("\\s+");
+        var s = new ArrayList<String>();
+        for (var word : query) {
+            s.add("username like N'%" + word + "%'");
+        }
+        DAO_LSDangNhap log = new DAO_LSDangNhap();
+        var result = log.select("ls1\n"
+                + "where " + String.join(" or ", s) + " and ls1.NgayDangXuat >= all (\n"
+                + "	select ls2.ngaydangxuat from LichSuDangNhap ls2\n"
+                + "	where ls2.Username = ls1.Username\n"
+                + ")\n"
+                + "order by NgayDangXuat desc");
+
+        var result2 = new DAO_TaiKhoan().select("where " + String.join(" or ", s) + " and username not in (select distinct username from lichsudangnhap)");
+        addRow(userTable, result2.size() + result.size());
+
+        for (int i = 0; i < result.size(); i++) {
+            System.out.println(result.get(i));
+            var acc = new DAO_TaiKhoan().select("where username=N'" + result.get(i).getUsername() + "'");
+            var status = acc.get(0).getTrangThai();
+            userTable.setValueAt(status == 1 ? "Active" : status == 0 ? "Offline" : "Locked", i, 2);
+        }
+
+        for (int i = 0; i < result.size(); i++) {
+            userTable.setValueAt(result.get(i).getUsername(), i, 0);
+            userTable.setValueAt(DateLabelFormatter.dateToTime(result.get(i).getNgayDangXuat()), i, 1);
+        }
+
+        for (int i = 0; i < result2.size(); i++) {
+            //System.out.println(result2.get(i));
+            userTable.setValueAt(result2.get(i).getUsername(), i + result.size(), 0);
+            var status = result2.get(i).getTrangThai();
+            userTable.setValueAt(status == 1 ? "Active" : status == 0 ? "Offline" : "Locked", i + result.size(), 2);
+        }
+    }//GEN-LAST:event_AdminUserSearch_homeKeyReleased
 
     /**
      * @param args the command line arguments
@@ -1105,15 +1213,15 @@ public class main_admin_ui extends javax.swing.JFrame {
             }
         });
     }
-    
+
     SqlDateModel dateModel, dateModel2;
     //model.setDate(20,04,2014);
     // Need this...
     Properties p = new Properties();
-    
+
     JDatePanelImpl datePanel;
     JDatePickerImpl datePicker;
-        JDatePanelImpl datePanel2;
+    JDatePanelImpl datePanel2;
     JDatePickerImpl datePicker2;
     database_helper db;
     DefaultTableModel model;

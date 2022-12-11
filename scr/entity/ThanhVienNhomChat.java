@@ -32,7 +32,7 @@ public class ThanhVienNhomChat extends Serializable{
         return username;
     }
 
-    public boolean isChucNang() {
+    public boolean getChucNang() {
         return chucNang;
     }
 

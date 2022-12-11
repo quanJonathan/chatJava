@@ -7,6 +7,7 @@ package main_ui;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.sql.Date;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 
 /**
@@ -32,9 +33,27 @@ public class DateLabelFormatter extends AbstractFormatter {
 
         return "";
     }
-    
+
     public static String dateToTime(java.util.Date d) {
         return new SimpleDateFormat("dd-MM-yyyy hh:mm:ss").format(d);
+    }
+
+    public static int getDay(Date d) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(d);
+        return calendar.get(Calendar.DAY_OF_MONTH);
+    }
+
+    public static int getMonth(Date d) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(d);
+        return calendar.get(Calendar.MONTH);
+    }
+
+    public static int getYear(Date d) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(d);
+        return calendar.get(Calendar.YEAR);
     }
 
 }

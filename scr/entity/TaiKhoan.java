@@ -13,6 +13,7 @@ import java.sql.Date;
 public class TaiKhoan extends Serializable{
 
     String username;
+    String fullName;
     String password;
     String email;
     Date ngaySinh = new Date(System.currentTimeMillis());
@@ -24,6 +25,11 @@ public class TaiKhoan extends Serializable{
         username = name;
         password = pass;
         this.email = email;
+    }
+    
+    public TaiKhoan setFullName(String fn) {
+        fullName = fn;
+        return this;
     }
 
     public TaiKhoan setNgaySinh(Date d) {
@@ -45,6 +51,10 @@ public class TaiKhoan extends Serializable{
     public TaiKhoan setTrangThai(int s) {
         trangThai = s;
         return this;
+    }
+    
+    public String getFullName() {
+        return fullName;
     }
 
     public String getUsername() {
