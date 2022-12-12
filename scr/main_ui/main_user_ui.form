@@ -197,10 +197,10 @@
                       <Group type="102" attributes="0">
                           <EmptySpace min="285" pref="285" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="initChangePassButton" min="-2" max="-2" attributes="0"/>
-                                  <Component id="initChangeUserNameButton" min="-2" pref="152" max="-2" attributes="0"/>
-                                  <Component id="initGroupCreateButton" min="-2" pref="152" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                  <Component id="initChangeUserNameButton" pref="152" max="32767" attributes="0"/>
+                                  <Component id="initGroupCreateButton" pref="152" max="32767" attributes="0"/>
+                                  <Component id="initChangePassButton" alignment="1" max="32767" attributes="0"/>
                               </Group>
                               <Component id="logoutButton" alignment="0" min="-2" pref="152" max="-2" attributes="0"/>
                           </Group>
@@ -297,7 +297,7 @@
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="1" attributes="0">
-                                  <EmptySpace max="32767" attributes="0"/>
+                                  <EmptySpace pref="22" max="32767" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="jLabel8" min="-2" pref="132" max="-2" attributes="0"/>
                                       <Component id="txtOldPass" min="-2" pref="219" max="-2" attributes="0"/>
@@ -310,13 +310,13 @@
                               </Group>
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
+                                      <Group type="102" attributes="0">
                                           <EmptySpace min="-2" pref="74" max="-2" attributes="0"/>
                                           <Component id="changePassButton" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
-                                          <EmptySpace min="-2" pref="105" max="-2" attributes="0"/>
-                                          <Component id="lblError" min="-2" pref="43" max="-2" attributes="0"/>
+                                          <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
+                                          <Component id="lblError" min="-2" pref="148" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <EmptySpace max="32767" attributes="0"/>
@@ -338,8 +338,8 @@
                                   <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="txtConfirmNewPass" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="68" max="32767" attributes="0"/>
-                                  <Component id="lblError" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace pref="81" max="32767" attributes="0"/>
+                                  <Component id="lblError" min="-2" pref="18" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="changePassButton" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>

@@ -158,7 +158,7 @@ public class Service implements Runnable {
                         try {
                             temp2 = new PrintWriter(entry.getKey().getOutputStream(), true);
                             JSONObject newObject = new JSONObject();
-                            newObject.put("message", "/newUserLogin");
+                            newObject.put("message", "/userLogout");
                             newObject.put("result", 1);
                             newObject.put("object", entry.getValue().JSONify().toString());
                             temp2.println(newObject.toString());
@@ -183,9 +183,11 @@ public class Service implements Runnable {
 
                 while (true) {
                     String command = in.readLine();
+                    System.out.println(command);
+                    if (command == null) continue;
+
                     var list = command.split(" ", 2);
                     var action = list[0];
-                    System.out.println(command);
                     if (action.startsWith("/login")) {
                         try {
                             JSONObject object = new JSONObject(list[1]);
@@ -210,6 +212,7 @@ public class Service implements Runnable {
 //                               
                             } else {
                                 sendMessage(list[0], result, new JSONObject().put("error", "Wrong credentials"));
+                                shutDown();
                             }
 
                         } catch (JSONException ex) {
@@ -230,8 +233,6 @@ public class Service implements Runnable {
                     } else if (action.startsWith("/register")) {
 
                     } else if (action.startsWith("/changePass")) {
-
-                    } else if (action.startsWith("resetPassword")) {
                         JSONObject object = new JSONObject(list[1]);
                         var newPass = object.getString("newPass");
                         var oldPass = object.getString("oldPass");
@@ -240,13 +241,30 @@ public class Service implements Runnable {
                         if (new DAO_TaiKhoan().select("where  password=N'" + oldPass + "' and username = N'" + user + "'").size() > 0) {
                             try {
                                 var result = database_helper.insert("update taikhoan set password=N'" + newPass + "' where username = N'" + user + "'");
-                                sendMessage("/changePass", result, null);
+                                sendMessage("/changePass", result, new JSONObject());
                             } catch (Exception ex) {
                                 Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                        }else{
-                             sendMessage("/changePass", 0, null);
+                        } else {
+                            sendMessage("/changePass", 0, new JSONObject());
                         }
+                    } else if (action.startsWith("/changeUsername")) {
+                        JSONObject object = new JSONObject(list[1]);
+                        var pass = object.getString("password");
+                        var newName = object.getString("newName");
+                        var user = object.getString("user");
+
+                        if (new DAO_TaiKhoan().select("where password=N'" + pass + "' and username = N'" + user + "'").size() > 0) {
+                            try {
+                                var result = database_helper.insert("update taikhoan set username=N'" + newName + "' where username=N'" + user + "'");
+                                sendMessage("/changeUsername", result, new JSONObject());
+                            } catch (Exception ex) {
+                                Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        } else {
+                            sendMessage("/changePass", 0, new JSONObject());
+                        }
+                    } else if (action.startsWith("resetPassword")) {
 
                     } else if (action.startsWith("/getChatList")) {
                         JSONObject object = new JSONObject(list[1]);
@@ -482,9 +500,9 @@ public class Service implements Runnable {
         private int processLoginCommand(String username, String password) {
             var daoAcc = new DAO_TaiKhoan();
 
-            daoAcc.selectAll().forEach((account) -> {
-                System.out.println(account);
-            });
+//            daoAcc.selectAll().forEach((account) -> {
+//                System.out.println(account);
+//            });
 
             daoAcc.select("where Username='" + username + "'").forEach((account) -> {
                 System.out.println(account);
@@ -577,7 +595,7 @@ public class Service implements Runnable {
         private ArrayList<TaiKhoan> getChatList(TaiKhoan user) {
             try {
                 String name = user.getUsername();
-                var resultset = database_helper.select(String.format("select distinct nguoigui from DanhSachTinNhan where (nguoigui!=N'%s' and bansao=N'%s') union select distinct nguoinhan from DanhSachTinNhan where (nguoinhan!=N'%s' and bansao=N'%s')",
+                var resultset = database_helper.select(String.format("select distinct nguoigui from DanhSachTinNhan where (nguoigui!=N'%s' and bansao=N'%s' and idnhom is null) union select distinct nguoinhan from DanhSachTinNhan where (nguoinhan!=N'%s' and bansao=N'%s' and idnhom is null)",
                         name, name, name, name));
 
                 ArrayList<TaiKhoan> users = new ArrayList<>();

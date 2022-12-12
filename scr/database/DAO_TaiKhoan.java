@@ -110,7 +110,7 @@ public class DAO_TaiKhoan implements DAO<TaiKhoan> {
     }
     
     public ArrayList<TaiKhoan> updateStatus(TaiKhoan t, int status) {
-        return update(t.setTrangThai(status));
+        return update(t.setTrangThai(status), t.getUsername());
     }
 
     @Override

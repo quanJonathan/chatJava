@@ -40,7 +40,6 @@ public class Service implements Runnable {
     public BlockingQueue<String> cmd;
     public String username;
     Thread t;
-    private database.database_helper dbh = new database.database_helper();
 
     public static Service getInstance() {
         if (instance == null) {
@@ -77,8 +76,19 @@ public class Service implements Runnable {
     public void run() {
         try {
             client = new Socket(HOST, PORT_NUMBER);
-            cmd = new PriorityBlockingQueue<>();
+            System.out.println("client conencted " + client.toString());
+
+            if (al != null) {
+                System.out.println("al shutting down");
+                al.alThread.interrupt();
+                                al.alThread = null;
+                System.out.println("thread stopped");
+                al.shutDown();
+                System.out.println("shut down successfully");
+
+            }
             al = new ActionListener(client);
+            System.out.println("al connected" + al);
             if (t != null) {
                 t.interrupt();
                 t = null;
@@ -88,11 +98,19 @@ public class Service implements Runnable {
 
         } catch (IOException ex) {
             shutDown();
+        } catch (Throwable nu) {
         }
+    }
+
+    public boolean isServerRunning() {
+        return client != null;
     }
 
     public void shutDown() {
         try {
+            if (!isServerRunning()) {
+                return;
+            }
             if (!client.isClosed()) {
                 client.close();
                 al.shutDown();
@@ -112,9 +130,14 @@ public class Service implements Runnable {
         private PrintWriter out;
         private Socket client;
         public boolean isLogin = false;
+        private Thread alThread;
 
         public ActionListener(Socket client) {
             this.client = client;
+        }
+        
+        public boolean isFinishBooting() {
+            return in!=null && out!=null;
         }
 
         @Override
@@ -132,20 +155,23 @@ public class Service implements Runnable {
                 getCommandLoop();
 
             } catch (IOException ex) {
-
+                System.out.println(ex.getStackTrace());
             }
         }
 
         public void shutDown() {
             try {
-                in.close();
-                out.close();
-            } catch (IOException e) {
 
+            } catch (Throwable e) {
+
+            } finally {
+                in  = null;
+                out = null;
             }
         }
 
         public void sendCommand(String command, JSONObject object) {
+            System.out.println(command + " " + object.toString() + Thread.currentThread().getId());
             out.println(command + " " + object.toString());
         }
 
@@ -162,9 +188,9 @@ public class Service implements Runnable {
         }
 
         public void getCommandLoop() {
-            System.out.println("LOOP IN");
+            System.out.println("LOOP IN" + Thread.currentThread().getId());
 
-            (new Thread() {
+            alThread = new Thread() {
                 public void run() {
                     while (!client.isClosed()) {
                         try {
@@ -172,7 +198,7 @@ public class Service implements Runnable {
                             String readCommand = in.readLine();
                             if (readCommand != null) {
                                 if (!readCommand.isBlank()) {
-                                    cmd.add(readCommand);
+                                    //cmd.add(readCommand);
                                     System.out.println("Queue added loop: " + readCommand);
 
                                     var command = new JSONObject(readCommand);
@@ -205,15 +231,27 @@ public class Service implements Runnable {
                                             PublicEvent.getInstance().getEventChatList().userConnect(user);
                                             break;
                                         }
-                                        
-                                        case "/changePass":{
+
+                                        case "/changePass": {
                                             String message;
-                                            if(result == 0){
+                                            if (result == 0) {
                                                 message = "Failed to change password.";
-                                            }else{
+                                            } else {
                                                 message = "Change password successfully";
                                             }
                                             PublicEvent.getInstance().getEventMain().showDialog(message, "Result");
+                                            break;
+                                        }
+
+                                        case "/changeUsername": {
+                                            String message;
+                                            if (result == 0) {
+                                                message = "Failed to change username.";
+                                            } else {
+                                                message = "Change username successfully";
+                                            }
+                                            PublicEvent.getInstance().getEventMain().showDialog(message, "Result");
+                                            break;
                                         }
 
                                         case "/chatListReceived": {
@@ -299,7 +337,7 @@ public class Service implements Runnable {
                                             String idGroup = messageObject.getString("IDNhom");
                                             TinNhan mess = new TinNhan(id, time, text, sender, receiver, idGroup, sender);
 
-                                            PublicEvent.getInstance().getEventGroupChat().receiveMessage(new NhomChat(groupID, groupName, null ), mess);
+                                            PublicEvent.getInstance().getEventGroupChat().receiveMessage(new NhomChat(groupID, groupName, null), mess);
                                             break;
                                         }
 
@@ -349,7 +387,8 @@ public class Service implements Runnable {
                         }
                     }
                 }
-            }).start();
+            };
+            alThread.start();
         }
     }
 }

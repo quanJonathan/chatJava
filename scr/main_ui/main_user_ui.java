@@ -35,11 +35,10 @@ public class main_user_ui extends javax.swing.JFrame {
     public main_user_ui(TaiKhoan username) {
         initComponents();
         setLocationRelativeTo(null);
-        
+
         cardLayoutMain = (CardLayout) mainBody.getLayout();
         cardHomePage = (CardLayout) modifiedPanelHome.getLayout();
-        cardLayoutMain.show(mainBody, "homeCard");
-
+        
         chat.setVisible(false);
         groupChat.setVisible(false);
         currentUser = username;
@@ -55,7 +54,7 @@ public class main_user_ui extends javax.swing.JFrame {
 
         initUI();
         initEvent();
-        PublicEvent.getInstance().getEventMain().navigateToChatPage();
+        PublicEvent.getInstance().getEventMain().navigateToHomePage();
     }
 
     public final void initUI() {
@@ -167,10 +166,10 @@ public class main_user_ui extends javax.swing.JFrame {
 
             @Override
             public void setGroupChatData(ArrayList<TinNhan> messages) {
-                
+
                 groupChat.setVisible(true);
                 groupChat.setGroupData(messages);
-                
+
             }
 
             @Override
@@ -461,7 +460,7 @@ public class main_user_ui extends javax.swing.JFrame {
         changePassPageLayout.setHorizontalGroup(
             changePassPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, changePassPageLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(22, Short.MAX_VALUE)
                 .addGroup(changePassPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtOldPass, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -476,8 +475,8 @@ public class main_user_ui extends javax.swing.JFrame {
                         .addGap(74, 74, 74)
                         .addComponent(changePassButton))
                     .addGroup(changePassPageLayout.createSequentialGroup()
-                        .addGap(105, 105, 105)
-                        .addComponent(lblError, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(48, 48, 48)
+                        .addComponent(lblError, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         changePassPageLayout.setVerticalGroup(
@@ -495,8 +494,8 @@ public class main_user_ui extends javax.swing.JFrame {
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtConfirmNewPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
-                .addComponent(lblError)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
+                .addComponent(lblError, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(changePassButton)
                 .addGap(22, 22, 22))
@@ -644,10 +643,10 @@ public class main_user_ui extends javax.swing.JFrame {
             .addGroup(homePageLayout.createSequentialGroup()
                 .addGap(285, 285, 285)
                 .addGroup(homePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(homePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(initChangePassButton)
-                        .addComponent(initChangeUserNameButton, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(initGroupCreateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(homePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(initChangeUserNameButton, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
+                        .addComponent(initGroupCreateButton, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
+                        .addComponent(initChangePassButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(logoutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(90, 90, 90)
                 .addComponent(modifiedPanelHome, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -757,6 +756,10 @@ public class main_user_ui extends javax.swing.JFrame {
         String oldPass = txtOldPass.getText();
         String newPass = txtNewPass.getText();
         String newPassConfirm = txtConfirmNewPass.getText();
+        if (newPass.equals(oldPass)) {
+            PublicEvent.getInstance().getEventMain().showDialog("New password cannot be the same as your old passwords!", "Invalid password");
+            return;
+        }
 
         if (!newPass.equals(newPassConfirm)) {
             lblError.setText("Mật khẩu mới không khớp");
@@ -772,11 +775,15 @@ public class main_user_ui extends javax.swing.JFrame {
     private void changeUsernameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeUsernameButtonActionPerformed
         String newName = txtNewName.getText();
         String passWord = txtConfirmPass.getText();
+        if (newName.equals(currentUser.getUsername())) {
+            PublicEvent.getInstance().getEventMain().showDialog("New username is the same!", "Invalid name");
+            return;
+        }
 
         JSONObject object = new JSONObject();
         object.put("password", passWord);
         object.put("newName", newName);
-        object.put("user", currentUser.JSONify());
+        object.put("user", currentUser.getUsername());
 
         Service.getInstance().al.sendCommand("/changeUsername", object);
     }//GEN-LAST:event_changeUsernameButtonActionPerformed

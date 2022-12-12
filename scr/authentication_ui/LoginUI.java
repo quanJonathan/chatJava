@@ -3,6 +3,7 @@ package authentication_ui;
 import entity.TaiKhoan;
 import event.EventLogin;
 import event.PublicEvent;
+import javax.swing.JOptionPane;
 import main_ui.main_user_ui;
 import service_client.Service;
 
@@ -16,15 +17,16 @@ public class LoginUI extends javax.swing.JFrame {
      * Creates new form login_1
      */
     private String username;
+
     public LoginUI() {
         initComponents();
         setLocationRelativeTo(null);
         init();
-        
+
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-               Service.getInstance().shutDown();
+                Service.getInstance().shutDown();
             }
         });
     }
@@ -34,26 +36,33 @@ public class LoginUI extends javax.swing.JFrame {
         PublicEvent.getInstance().addEventLogin(new EventLogin() {
             @Override
             public void login() {
-                
                 Service.getInstance().run();
+                if (!Service.getInstance().isServerRunning()) {
+                    JOptionPane.showMessageDialog(rootPane, "Server is not available!");
+                    dispose();
+                    return;
+                }
+
                 var email = usernameTextField.getText();
                 String password = String.valueOf(passwordTextField.getPassword());
 
                 TaiKhoan acc = new TaiKhoan("", password, email.toLowerCase());
                 var object = acc.JSONify();
                 
+                while(!Service.getInstance().al.isFinishBooting()) {}
+
                 Service.getInstance().al.sendCommand("/login", object);
             }
-            
+
             @Override
-            public void goLogin(TaiKhoan username, String error){
-               if(username == null){
-                   lblError.setText(error);
-                   Service.getInstance().shutDown();
-               }else{
-                   dispose();
-                   new main_user_ui(username).setVisible(true);
-               }   
+            public void goLogin(TaiKhoan username, String error) {
+                if (username == null) {
+                    lblError.setText(error);
+                    Service.getInstance().shutDown();
+                } else {
+                    dispose();
+                    new main_user_ui(username).setVisible(true);
+                }
             }
 
             @Override
