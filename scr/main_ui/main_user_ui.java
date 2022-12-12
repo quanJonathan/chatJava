@@ -1,23 +1,23 @@
 package main_ui;
 
-import UIObject.ChatCard;
 import authentication_ui.LoginUI;
 import entity.BanBe;
+import entity.IDPrefix;
 import entity.NhomChat;
 import entity.TaiKhoan;
+import entity.ThanhVienNhomChat;
 import entity.TinNhan;
 import event.EventChat;
 import event.EventFriend;
 import event.EventGroupChat;
 import event.EventMain;
 import event.PublicEvent;
-import forSubmitOnly.GroupCard;
 import java.awt.CardLayout;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
 import javax.swing.DefaultListModel;
-import javax.swing.JDialog;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import org.json.JSONArray;
@@ -38,7 +38,7 @@ public class main_user_ui extends javax.swing.JFrame {
 
         cardLayoutMain = (CardLayout) mainBody.getLayout();
         cardHomePage = (CardLayout) modifiedPanelHome.getLayout();
-        
+
         chat.setVisible(false);
         groupChat.setVisible(false);
         currentUser = username;
@@ -66,6 +66,54 @@ public class main_user_ui extends javax.swing.JFrame {
         readFriendList();
         readChatList();
         readGroupChatList();
+
+        memberGroupCreate.setSelectionModel(new DefaultListSelectionModel() {
+            public void setSelectionInterval(int index0, int index1) {
+                if (index0 == index1) {
+                    if (isSelectedIndex(index0)) {
+                        removeSelectionInterval(index0, index0);
+                        return;
+                    }
+                }
+                super.setSelectionInterval(index0, index1);
+            }
+
+            @Override
+            public void addSelectionInterval(int index0, int index1) {
+                if (index0 == index1) {
+                    if (isSelectedIndex(index0)) {
+                        removeSelectionInterval(index0, index0);
+                        return;
+                    }
+                    super.addSelectionInterval(index0, index1);
+                }
+            }
+
+        });
+
+        adminGroupCreate.setSelectionModel(new DefaultListSelectionModel() {
+            public void setSelectionInterval(int index0, int index1) {
+                if (index0 == index1) {
+                    if (isSelectedIndex(index0)) {
+                        removeSelectionInterval(index0, index0);
+                        return;
+                    }
+                }
+                super.setSelectionInterval(index0, index1);
+            }
+
+            @Override
+            public void addSelectionInterval(int index0, int index1) {
+                if (index0 == index1) {
+                    if (isSelectedIndex(index0)) {
+                        removeSelectionInterval(index0, index0);
+                        return;
+                    }
+                    super.addSelectionInterval(index0, index1);
+                }
+            }
+
+        });
     }
 
     public final void initEvent() {
@@ -309,12 +357,12 @@ public class main_user_ui extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txtGroupName = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        listSelectToGroupCreate = new javax.swing.JList<>();
+        memberGroupCreate = new javax.swing.JList<>();
         jLabel2 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         createGroupButton = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        adminGroupCreate = new javax.swing.JList<>();
         logoutButton = new javax.swing.JButton();
         lblUsername = new javax.swing.JLabel();
         chatPage = new javax.swing.JPanel();
@@ -550,12 +598,12 @@ public class main_user_ui extends javax.swing.JFrame {
 
         jLabel1.setText("Nhập tên nhóm");
 
-        listSelectToGroupCreate.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "quan", "bao", "phu" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+        memberGroupCreate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                memberGroupCreateMouseClicked(evt);
+            }
         });
-        jScrollPane1.setViewportView(listSelectToGroupCreate);
+        jScrollPane1.setViewportView(memberGroupCreate);
 
         jLabel2.setText("Chọn thành viên nhóm");
 
@@ -568,59 +616,57 @@ public class main_user_ui extends javax.swing.JFrame {
             }
         });
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+        adminGroupCreate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                adminGroupCreateMouseClicked(evt);
+            }
         });
-        jScrollPane3.setViewportView(jList1);
+        jScrollPane3.setViewportView(adminGroupCreate);
 
         javax.swing.GroupLayout createGroupPageLayout = new javax.swing.GroupLayout(createGroupPage);
         createGroupPage.setLayout(createGroupPageLayout);
         createGroupPageLayout.setHorizontalGroup(
             createGroupPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(createGroupPageLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(createGroupPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
                     .addGroup(createGroupPageLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(72, 72, 72)
+                        .addComponent(createGroupButton)
+                        .addGap(100, 100, 100))
                     .addGroup(createGroupPageLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1))
-                    .addGroup(createGroupPageLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(createGroupPageLayout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(createGroupPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(createGroupPageLayout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(jLabel2))
-                            .addComponent(txtGroupName, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(createGroupPageLayout.createSequentialGroup()
-                        .addGap(75, 75, 75)
-                        .addComponent(createGroupButton)))
-                .addContainerGap(35, Short.MAX_VALUE))
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel5))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, createGroupPageLayout.createSequentialGroup()
+                        .addGroup(createGroupPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, createGroupPageLayout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(txtGroupName)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addGap(16, 16, 16))))
         );
         createGroupPageLayout.setVerticalGroup(
             createGroupPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, createGroupPageLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(39, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtGroupName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(5, 5, 5)
                 .addComponent(jLabel2)
-                .addGap(11, 11, 11)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(createGroupButton)
-                .addGap(72, 72, 72))
+                .addGap(21, 21, 21))
         );
 
         modifiedPanelHome.add(createGroupPage, "homeCreateGroupCard");
@@ -650,9 +696,9 @@ public class main_user_ui extends javax.swing.JFrame {
                     .addComponent(logoutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(90, 90, 90)
                 .addComponent(modifiedPanelHome, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 178, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, homePageLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(381, Short.MAX_VALUE)
                 .addComponent(lblUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(386, 386, 386))
         );
@@ -723,6 +769,7 @@ public class main_user_ui extends javax.swing.JFrame {
     }//GEN-LAST:event_chatTabMouseClicked
 
     private void friendListTabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_friendListTabMouseClicked
+        readFriendList();
         PublicEvent.getInstance().getEventMain().navigateToFriendPage();
     }//GEN-LAST:event_friendListTabMouseClicked
 
@@ -731,11 +778,14 @@ public class main_user_ui extends javax.swing.JFrame {
     }//GEN-LAST:event_groupTabMouseClicked
 
     private void initGroupCreateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initGroupCreateButtonActionPerformed
-        DefaultListModel listModel = new DefaultListModel();
+        DefaultListModel listModel = new DefaultListModel(), listModel2 = new DefaultListModel();
+        readFriendList();
         for (BanBe b : friends) {
-            listModel.addElement(b.getUsernameChinh().toString());
+            listModel.addElement(b.getUsernameBanBe());
+            listModel2.addElement(b.getUsernameBanBe());
         }
-        this.listSelectToGroupCreate = new JList(listModel);
+        this.memberGroupCreate.setModel(listModel);
+        this.adminGroupCreate.setModel(listModel2);
         cardHomePage.show(modifiedPanelHome, "homeCreateGroupCard");
     }//GEN-LAST:event_initGroupCreateButtonActionPerformed
 
@@ -789,15 +839,122 @@ public class main_user_ui extends javax.swing.JFrame {
     }//GEN-LAST:event_changeUsernameButtonActionPerformed
 
     private void createGroupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createGroupButtonActionPerformed
-        int[] indices = listSelectToGroupCreate.getSelectedIndices();
+        var newGroup = new NhomChat(IDPrefix.getIDNhomChat(), txtGroupName.getText(), new Timestamp(System.currentTimeMillis()));
 
-        ArrayList<String> names = new ArrayList<>();
-        for (int i = 0; i < indices.length; i++) {
-            names.add(listSelectToGroupCreate.getModel().getElementAt(indices[i]));
-        }
-
-
+        ArrayList<ThanhVienNhomChat> members = new ArrayList<>();
+        memberGroupCreate.getSelectedValuesList().forEach(mem -> {
+            members.add(new ThanhVienNhomChat(newGroup.getIDNhom(), mem, false, new Timestamp(System.currentTimeMillis())));
+        });
+        ArrayList<ThanhVienNhomChat> admins = new ArrayList<>();
+        adminGroupCreate.getSelectedValuesList().forEach(mem -> {
+            admins.add(new ThanhVienNhomChat(newGroup.getIDNhom(), mem, true, new Timestamp(System.currentTimeMillis())));
+        });
+        admins.add(new ThanhVienNhomChat(newGroup.getIDNhom(), currentUser.getUsername(), true, new Timestamp(System.currentTimeMillis())));
+        members.addAll(admins);
+        members.forEach(mem -> {
+            System.out.println(mem);
+        });
     }//GEN-LAST:event_createGroupButtonActionPerformed
+
+    private void memberGroupCreateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_memberGroupCreateMouseClicked
+        var memSelected = memberGroupCreate.getSelectedValuesList();
+        System.out.println("mem=");
+        memSelected.forEach(i -> {
+            System.out.print(i);
+        });
+        System.out.println("");
+        DefaultListModel listModel = new DefaultListModel();
+        var adminSelected = adminGroupCreate.getSelectedValuesList();
+        System.out.println("admin=");
+        adminSelected.forEach(i -> {
+            System.out.print(i);
+        });
+        System.out.println("");
+
+        if (memSelected.isEmpty()) {
+            for (var k : friends) {
+                listModel.addElement(k.getUsernameBanBe());
+            }
+        } else {
+            for (var k : friends) {
+                boolean exists = false;
+                for (var i : memSelected) {
+                    if (k.getUsernameBanBe().equals(i)) {
+                        exists = true;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    listModel.addElement(k.getUsernameBanBe());
+                }
+            }
+        }
+        adminGroupCreate.setModel(listModel);
+        var idx = new ArrayList<Integer>();
+        adminSelected.forEach(a -> {
+            for(int i = 0; i < listModel.getSize(); i++) {
+                if(adminGroupCreate.getModel().getElementAt(i).equals(a)) {
+                    idx.add(i);
+                }
+            }
+        });
+        adminGroupCreate.setSelectedIndices(convertIntegers(idx));
+
+
+    }//GEN-LAST:event_memberGroupCreateMouseClicked
+public static int[] convertIntegers(List<Integer> integers)
+{
+    int[] ret = new int[integers.size()];
+    for (int i=0; i < ret.length; i++)
+    {
+        ret[i] = integers.get(i).intValue();
+    }
+    return ret;
+}
+    private void adminGroupCreateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_adminGroupCreateMouseClicked
+        var adminSelected = adminGroupCreate.getSelectedValuesList();
+        System.out.println("admin=");
+        adminSelected.forEach(i -> {
+            System.out.print(i);
+        });
+        System.out.println("");
+        DefaultListModel listModel = new DefaultListModel();
+        var memSelected = memberGroupCreate.getSelectedValuesList();
+        System.out.println("mem=");
+        memSelected.forEach(i -> {
+            System.out.print(i);
+        });
+        System.out.println("");
+
+        if (adminSelected.isEmpty()) {
+            for (var k : friends) {
+                listModel.addElement(k.getUsernameBanBe());
+            }
+        } else {
+            for (var k : friends) {
+                boolean exists = false;
+                for (var i : adminSelected) {
+                    if (k.getUsernameBanBe().equals(i)) {
+                        exists = true;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    listModel.addElement(k.getUsernameBanBe());
+                }
+            }
+        }
+        memberGroupCreate.setModel(listModel);
+        var idx = new ArrayList<Integer>();
+        memSelected.forEach(a -> {
+            for(int i = 0; i < listModel.getSize(); i++) {
+                if(memberGroupCreate.getModel().getElementAt(i).equals(a)) {
+                    idx.add(i);
+                }
+            }
+        });
+        memberGroupCreate.setSelectedIndices(convertIntegers(idx));
+    }//GEN-LAST:event_adminGroupCreateMouseClicked
 
     /**
      * @param args the command line arguments
@@ -835,6 +992,7 @@ public class main_user_ui extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JList<String> adminGroupCreate;
     private javax.swing.JButton changePassButton;
     private javax.swing.JPanel changePassPage;
     private javax.swing.JPanel changeUserNamePage;
@@ -864,15 +1022,14 @@ public class main_user_ui extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JLabel lblError;
     private javax.swing.JLabel lblUsername;
-    private javax.swing.JList<String> listSelectToGroupCreate;
     private javax.swing.JButton logoutButton;
     private javax.swing.JPanel mainBody;
+    private javax.swing.JList<String> memberGroupCreate;
     private javax.swing.JPanel modifiedPanelHome;
     private javax.swing.JPanel sideNavBar;
     private javax.swing.JTextField txtConfirmNewPass;

@@ -21,6 +21,6 @@ public class IDPrefix {
     }
     
     public static String getIDNhomChat() {
-        return StringRandomizer.GetStringWithPrefix(IDNhomChat, IDPrefix.length);
+        return StringRandomizer.GetStringWithPrefix(IDNhomChat, IDPrefix.length - 3);
     }
 }

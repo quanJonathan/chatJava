@@ -8,14 +8,10 @@ import com.microsoft.sqlserver.jdbc.SQLServerException;
 import entity.NhomChat;
 import entity.TaiKhoan;
 import entity.ThanhVienNhomChat;
-import entity.TinNhan;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -115,11 +111,10 @@ public class DAO_NhomChat implements DAO<NhomChat> {
         }
     }
 
-    public ArrayList<NhomChat> insertMember(String id, ArrayList<TaiKhoan> members) {
+    public ArrayList<NhomChat> insertMember(String id, ArrayList<ThanhVienNhomChat> members) {
         try {
             members.forEach(mem -> {
-                var m = new ThanhVienNhomChat(id, mem.getUsername(), false, new Timestamp(System.currentTimeMillis()));
-                var q = m.toDelimitedList();
+                var q = mem.toDelimitedList();
                 try {
                     database_helper.insert(database_query_builder.insert(tableName2, q));
                 } catch (Exception ex) {

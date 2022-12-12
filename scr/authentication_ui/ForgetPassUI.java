@@ -6,11 +6,29 @@ package authentication_ui;
 
 import event.EventForgetPass;
 import event.PublicEvent;
+import java.util.Properties;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 /**
  *
  * @author ADMIN
  */
+class MailConfig {
+
+    public static final String HOST_NAME = "smtp.gmail.com";
+
+    public static final int SSL_PORT = 465; // Port for SSL
+    public static final int TSL_PORT = 587; // Port for TLS/STARTTLS
+    public static final String APP_EMAIL = "bebaoboy@gmail.com"; // your email
+    public static final String APP_PASSWORD = "pmhgxmxbnmonqwik"; // your password
+}
+
 public class ForgetPassUI extends javax.swing.JFrame {
 
     /**
@@ -21,18 +39,41 @@ public class ForgetPassUI extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         init();
     }
-    
-    public void init(){
-        PublicEvent.getInstance().addEventForgetPass(new EventForgetPass(){
+
+    public void init() {
+        PublicEvent.getInstance().addEventForgetPass(new EventForgetPass() {
             @Override
             public void sendPasswordResetMail(String email, String username) {
-                // ToDo add func to send password
+                Properties props = new Properties();
+                props.put("mail.smtp.auth", "true");
+                props.put("mail.smtp.host", MailConfig.HOST_NAME);
+                props.put("mail.smtp.starttls.enable", "true");
+                props.put("mail.smtp.port", MailConfig.TSL_PORT);
+                Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(MailConfig.APP_EMAIL, MailConfig.APP_PASSWORD);
+                    }
+                });
+                try {
+                    MimeMessage message = new MimeMessage(session);
+                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+                    message.setSubject("Reset Password from ChatJava");
+                    message.setText("""
+                                    Warning: DON'T share this passcode to anyone!
+                                    Your passcode is: 12347845.
+                                    Please enter this passcode in the application to reset your password!""");
+                    Transport.send(message);
+                    System.out.println("Message sent successfully");
+                } catch (MessagingException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             @Override
             public void goback() {
-               new LoginUI().setVisible(true);
-            }  
+                new LoginUI().setVisible(true);
+            }
         });
     }
 
@@ -78,6 +119,7 @@ public class ForgetPassUI extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         jLabel2.setText("Email");
 
+        emailText.setText("bebaoboy2@gmail.com");
         emailText.setToolTipText("Enter email");
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
@@ -142,8 +184,8 @@ public class ForgetPassUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void gobackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gobackActionPerformed
-       this.dispose();
-       PublicEvent.getInstance().getEventForgetPass().goback();
+        this.dispose();
+        PublicEvent.getInstance().getEventForgetPass().goback();
     }//GEN-LAST:event_gobackActionPerformed
 
     private void emailSendingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailSendingButtonActionPerformed

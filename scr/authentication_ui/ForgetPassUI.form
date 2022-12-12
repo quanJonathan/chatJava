@@ -111,6 +111,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="emailText">
       <Properties>
+        <Property name="text" type="java.lang.String" value="bebaoboy2@gmail.com"/>
         <Property name="toolTipText" type="java.lang.String" value="Enter email"/>
       </Properties>
     </Component>
