@@ -81,7 +81,7 @@ public class Service implements Runnable {
             if (al != null) {
                 System.out.println("al shutting down");
                 al.alThread.interrupt();
-                                al.alThread = null;
+                al.alThread = null;
                 System.out.println("thread stopped");
                 al.shutDown();
                 System.out.println("shut down successfully");
@@ -135,9 +135,9 @@ public class Service implements Runnable {
         public ActionListener(Socket client) {
             this.client = client;
         }
-        
+
         public boolean isFinishBooting() {
-            return in!=null && out!=null;
+            return in != null && out != null;
         }
 
         @Override
@@ -165,7 +165,7 @@ public class Service implements Runnable {
             } catch (Throwable e) {
 
             } finally {
-                in  = null;
+                in = null;
                 out = null;
             }
         }
@@ -369,8 +369,16 @@ public class Service implements Runnable {
                                                 String main = newObject.getString("username");
                                                 String friend = newObject.getString("usernameBanBe");
                                                 var date = convertTime(newObject.getString("ngayKetBan"));
-                                                BanBe b = new BanBe(main, friend, date);
-                                                friendList.add(b);
+                                                BanBe b;
+                                                if (main.equals(getCurrentUser())) {
+                                                    b = new BanBe(main, friend, date);
+                                                    friendList.add(b);
+
+                                                } else if (friend.equals(getCurrentUser())) {
+                                                    b = new BanBe(friend, main, date);
+                                                    friendList.add(b);
+
+                                                }
                                             }
                                             System.out.println(friendList);
                                             PublicEvent.getInstance().getEventFriend().setData(friendList);

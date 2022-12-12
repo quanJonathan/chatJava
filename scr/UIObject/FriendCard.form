@@ -39,7 +39,10 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnChat" pref="93" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="lblBeFriendDate" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+                      <Component id="lblBeFriendDate" max="32767" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -99,7 +102,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="lblBeFriendDate">
       <Properties>
-        <Property name="horizontalAlignment" type="int" value="2"/>
+        <Property name="horizontalAlignment" type="int" value="4"/>
         <Property name="text" type="java.lang.String" value="Ng&#xe0;y k&#x1ebf;t b&#x1ea1;n"/>
         <Property name="verticalAlignment" type="int" value="1"/>
       </Properties>

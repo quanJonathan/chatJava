@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -68,6 +67,7 @@ public class main_user_ui extends javax.swing.JFrame {
         readGroupChatList();
 
         memberGroupCreate.setSelectionModel(new DefaultListSelectionModel() {
+            @Override
             public void setSelectionInterval(int index0, int index1) {
                 if (index0 == index1) {
                     if (isSelectedIndex(index0)) {
@@ -92,6 +92,7 @@ public class main_user_ui extends javax.swing.JFrame {
         });
 
         adminGroupCreate.setSelectionModel(new DefaultListSelectionModel() {
+            @Override
             public void setSelectionInterval(int index0, int index1) {
                 if (index0 == index1) {
                     if (isSelectedIndex(index0)) {

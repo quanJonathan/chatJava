@@ -60,6 +60,7 @@ public class LoginUI extends javax.swing.JFrame {
                     lblError.setText(error);
                     Service.getInstance().shutDown();
                 } else {
+                    Service.getInstance().setCurrentUser(username.getUsername());
                     dispose();
                     new main_user_ui(username).setVisible(true);
                 }

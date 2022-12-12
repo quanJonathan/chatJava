@@ -77,7 +77,7 @@ public class FriendCard extends javax.swing.JPanel {
         lblStatus.setForeground(new java.awt.Color(0, 204, 0));
         lblStatus.setText("active");
 
-        lblBeFriendDate.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblBeFriendDate.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblBeFriendDate.setText("Ngày kết bạn");
         lblBeFriendDate.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
@@ -96,7 +96,9 @@ public class FriendCard extends javax.swing.JPanel {
                         .addComponent(btnUnfriend)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnChat, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE))
-                    .addComponent(lblBeFriendDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addComponent(lblBeFriendDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -117,7 +119,7 @@ public class FriendCard extends javax.swing.JPanel {
 
     private void btnUnfriendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnfriendActionPerformed
         int dialogButton = JOptionPane.YES_NO_OPTION;
-        int result = JOptionPane.showConfirmDialog(getRootPane(), "Bạn có chắc chắn không?", ""
+        int result = JOptionPane.showConfirmDialog(getRootPane(), "Bạn có chắc muốn hủy kết bạn với " + this.user.getUsernameChinh() + "?", ""
                 + "Hủy kết bạn", dialogButton);
         if(result == 1){
             PublicEvent.getInstance().getEventFriend().unfriend(this.user);

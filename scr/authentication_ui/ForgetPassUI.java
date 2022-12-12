@@ -6,6 +6,7 @@ package authentication_ui;
 
 import event.EventForgetPass;
 import event.PublicEvent;
+import java.awt.CardLayout;
 import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -14,6 +15,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -36,6 +38,8 @@ public class ForgetPassUI extends javax.swing.JFrame {
      */
     public ForgetPassUI() {
         initComponents();
+        cardLayout = (CardLayout) jPanel2.getLayout();
+        cardLayout.show(jPanel2, "formCard");
         setLocationRelativeTo(null);
         init();
     }
@@ -61,12 +65,19 @@ public class ForgetPassUI extends javax.swing.JFrame {
                     message.setSubject("Reset Password from ChatJava");
                     message.setText("""
                                     Warning: DON'T share this passcode to anyone!
+                                    Your username is """ + username + 
+                                    """
                                     Your passcode is: 12347845.
                                     Please enter this passcode in the application to reset your password!""");
                     Transport.send(message);
                     System.out.println("Message sent successfully");
                 } catch (MessagingException e) {
-                    throw new RuntimeException(e);
+
+                } finally {
+                    String code = JOptionPane.showInputDialog(rootPane, "Vui lòng nhập mã code đã gửi tới email\n" + email, "Nhập code", JOptionPane.QUESTION_MESSAGE);
+                    if (!code.isEmpty()) {
+                        cardLayout.show(jPanel2, "resetCard");
+                    }
                 }
             }
 
@@ -88,12 +99,21 @@ public class ForgetPassUI extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        emailText = new javax.swing.JTextField();
+        jPanel2 = new javax.swing.JPanel();
+        formPanel = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
+        emailText = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
         usernameText = new javax.swing.JTextField();
         emailSendingButton = new javax.swing.JButton();
         goback = new javax.swing.JButton();
+        resetPanel = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        txtNewPass = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        txtNewPassAgain = new javax.swing.JTextField();
+        doneButton = new javax.swing.JButton();
+        goback1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -112,18 +132,20 @@ public class ForgetPassUI extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
-        jLabel2.setText("Email");
+        jPanel2.setLayout(new java.awt.CardLayout());
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jLabel3.setText("Username");
 
         emailText.setText("bebaoboy2@gmail.com");
         emailText.setToolTipText("Enter email");
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
-        jLabel3.setText("Username");
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jLabel2.setText("Email");
 
         usernameText.setToolTipText("Enter username");
 
@@ -141,31 +163,28 @@ public class ForgetPassUI extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(42, 42, 42)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel2)
-                            .addComponent(emailText)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(usernameText)
-                            .addComponent(emailSendingButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(83, 83, 83)
+        javax.swing.GroupLayout formPanelLayout = new javax.swing.GroupLayout(formPanel);
+        formPanel.setLayout(formPanelLayout);
+        formPanelLayout.setHorizontalGroup(
+            formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(formPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel2)
+                        .addComponent(emailText)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(usernameText)
+                        .addComponent(emailSendingButton))
+                    .addGroup(formPanelLayout.createSequentialGroup()
+                        .addGap(41, 41, 41)
                         .addComponent(goback, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 66, Short.MAX_VALUE))
+                .addContainerGap())
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(107, 107, 107)
+        formPanelLayout.setVerticalGroup(
+            formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(formPanelLayout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(emailText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -177,7 +196,91 @@ public class ForgetPassUI extends javax.swing.JFrame {
                 .addComponent(emailSendingButton)
                 .addGap(18, 18, 18)
                 .addComponent(goback)
-                .addContainerGap(49, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        jPanel2.add(formPanel, "formCard");
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jLabel4.setText("Vui lòng nhập lại:");
+
+        txtNewPass.setToolTipText("Enter email");
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jLabel5.setText("Nhập mật khẩu mới:");
+
+        txtNewPassAgain.setToolTipText("Enter username");
+
+        doneButton.setText("Hoàn tất");
+        doneButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                doneButtonActionPerformed(evt);
+            }
+        });
+
+        goback1.setText("Quay lại");
+        goback1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                goback1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout resetPanelLayout = new javax.swing.GroupLayout(resetPanel);
+        resetPanel.setLayout(resetPanelLayout);
+        resetPanelLayout.setHorizontalGroup(
+            resetPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(resetPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(resetPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(resetPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtNewPass)
+                        .addComponent(txtNewPassAgain)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(resetPanelLayout.createSequentialGroup()
+                        .addGap(41, 41, 41)
+                        .addGroup(resetPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(goback1, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                            .addComponent(doneButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap())
+        );
+        resetPanelLayout.setVerticalGroup(
+            resetPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(resetPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtNewPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtNewPassAgain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40)
+                .addComponent(doneButton)
+                .addGap(18, 18, 18)
+                .addComponent(goback1)
+                .addContainerGap())
+        );
+
+        jPanel2.add(resetPanel, "resetCard");
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(55, 55, 55)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 77, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(66, 66, 66))
         );
 
         pack();
@@ -191,8 +294,26 @@ public class ForgetPassUI extends javax.swing.JFrame {
     private void emailSendingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailSendingButtonActionPerformed
         var email = emailText.getText();
         var username = usernameText.getText();
-        PublicEvent.getInstance().getEventForgetPass().sendPasswordResetMail(email, username);
+        var input = JOptionPane.showConfirmDialog(rootPane, "Xác nhận email đặt lại mật khẩu?", "Thông báo", JOptionPane.YES_NO_OPTION);
+        if (input == JOptionPane.YES_OPTION) {
+            PublicEvent.getInstance().getEventForgetPass().sendPasswordResetMail(email, username);
+        }
     }//GEN-LAST:event_emailSendingButtonActionPerformed
+
+    private void doneButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doneButtonActionPerformed
+        var input = JOptionPane.showConfirmDialog(rootPane, "Xác nhận đặt lại mật khẩu?", "Thông báo", JOptionPane.OK_CANCEL_OPTION);
+        if (input == JOptionPane.OK_OPTION) {
+            JOptionPane.showConfirmDialog(rootPane, "Đặt lại mật khẩu thành công!", "Thông báo", JOptionPane.CLOSED_OPTION);
+            cardLayout.show(jPanel2, "formCard");
+        }
+    }//GEN-LAST:event_doneButtonActionPerformed
+
+    private void goback1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goback1ActionPerformed
+        var input = JOptionPane.showConfirmDialog(rootPane, "Hủy nhận đặt lại mật khẩu?", "Xác nhận", JOptionPane.OK_CANCEL_OPTION);
+        if (input == JOptionPane.OK_OPTION) {
+            cardLayout.show(jPanel2, "formCard");
+        }
+    }//GEN-LAST:event_goback1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -232,14 +353,24 @@ public class ForgetPassUI extends javax.swing.JFrame {
         });
     }
 
+    CardLayout cardLayout;
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton doneButton;
     private javax.swing.JButton emailSendingButton;
     private javax.swing.JTextField emailText;
+    private javax.swing.JPanel formPanel;
     private javax.swing.JButton goback;
+    private javax.swing.JButton goback1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel resetPanel;
+    private javax.swing.JTextField txtNewPass;
+    private javax.swing.JTextField txtNewPassAgain;
     private javax.swing.JTextField usernameText;
     // End of variables declaration//GEN-END:variables
 }

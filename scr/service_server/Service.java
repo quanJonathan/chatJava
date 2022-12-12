@@ -184,7 +184,9 @@ public class Service implements Runnable {
                 while (true) {
                     String command = in.readLine();
                     System.out.println(command);
-                    if (command == null) continue;
+                    if (command == null) {
+                        continue;
+                    }
 
                     var list = command.split(" ", 2);
                     var action = list[0];
@@ -503,7 +505,6 @@ public class Service implements Runnable {
 //            daoAcc.selectAll().forEach((account) -> {
 //                System.out.println(account);
 //            });
-
             daoAcc.select("where Username='" + username + "'").forEach((account) -> {
                 System.out.println(account);
             });
@@ -536,7 +537,9 @@ public class Service implements Runnable {
             ArrayList<BanBe> friendList;
             var daoFriend = new DAO_BanBe();
 
-            friendList = daoFriend.select(" where username = '" + user.getUsername() + "'");
+            friendList = daoFriend.select("b1 where username='" + user.getUsername() + "' and UsernameBanBe in (\n"
+                    + "	select Username from danhsachbanbe b2 where b2.UsernameBanBe = b1.Username\n"
+                    + ")");
 
             friendList.forEach((account) -> {
                 System.out.println(account);
