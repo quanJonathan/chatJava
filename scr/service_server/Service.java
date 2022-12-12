@@ -219,17 +219,34 @@ public class Service implements Runnable {
                     } else if (action.startsWith("/logout")) {
                         JSONObject object = new JSONObject(list[1]);
                         String name = object.getString("username");
+
                         userDisconnect(name);
                         removeClient(name);
                         updateStatus((new TaiKhoan(name, object.getString("password"), object.getString("email"))
                                 .setDiaChi(object.getString("diaChi"))
-                                .setGioiTinh(object.getBoolean("gioiTinh"))),
+                                .setGioiTinh(object.getBoolean("gioiTinh"))
+                                .setTrangThai(0)),
                                 0);
                     } else if (action.startsWith("/register")) {
 
-                    } else if (action.startsWith("/changePassword")) {
+                    } else if (action.startsWith("/changePass")) {
 
                     } else if (action.startsWith("resetPassword")) {
+                        JSONObject object = new JSONObject(list[1]);
+                        var newPass = object.getString("newPass");
+                        var oldPass = object.getString("oldPass");
+                        var user = object.getString("user");
+
+                        if (new DAO_TaiKhoan().select("where  password=N'" + oldPass + "' and username = N'" + user + "'").size() > 0) {
+                            try {
+                                var result = database_helper.insert("update taikhoan set password=N'" + newPass + "' where username = N'" + user + "'");
+                                sendMessage("/changePass", result, null);
+                            } catch (Exception ex) {
+                                Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }else{
+                             sendMessage("/changePass", 0, null);
+                        }
 
                     } else if (action.startsWith("/getChatList")) {
                         JSONObject object = new JSONObject(list[1]);
@@ -377,17 +394,17 @@ public class Service implements Runnable {
                         TinNhan mess = new TinNhan(id, time, text, sender, receiver, idGroup, sender);
 
                         var members = getGroupMember(groupID);
-                        for(int i=0;i<members.size();i++){
-                            if(members.get(i).getUsername() == sender){
+                        for (int i = 0; i < members.size(); i++) {
+                            if (members.get(i).getUsername() == sender) {
                                 members.remove(i);
                             }
                         }
-                        
+
                         for (Entry<Socket, TaiKhoan> entry : connectionsWithName.entrySet()) {
                             if (entry.getValue() != null) {
-                                for (int i = 0; i< members.size(); i++) {
-                                    if(entry.getValue().getUsername().equals( members.get(i).getUsername())){
-                                        if(entry.getValue().getUsername().equals(sender)){
+                                for (int i = 0; i < members.size(); i++) {
+                                    if (entry.getValue().getUsername().equals(members.get(i).getUsername())) {
+                                        if (entry.getValue().getUsername().equals(sender)) {
                                             continue;
                                         }
                                         PrintWriter temp2 = null;

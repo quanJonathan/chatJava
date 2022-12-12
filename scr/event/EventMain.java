@@ -9,4 +9,6 @@ public interface EventMain {
     public void navigateToGroupChatPage();
     public void navigateToHomePage();
     public void navigateToFriendPage();
+    
+    public void showDialog(String message, String title);
 }

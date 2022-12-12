@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.DefaultListModel;
+import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import org.json.JSONArray;
@@ -88,6 +89,11 @@ public class main_user_ui extends javax.swing.JFrame {
             @Override
             public void navigateToFriendPage() {
                 cardLayoutMain.show(mainBody, "friendListCard");
+            }
+
+            @Override
+            public void showDialog(String message, String title) {
+                JOptionPane.showConfirmDialog(rootPane, message, title, JOptionPane.OK_CANCEL_OPTION);
             }
         });
 
@@ -415,7 +421,6 @@ public class main_user_ui extends javax.swing.JFrame {
             }
         });
 
-        initChangePassButton.setBackground(new java.awt.Color(204, 204, 204));
         initChangePassButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-password-reset-32.png"))); // NOI18N
         initChangePassButton.setText("Đổi mật khẩu");
         initChangePassButton.addActionListener(new java.awt.event.ActionListener() {
@@ -696,7 +701,7 @@ public class main_user_ui extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1082, Short.MAX_VALUE)
+            .addComponent(jSplitPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -759,7 +764,7 @@ public class main_user_ui extends javax.swing.JFrame {
             JSONObject object = new JSONObject();
             object.put("oldPass", oldPass);
             object.put("newPass", newPass);
-            object.put("user", currentUser.JSONify());
+            object.put("user", currentUser.getUsername());
             Service.getInstance().al.sendCommand("/changePass", object);
         }
     }//GEN-LAST:event_changePassButtonActionPerformed

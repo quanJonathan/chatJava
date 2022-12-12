@@ -205,6 +205,16 @@ public class Service implements Runnable {
                                             PublicEvent.getInstance().getEventChatList().userConnect(user);
                                             break;
                                         }
+                                        
+                                        case "/changePass":{
+                                            String message;
+                                            if(result == 0){
+                                                message = "Failed to change password.";
+                                            }else{
+                                                message = "Change password successfully";
+                                            }
+                                            PublicEvent.getInstance().getEventMain().showDialog(message, "Result");
+                                        }
 
                                         case "/chatListReceived": {
                                             var object = new JSONArray(command.getString("object"));
