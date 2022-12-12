@@ -600,7 +600,7 @@ public class Service implements Runnable {
 
         private ArrayList<ThanhVienNhomChat> getGroupMember(String groupID) {
             DAO_NhomChat daonc = new DAO_NhomChat();
-            ArrayList<ThanhVienNhomChat> members = daonc.selectAllMembers(groupID);
+            ArrayList<ThanhVienNhomChat> members = daonc.selectAllMembers(groupID, "");
             return members;
         }
 
