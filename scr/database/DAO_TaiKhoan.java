@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -110,7 +112,13 @@ public class DAO_TaiKhoan implements DAO<TaiKhoan> {
     }
     
     public ArrayList<TaiKhoan> updateStatus(TaiKhoan t, int status) {
-        return update(t.setTrangThai(status), t.getUsername());
+        try {
+            var rs = database_helper.insert("update taikhoan set trangthai='" + status + "' where username=N'" + t.getUsername() + "'");
+            return new ArrayList<>(rs);
+
+        } catch (Exception ex) {
+            return new ArrayList<>();
+        }
     }
 
     @Override

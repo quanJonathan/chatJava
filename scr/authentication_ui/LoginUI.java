@@ -242,7 +242,7 @@ public class LoginUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void logInButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logInButtonMouseClicked
-        PublicEvent.getInstance().getEventLogin().login();
+        // PublicEvent.getInstance().getEventLogin().login();
     }//GEN-LAST:event_logInButtonMouseClicked
 
     private void signUpButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_signUpButtonMouseClicked
