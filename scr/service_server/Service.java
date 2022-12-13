@@ -228,6 +228,7 @@ public class Service implements Runnable {
                         userDisconnect(name);
                         removeClient(name);
                         updateStatus((new TaiKhoan(name, object.getString("password"), object.getString("email"))
+                                .setFullName(object.getString("fullName"))
                                 .setDiaChi(object.getString("diaChi"))
                                 .setGioiTinh(object.getBoolean("gioiTinh"))
                                 .setTrangThai(0)),
@@ -323,6 +324,29 @@ public class Service implements Runnable {
                         }
 
                         sendManyObject("/friendListReceived", array);
+                    } else if (action.startsWith("/getSearchFriendList")) {
+                        JSONObject object = new JSONObject(list[1]);
+                        ArrayList<TaiKhoan> friendList = getFriendListSearch(object.getString("text"), object.getString("username"));
+                        JSONArray array = new JSONArray();
+
+                        for (TaiKhoan b : friendList) {
+                            var objectFriend = b.JSONify();
+                            array.put(objectFriend);
+                        }
+
+                        sendManyObject("/searchFriendListReceived", array);
+                    } else if (action.startsWith("/getFriendRequestList")) {
+                        JSONObject object = new JSONObject(list[1]);
+                        String user = object.getString("username");
+                        ArrayList<BanBe> friendList = getFriendRequestList(user);
+                        JSONArray array = new JSONArray();
+
+                        for (BanBe b : friendList) {
+                            var objectFriend = b.JSONify();
+                            array.put(objectFriend);
+                        }
+
+                        sendManyObject("/friendRequestListReceived", array);
                     } else if (action.startsWith("/getChatData")) {
                         JSONObject object = new JSONObject(list[1]);
                         TaiKhoan user1 = new TaiKhoan(object.getString("current"), "", "");
@@ -352,6 +376,14 @@ public class Service implements Runnable {
                                 }
                             }
                         }
+                    } else if (action.startsWith("/addFriend")) {
+                        JSONObject object = new JSONObject(list[1]);
+                        BanBe bb = new BanBe(
+                                object.getString("username"),
+                                object.getString("usernameBanBe"),
+                                new Date(System.currentTimeMillis())
+                        );
+                        addFriend(bb);
                     } else if (action.startsWith("/deleteChatRoom")) {
 
                     } else if (action.startsWith("/searchWordInChatRoom")) {
@@ -360,6 +392,7 @@ public class Service implements Runnable {
                         JSONObject object = new JSONObject(list[1]);
                         var name = object.getString("username");
                         updateStatus((new TaiKhoan(name, object.getString("password"), object.getString("email"))
+                                .setFullName(object.getString("fullName"))
                                 .setDiaChi(object.getString("diaChi"))
                                 .setGioiTinh(object.getBoolean("gioiTinh"))),
                                 0);
@@ -547,6 +580,37 @@ public class Service implements Runnable {
             return friendList;
         }
 
+        private ArrayList<TaiKhoan> getFriendListSearch(String text, String username) {
+            ArrayList<TaiKhoan> friendList;
+            var daoFriend = new DAO_TaiKhoan();
+
+            friendList = daoFriend.select("tk1 " + text + " and username!=N'" + username + "' and username not in (select tk2.usernameBanBe from danhsachbanbe tk2 where tk1.username = tk2.usernameBanBe and tk2.username=N'" + username + "')");
+
+            friendList.forEach((account) -> {
+                System.out.println(account);
+            });
+            return friendList;
+        }
+
+        private ArrayList<BanBe> getFriendRequestList(String username) {
+            ArrayList<BanBe> friendList;
+            var daoFriend = new DAO_BanBe();
+
+            friendList = daoFriend.select("bb1 where bb1.usernameBanBe=N'" + username + "' and not exists (\n"
+                    + "	select * from DanhSachBanBe bb2 where bb2.Username=N'" + username + "' and bb2.UsernameBanBe = bb1.username\n"
+                    + ")");
+
+            friendList.forEach((account) -> {
+                System.out.println(account);
+            });
+            return friendList;
+        }
+        
+        private void addFriend(BanBe bb) {
+            DAO_BanBe dao_bb = new DAO_BanBe();
+            dao_bb.insert(bb);
+        }
+
         private void unfriend(BanBe bb) {
             DAO_BanBe dao_bb = new DAO_BanBe();
             dao_bb.delete(bb);
@@ -633,7 +697,7 @@ public class Service implements Runnable {
 
         private void updateStatus(TaiKhoan user, int i) {
             DAO_TaiKhoan dao_tn = new DAO_TaiKhoan();
-            dao_tn.updateStatus(user, 1);
+            dao_tn.updateStatus(user, i);
         }
 
         private ArrayList<ThanhVienNhomChat> getGroupMember(String groupID) {

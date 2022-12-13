@@ -5,14 +5,25 @@
 package event;
 
 import entity.BanBe;
-import entity.TaiKhoan;
 import java.util.ArrayList;
+
 /**
  *
  * @author ADMIN
  */
 public interface EventFriend {
+
     public void setData(ArrayList<BanBe> friendList);
-    
+
+    public void setFriendSearchData(ArrayList<BanBe> friendList);
+
+    public void getFriendSearchData(String text);
+
+    public void setFriendRequestData(ArrayList<BanBe> friendList);
+
+    public void getFriendRequestData(String user);
+
+    public void addFriend(String usernameBanBe);
+
     public void unfriend(BanBe user);
 }

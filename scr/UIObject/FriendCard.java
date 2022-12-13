@@ -119,9 +119,9 @@ public class FriendCard extends javax.swing.JPanel {
 
     private void btnUnfriendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnfriendActionPerformed
         int dialogButton = JOptionPane.YES_NO_OPTION;
-        int result = JOptionPane.showConfirmDialog(getRootPane(), "Bạn có chắc muốn hủy kết bạn với " + this.user.getUsernameChinh() + "?", ""
+        int result = JOptionPane.showConfirmDialog(getRootPane(), "Bạn có chắc muốn hủy kết bạn với " + this.user.getUsernameBanBe()+ "?", ""
                 + "Hủy kết bạn", dialogButton);
-        if(result == 1){
+        if(result == JOptionPane.YES_OPTION){
             PublicEvent.getInstance().getEventFriend().unfriend(this.user);
         }   
     }//GEN-LAST:event_btnUnfriendActionPerformed

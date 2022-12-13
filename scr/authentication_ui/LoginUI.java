@@ -22,7 +22,7 @@ public class LoginUI extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         init();
-
+        getRootPane().setDefaultButton(logInButton);
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -48,8 +48,9 @@ public class LoginUI extends javax.swing.JFrame {
 
                 TaiKhoan acc = new TaiKhoan("", password, email.toLowerCase());
                 var object = acc.JSONify();
-                
-                while(!Service.getInstance().al.isFinishBooting()) {}
+
+                while (!Service.getInstance().al.isFinishBooting()) {
+                }
 
                 Service.getInstance().al.sendCommand("/login", object);
             }
@@ -103,6 +104,11 @@ public class LoginUI extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
         setResizable(false);
+        addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                formFocusGained(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -257,8 +263,13 @@ public class LoginUI extends javax.swing.JFrame {
     }//GEN-LAST:event_passwordTextFieldActionPerformed
 
     private void logInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logInButtonActionPerformed
+        PublicEvent.getInstance().getEventLogin().login();
         // JOptionPane.showMessageDialog(rootPane, "Hoàn tất đăng nhập", "Thông báo", JOptionPane.OK_OPTION);
     }//GEN-LAST:event_logInButtonActionPerformed
+
+    private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
+        logInButton.requestFocus();
+    }//GEN-LAST:event_formFocusGained
 
     /**
      * @param args the command line arguments

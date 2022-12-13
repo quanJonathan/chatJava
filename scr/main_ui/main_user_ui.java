@@ -63,6 +63,7 @@ public class main_user_ui extends javax.swing.JFrame {
         lblUsername.setText(currentUser.getUsername());
 
         readFriendList();
+        readFriendRequestList();
         readChatList();
         readGroupChatList();
 
@@ -203,7 +204,41 @@ public class main_user_ui extends javax.swing.JFrame {
 
             @Override
             public void unfriend(BanBe user) {
+                if (!user.getUsernameChinh().equals(currentUser.getUsername())) {
+                    user = new BanBe(currentUser.getUsername(), user.getUsernameBanBe(), user.getNgayKetBan());
+                }
                 Service.getInstance().al.sendCommand("/unfriend", user.JSONify());
+                readFriendList();
+            }
+
+            @Override
+            public void setFriendSearchData(ArrayList<BanBe> friendList) {
+                friendList.forEach(item -> {
+                    System.out.println(item);
+                });
+            }
+
+            @Override
+            public void getFriendSearchData(String text) {
+                Service.getInstance().al.sendCommand("/getSearchFriendList", new JSONObject().put("text", text).put("username", currentUser.getUsername()));
+            }
+
+            @Override
+            public void setFriendRequestData(ArrayList<BanBe> friendList) {
+                friendList.forEach(item -> {
+                    System.out.println(item);
+                });
+            }
+
+            @Override
+            public void getFriendRequestData(String user) {
+                readFriendRequestList();
+            }
+
+            @Override
+            public void addFriend(String usernameBanBe) {
+                Service.getInstance().al.sendCommand("/addFriend", new JSONObject().put("username", currentUser.getUsername()).put("usernameBanBe", usernameBanBe));
+
             }
         });
 
@@ -317,6 +352,10 @@ public class main_user_ui extends javax.swing.JFrame {
 
     private void readFriendList() {
         Service.getInstance().al.sendCommand("/getFriendList", currentUser.JSONify());
+    }
+
+    private void readFriendRequestList() {
+        Service.getInstance().al.sendCommand("/getFriendRequestList", new JSONObject().put("username", currentUser.getUsername()));
     }
 
     @SuppressWarnings("unchecked")
@@ -762,19 +801,23 @@ public class main_user_ui extends javax.swing.JFrame {
     }//GEN-LAST:event_initChangeUserNameButtonActionPerformed
 
     private void homeTabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_homeTabMouseClicked
+        readFriendList();
         PublicEvent.getInstance().getEventMain().navigateToHomePage();
     }//GEN-LAST:event_homeTabMouseClicked
 
     private void chatTabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chatTabMouseClicked
+        readChatList();
         PublicEvent.getInstance().getEventMain().navigateToChatPage();
     }//GEN-LAST:event_chatTabMouseClicked
 
     private void friendListTabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_friendListTabMouseClicked
         readFriendList();
+        readFriendRequestList();
         PublicEvent.getInstance().getEventMain().navigateToFriendPage();
     }//GEN-LAST:event_friendListTabMouseClicked
 
     private void groupTabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_groupTabMouseClicked
+        readFriendList();
         PublicEvent.getInstance().getEventMain().navigateToGroupChatPage();
     }//GEN-LAST:event_groupTabMouseClicked
 
@@ -893,8 +936,8 @@ public class main_user_ui extends javax.swing.JFrame {
         adminGroupCreate.setModel(listModel);
         var idx = new ArrayList<Integer>();
         adminSelected.forEach(a -> {
-            for(int i = 0; i < listModel.getSize(); i++) {
-                if(adminGroupCreate.getModel().getElementAt(i).equals(a)) {
+            for (int i = 0; i < listModel.getSize(); i++) {
+                if (adminGroupCreate.getModel().getElementAt(i).equals(a)) {
                     idx.add(i);
                 }
             }
@@ -903,15 +946,13 @@ public class main_user_ui extends javax.swing.JFrame {
 
 
     }//GEN-LAST:event_memberGroupCreateMouseClicked
-public static int[] convertIntegers(List<Integer> integers)
-{
-    int[] ret = new int[integers.size()];
-    for (int i=0; i < ret.length; i++)
-    {
-        ret[i] = integers.get(i).intValue();
+    public static int[] convertIntegers(List<Integer> integers) {
+        int[] ret = new int[integers.size()];
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = integers.get(i).intValue();
+        }
+        return ret;
     }
-    return ret;
-}
     private void adminGroupCreateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_adminGroupCreateMouseClicked
         var adminSelected = adminGroupCreate.getSelectedValuesList();
         System.out.println("admin=");
@@ -948,8 +989,8 @@ public static int[] convertIntegers(List<Integer> integers)
         memberGroupCreate.setModel(listModel);
         var idx = new ArrayList<Integer>();
         memSelected.forEach(a -> {
-            for(int i = 0; i < listModel.getSize(); i++) {
-                if(memberGroupCreate.getModel().getElementAt(i).equals(a)) {
+            for (int i = 0; i < listModel.getSize(); i++) {
+                if (memberGroupCreate.getModel().getElementAt(i).equals(a)) {
                     idx.add(i);
                 }
             }

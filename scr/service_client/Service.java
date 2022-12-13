@@ -205,7 +205,7 @@ public class Service implements Runnable {
                                     //System.out.println(command);
                                     var action = command.getString("message");
                                     var result = command.getInt("result");
-//                                    System.out.println(object);
+//                                    System.out.println(searchList);
                                     switch (action) {
                                         case "/login": {
                                             var object = new JSONObject(command.getString("object"));
@@ -213,8 +213,9 @@ public class Service implements Runnable {
                                                 var error = object.getString("error");
                                                 PublicEvent.getInstance().getEventLogin().goLogin(null, error);
                                             } else {
-//                                          System.out.println(resultSet.get("object").getClass());
+//                                          System.out.println(resultSet.get("searchList").getClass());
                                                 TaiKhoan user = new TaiKhoan(object.getString("username"), object.getString("password"), object.getString("email"));
+                                                user.setFullName(object.getString("fullName"));
                                                 user.setGioiTinh(object.getBoolean("gioiTinh"));
                                                 user.setDiaChi(object.getString("diaChi"));
                                                 user.setTrangThai(1);
@@ -382,6 +383,40 @@ public class Service implements Runnable {
                                             }
                                             System.out.println(friendList);
                                             PublicEvent.getInstance().getEventFriend().setData(friendList);
+                                            break;
+                                        }
+                                        case "/searchFriendListReceived": {
+                                            var searchList = new JSONArray(command.getString("object"));
+                                            ArrayList<BanBe> friendList = new ArrayList<>();
+                                            for (int i = 0; i < searchList.length(); i++) {
+                                                var newObject = searchList.getJSONObject(i);
+                                                String main = newObject.getString("username");
+                                                String friend = "";
+                                                var date = new Date();
+                                                BanBe b;
+                                                b = new BanBe(main, friend, date);
+                                                friendList.add(b);
+                                            }
+                                            System.out.println(friendList);
+                                            PublicEvent.getInstance().getEventFriend().setFriendSearchData(friendList);
+                                            break;
+                                        }
+
+                                        case "/friendRequestListReceived": {
+                                            var object = new JSONArray(command.getString("object"));
+                                            ArrayList<BanBe> friendList = new ArrayList<>();
+                                            for (int i = 0; i < object.length(); i++) {
+                                                var newObject = object.getJSONObject(i);
+                                                String main = newObject.getString("username");
+                                                String friend = newObject.getString("usernameBanBe");
+                                                var date = convertTime(newObject.getString("ngayKetBan"));
+                                                BanBe b;
+                                                b = new BanBe(main, friend, date);
+                                                friendList.add(b);
+
+                                            }
+                                            System.out.println(friendList);
+                                            PublicEvent.getInstance().getEventFriend().setFriendRequestData(friendList);
                                             break;
                                         }
                                         default:

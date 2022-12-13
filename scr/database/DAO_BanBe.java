@@ -74,7 +74,7 @@ public class DAO_BanBe implements DAO<BanBe> {
     @Override
     public int delete(BanBe bb) {
         return delete(" where (username = '" + bb.getUsernameChinh() + "' and usernamebanbe = '" + bb.getUsernameBanBe() + "') or"
-                + " where (username = '" + bb.getUsernameBanBe() + "' and usernamebanbe = '" + bb.getUsernameChinh() + "')");
+                + " (username = '" + bb.getUsernameBanBe() + "' and usernamebanbe = '" + bb.getUsernameChinh() + "')");
     }
 
     public int delete(String conditions) {
