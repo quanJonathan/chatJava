@@ -85,7 +85,6 @@ public class Service implements Runnable {
                 System.out.println("thread stopped");
                 al.shutDown();
                 System.out.println("shut down successfully");
-
             }
             al = new ActionListener(client);
             System.out.println("al connected" + al);
@@ -222,6 +221,16 @@ public class Service implements Runnable {
                                                 System.out.println(username + " login successfully");
 
                                                 PublicEvent.getInstance().getEventLogin().goLogin(user, username + " login successfully");
+                                            }
+                                            break;
+                                        }
+                                        case "/register":{
+                                            var object = new JSONObject(command.getString("object"));
+                                            if (result == 0) {
+                                                var error = object.getString("error");
+                                                PublicEvent.getInstance().getEventRegister().showDialog("Register failed", "Register");
+                                            } else {
+                                                PublicEvent.getInstance().getEventRegister().showDialog("Register successfully", "Register");
                                             }
                                             break;
                                         }

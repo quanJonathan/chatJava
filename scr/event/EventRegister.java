@@ -13,4 +13,5 @@ import entity.TaiKhoan;
 public interface EventRegister {
     void register(TaiKhoan user);
     void goback();
+    void showDialog(String result, String title);
 }

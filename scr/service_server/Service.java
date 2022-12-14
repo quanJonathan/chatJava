@@ -6,6 +6,7 @@ package service_server;
  */
 import database.*;
 import entity.*;
+import event.PublicEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -234,6 +235,16 @@ public class Service implements Runnable {
                                 .setTrangThai(0)),
                                 0);
                     } else if (action.startsWith("/register")) {
+                        JSONObject object = new JSONObject(list[1]);
+                        String username = object.getString("username");
+                        TaiKhoan tk = new TaiKhoan(object.getString("username"), object.getString("password"), object.getString("email"))
+                                .setFullName(object.getString("fullName"))
+                                .setDiaChi(object.getString("diaChi"))
+                                .setGioiTinh(object.getBoolean("gioiTinh"))
+                                .setTrangThai(0);
+
+                        int result = Register(tk);
+                        sendMessage(list[0], result, tk.JSONify());
 
                     } else if (action.startsWith("/changePass")) {
                         JSONObject object = new JSONObject(list[1]);
@@ -384,7 +395,12 @@ public class Service implements Runnable {
                                 new Date(System.currentTimeMillis())
                         );
                         addFriend(bb);
-                    } else if (action.startsWith("/deleteChatRoom")) {
+                    } else if (action.startsWith("/deleteChatHistory")) {
+                        JSONObject object = new JSONObject(list[1]);
+                        var chatter = object.get("chatter");
+                        var username = object.get("user");
+
+                        database_helper.delete("delete from DanhSachTinNhan where ((NguoiNhan = N'" + username + "' and NguoiGui = N'" + chatter + "') or (NguoiNhan = N'" + chatter + "' and NguoiGui = N'" + username + "')) and BanSao = N'" + username + "' and idNhom is null");
 
                     } else if (action.startsWith("/searchWordInChatRoom")) {
 
@@ -605,7 +621,7 @@ public class Service implements Runnable {
             });
             return friendList;
         }
-        
+
         private void addFriend(BanBe bb) {
             DAO_BanBe dao_bb = new DAO_BanBe();
             dao_bb.insert(bb);
@@ -731,6 +747,24 @@ public class Service implements Runnable {
                 }
             } catch (Exception ex) {
                 Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        private int Register(TaiKhoan tk) {
+            var dbh = new database.database_helper();
+            String message;
+            var daoAcc = new DAO_TaiKhoan();
+            var queryResult = daoAcc.insert(tk);
+
+            if (queryResult.size() > 0) {
+
+                message = "register succesfully";
+                System.out.println(message);
+                return 1;
+            } else {
+                message = "Register error";
+                System.out.println(message);
+                return 0;
             }
         }
     }

@@ -5,7 +5,10 @@
 package main_ui;
 
 import UIObject.FriendCard;
+import UIObject.FriendSearchCard;
+import UIObject.RequestCard;
 import entity.BanBe;
+import entity.TaiKhoan;
 import event.PublicEvent;
 import net.miginfocom.swing.MigLayout;
 import swing.ModifiedScrollBar;
@@ -21,9 +24,10 @@ public class FriendPage extends javax.swing.JPanel {
         sp.setHorizontalScrollBar(new ModifiedScrollBar());
         sp1.setVerticalScrollBar(new ModifiedScrollBar());
         sp1.setHorizontalScrollBar(new ModifiedScrollBar());
-                sp2.setVerticalScrollBar(new ModifiedScrollBar());
+        sp2.setVerticalScrollBar(new ModifiedScrollBar());
         sp2.setHorizontalScrollBar(new ModifiedScrollBar());
         init();
+        
     }
 
     public void setFriendList(ArrayList<BanBe> friends) {
@@ -39,12 +43,28 @@ public class FriendPage extends javax.swing.JPanel {
         friendListPanel.revalidate();
     }
     
-    public void showAllUser() {
-        
+    public void showAllFriendRequest(ArrayList<BanBe> friendRequest){
+        friendRequestListPanel.removeAll();
+         for(BanBe b: friendRequest){
+            friendRequestListPanel.add(new RequestCard(b), "wrap");         
+        }
+        friendRequestListPanel.repaint();
+        friendRequestListPanel.revalidate();
+    }
+    
+    public void showAllSearch(ArrayList<BanBe> friendSearch){
+        friendAddListPanel.removeAll();
+        for(BanBe b: friendSearch){
+            friendAddListPanel.add(new FriendSearchCard(b),"wrap");         
+        }
+        friendAddListPanel.repaint();
+        friendAddListPanel.revalidate();
     }
 
     public void init() {
         friendListPanel.setLayout(new MigLayout());
+        friendAddListPanel.setLayout(new MigLayout());
+        friendRequestListPanel.setLayout(new MigLayout());
     }
 
     @SuppressWarnings("unchecked")

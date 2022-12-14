@@ -107,7 +107,8 @@ public class ChatCard extends javax.swing.JPanel {
         int dialogButton = JOptionPane.YES_NO_OPTION;
         int result = JOptionPane.showConfirmDialog(getRootPane(), "Bạn có chắc chắn không?", ""
                 + "Xóa lịch sử chat", dialogButton);
-        if(result == 1){
+        if(result == JOptionPane.YES_OPTION){
+            System.out.println("ok");
             removeAll();
             PublicEvent.getInstance().getEventChat().deleteChat(user);   
         }   

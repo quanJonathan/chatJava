@@ -64,7 +64,7 @@ public class main_user_ui extends javax.swing.JFrame {
 
         readFriendList();
         readFriendRequestList();
-        readChatList();
+//        readChatList();
         readGroupChatList();
 
         memberGroupCreate.setSelectionModel(new DefaultListSelectionModel() {
@@ -153,6 +153,7 @@ public class main_user_ui extends javax.swing.JFrame {
                 System.out.println(object.toString());
                 Service.getInstance().al.sendCommand("/sendMessage", object);
                 chat.getChatBody().addItemRight(mess);
+                readChatList();
             }
 
             @Override
@@ -190,7 +191,13 @@ public class main_user_ui extends javax.swing.JFrame {
             @Override
             public void deleteChat(TaiKhoan user) {
                 chat.setVisible(false);
-                Service.getInstance().al.sendCommand("/deleteChatHistory", user.JSONify());
+                JSONObject object = new JSONObject();
+                object.put("chatter", user.getUsername());
+                object.put("user", currentUser.getUsername());
+                Service.getInstance().al.sendCommand("/deleteChatHistory", object);
+                chatList.refreshChatListPanel();
+                readChatList();
+
             }
         });
 
@@ -205,7 +212,7 @@ public class main_user_ui extends javax.swing.JFrame {
             @Override
             public void unfriend(BanBe user) {
                 if (!user.getUsernameChinh().equals(currentUser.getUsername())) {
-                    user = new BanBe(currentUser.getUsername(), user.getUsernameBanBe(), user.getNgayKetBan());
+                    user = new BanBe(currentUser.getUsername(), user.getUsernameChinh(), user.getNgayKetBan());
                 }
                 Service.getInstance().al.sendCommand("/unfriend", user.JSONify());
                 readFriendList();
@@ -213,9 +220,7 @@ public class main_user_ui extends javax.swing.JFrame {
 
             @Override
             public void setFriendSearchData(ArrayList<BanBe> friendList) {
-                friendList.forEach(item -> {
-                    System.out.println(item);
-                });
+                friendListPage.showAllSearch(friendList);
             }
 
             @Override
@@ -228,6 +233,7 @@ public class main_user_ui extends javax.swing.JFrame {
                 friendList.forEach(item -> {
                     System.out.println(item);
                 });
+                friendListPage.showAllFriendRequest(friendList);
             }
 
             @Override
@@ -347,6 +353,7 @@ public class main_user_ui extends javax.swing.JFrame {
     }
 
     private void readChatList() {
+        chatList.refreshChatListPanel();
         Service.getInstance().al.sendCommand("/getChatList", currentUser.JSONify());
     }
 
@@ -806,6 +813,7 @@ public class main_user_ui extends javax.swing.JFrame {
     }//GEN-LAST:event_homeTabMouseClicked
 
     private void chatTabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chatTabMouseClicked
+
         readChatList();
         PublicEvent.getInstance().getEventMain().navigateToChatPage();
     }//GEN-LAST:event_chatTabMouseClicked
@@ -813,6 +821,7 @@ public class main_user_ui extends javax.swing.JFrame {
     private void friendListTabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_friendListTabMouseClicked
         readFriendList();
         readFriendRequestList();
+        friendListPage.showAllSearch(new ArrayList<>());
         PublicEvent.getInstance().getEventMain().navigateToFriendPage();
     }//GEN-LAST:event_friendListTabMouseClicked
 

@@ -69,7 +69,9 @@ public class LoginUI extends javax.swing.JFrame {
 
             @Override
             public void goRegister() {
-                Service.getInstance().al.shutDown();
+                if (Service.getInstance().isServerRunning()) {
+                    Service.getInstance().shutDown();
+                }
                 new RegisterUI().setVisible(true);
             }
 

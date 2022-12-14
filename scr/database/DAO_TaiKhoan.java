@@ -74,7 +74,11 @@ public class DAO_TaiKhoan implements DAO<TaiKhoan> {
             var rs = database_helper.insert(database_query_builder.insert(tableName,
                     insertQuery
             ));
-            return new ArrayList<>(rs);
+            var result = new ArrayList<TaiKhoan>();
+            for (int i = 0; i < rs; i++) {
+                result.add(new TaiKhoan("", "", ""));
+            }
+            return result;
         } catch (SQLServerException ex) {
             if (ex.getSQLState().startsWith("23")) {
                 System.out.println("Account already exists.");

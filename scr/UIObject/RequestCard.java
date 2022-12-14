@@ -25,7 +25,7 @@ public class RequestCard extends javax.swing.JPanel {
     public RequestCard(BanBe user) {
         initComponents();
         this.user = user;
-        lblUsername.setText(user.getUsernameBanBe());
+        lblUsername.setText(user.getUsernameChinh());
         lblBeFriendDate.setText("Ngày kết bạn: " + user.getNgayKetBan().toString());
     }
 
@@ -98,11 +98,13 @@ public class RequestCard extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAcceptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcceptActionPerformed
-        PublicEvent.getInstance().getEventFriend().addFriend(this.user.getUsernameBanBe());
+        PublicEvent.getInstance().getEventFriend().addFriend(this.user.getUsernameChinh());
+        removeAll();
     }//GEN-LAST:event_btnAcceptActionPerformed
 
     private void btnRejectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRejectActionPerformed
         PublicEvent.getInstance().getEventFriend().unfriend(this.user);
+        removeAll();
     }//GEN-LAST:event_btnRejectActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

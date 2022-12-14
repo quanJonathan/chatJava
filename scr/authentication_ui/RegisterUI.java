@@ -15,10 +15,12 @@ import java.awt.GridLayout;
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.util.Properties;
+import javax.swing.JOptionPane;
 import main_ui.DateLabelFormatter;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.SqlDateModel;
+import service_client.Service;
 
 /**
  *
@@ -53,74 +55,26 @@ public class RegisterUI extends javax.swing.JFrame {
         PublicEvent.getInstance().addEventRegister(new EventRegister() {
             @Override
             public void register(TaiKhoan user) {
-                // TODO add your handling code here:
-                var dbh = new database.database_helper();
-
-                var daoAcc = new DAO_TaiKhoan();
-                var queryResult = daoAcc.insert(user);
-
-                if (queryResult.size() > 0) {
-                    System.out.println("register succesfully");
-                    queryResult.forEach((acc) -> {
-                        System.out.println(acc);
-                    });
-                } else {
-                    System.out.println("Register error");
+                service_client.Service.getInstance().run();  
+                 if (!Service.getInstance().isServerRunning()) {
+                    JOptionPane.showMessageDialog(rootPane, "Server is not available!");
+                    dispose();
+                    return;
                 }
-
-//                var rs = database.database_helper.select(
-//                        database.database_query_builder.get("tinnhan",
-//                                "inner join danhsachtinnhan on tinnhan.id = danhsachtinnhan.id where nguoigui = 'bebaoboy'",
-//                                "tinnhan.id", "nguoigui", "nguoinhan", "thoigian", "noidung"));
-//                try {
-//                    while (rs != null && rs.next()) {
-//                        try {
-//                            System.out.println(String.format("%-15s %-10s %-10s %-20s %s",
-//                                    rs.getNString(1), rs.getNString(2), rs.getNString(3), rs.getDate(4), rs.getNString(5)));
-//                        } catch (SQLException ex) {
-//                            Logger.getLogger(RegisterUI.class.getName()).log(Level.SEVERE, null, ex);
-//                        }
-//                    }
-//                } catch (SQLException ex) {
-//                    Logger.getLogger(RegisterUI.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//                var user2 = new TaiKhoan(user.getUsername(), user.getPassword() + "xxx", user.getEmail());
-//                var r = daoAcc.update(user2, "where username = N'" + user2.getUsername() + "'");
-//                if (r.size() > 0) {
-//                    System.out.println("update succesfully");
-//                    queryResult.forEach((acc) -> {
-//                        System.out.println(acc);
-//                    });
-//                } else {
-//                    System.out.println("update error");
-//                }
-                var daoTN = new DAO_TinNhan();
-                var rs = daoTN.selectAll("bebaoboy", "luutuanquan");
-                rs.forEach((item) -> {
-                    System.out.println(item);
-                });
-
-                var dnc = new DAO_NhomChat();
-//                dnc.insertMember("grp212s",
-//                        new ArrayList<>() {
-//                    {
-//                        add(new TaiKhoan("laiminhphu", "", ""));
-//                        add(new TaiKhoan("kimthanh", "", ""));
-//
-//                    }
-//                });
-
-                dnc.selectAllGroupOfAUser("bebaoboy");
-                dnc.updateAdmin("grp212s", "bebaoboy", true);
-                dnc.selectAllMembers("grp212s", "").forEach(item -> {
-                    System.out.println(item);
-                });
-
+                service_client.Service.getInstance().al.sendCommand("/register", user.JSONify());
             }
 
             @Override
             public void goback() {
                 new LoginUI().setVisible(true);
+                if (Service.getInstance().isServerRunning()) {
+                    Service.getInstance().shutDown();
+                }
+            }
+           
+            @Override
+            public void showDialog(String result, String title){
+                JOptionPane.showConfirmDialog(rootPane, result, title, JOptionPane.OK_CANCEL_OPTION);
             }
 
         });

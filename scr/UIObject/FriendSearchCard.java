@@ -20,24 +20,14 @@ public class FriendSearchCard extends javax.swing.JPanel {
     /**
      * Creates new form friendCard
      */
-    private TaiKhoan user;
+    private BanBe user;
     private boolean clicked = false;
     
-    public FriendSearchCard(TaiKhoan user) {
+    public FriendSearchCard(BanBe user) {
         initComponents();
         this.user = user;
-        lblUsername.setText(user.getUsername());
+        lblUsername.setText(user.getUsernameChinh());
         btnAddFriend.setText("Kết bạn");
-    }
-    
-    public void setStatus(){
-          if(user.getTrangThai() == 1){
-            lblStatus.setText("Active now");
-            lblStatus.setForeground(new java.awt.Color(40, 147, 59));
-        }else{
-             lblStatus.setText("Offline");
-             lblStatus.setForeground(new Color(160, 160, 160));
-        }
     }
 
     /**
@@ -51,7 +41,6 @@ public class FriendSearchCard extends javax.swing.JPanel {
 
         lblUsername = new javax.swing.JLabel();
         btnAddFriend = new javax.swing.JButton();
-        lblStatus = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -59,7 +48,6 @@ public class FriendSearchCard extends javax.swing.JPanel {
         lblUsername.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         lblUsername.setText("Username");
 
-        btnAddFriend.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnAddFriend.setText("Kết bạn");
         btnAddFriend.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -67,18 +55,13 @@ public class FriendSearchCard extends javax.swing.JPanel {
             }
         });
 
-        lblStatus.setForeground(new java.awt.Color(0, 204, 0));
-        lblStatus.setText("active");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(lblUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(84, 84, 84)
                 .addComponent(btnAddFriend, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
                 .addContainerGap())
@@ -86,14 +69,10 @@ public class FriendSearchCard extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblUsername)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblStatus))
-                    .addComponent(btnAddFriend, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE))
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAddFriend, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblUsername)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -101,19 +80,18 @@ public class FriendSearchCard extends javax.swing.JPanel {
         if (!clicked) {
             clicked = true;
             btnAddFriend.setText("Hủy");
-            PublicEvent.getInstance().getEventFriend().addFriend(this.user.getUsername());
+            PublicEvent.getInstance().getEventFriend().addFriend(this.user.getUsernameChinh());
         }
         else {
             clicked = false;
             btnAddFriend.setText("Kết bạn");
-            PublicEvent.getInstance().getEventFriend().unfriend(new BanBe("", this.user.getUsername(), null));
+            PublicEvent.getInstance().getEventFriend().unfriend(new BanBe("", this.user.getUsernameChinh(), null));
         }
         
     }//GEN-LAST:event_btnAddFriendActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddFriend;
-    private javax.swing.JLabel lblStatus;
     private javax.swing.JLabel lblUsername;
     // End of variables declaration//GEN-END:variables
 }

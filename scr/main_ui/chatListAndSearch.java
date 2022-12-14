@@ -39,8 +39,19 @@ public class chatListAndSearch extends javax.swing.JPanel {
     }
     
     public void refreshChatListPanel(){
+        removeAllData();
+        chatListPanel.removeAll();
         chatListPanel.repaint();
         chatListPanel.revalidate();
+    }
+    
+    public void removeAllData(){
+        if(userAccounts.isEmpty()){
+            userAccounts.clear();
+        }
+    }
+    public void removeUser(TaiKhoan u){
+        userAccounts.remove(u);
     }
     
     public void init(){
@@ -122,7 +133,8 @@ public class chatListAndSearch extends javax.swing.JPanel {
                 for (TaiKhoan user : users) {
                     userAccounts.add(user);
                     chatListPanel.add(new ChatCard(user), "wrap");
-                    refreshChatListPanel();
+                    chatListPanel.repaint();
+                    chatListPanel.revalidate();
                 }  
             }
 
