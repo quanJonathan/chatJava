@@ -317,6 +317,11 @@ public class main_user_ui extends javax.swing.JFrame {
                 groupChat.getGroupChatBody().addItemLeft(messages);
             }
 
+            @Override
+            public void requestMemberData(NhomChat group) {
+                Service.getInstance().al.sendCommand("/getMember", group.JSONify());
+            }
+
         });
     }
 
@@ -907,6 +912,17 @@ public class main_user_ui extends javax.swing.JFrame {
         members.forEach(mem -> {
             System.out.println(mem);
         });
+        
+        var memberArray = new JSONArray();
+        for(ThanhVienNhomChat t: members){
+            memberArray.put(t.JSONify());
+        }
+        
+        var object = new JSONObject();
+        object.put("group", newGroup.JSONify());
+        object.put("members", memberArray);
+        
+        Service.getInstance().al.sendCommand("/createGroup", object);
     }//GEN-LAST:event_createGroupButtonActionPerformed
 
     private void memberGroupCreateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_memberGroupCreateMouseClicked

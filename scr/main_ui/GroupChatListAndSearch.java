@@ -6,6 +6,7 @@ package main_ui;
 
 import UIObject.GroupCard;
 import entity.NhomChat;
+import entity.ThanhVienNhomChat;
 import event.EventGroupChatList;
 import event.PublicEvent;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import swing.ModifiedScrollBar;
  */
 public class GroupChatListAndSearch extends javax.swing.JPanel {
 
-    private ArrayList<NhomChat> groups;
+    private ArrayList<NhomChat> groupList;
 
     public GroupChatListAndSearch() {
         initComponents();
@@ -26,7 +27,7 @@ public class GroupChatListAndSearch extends javax.swing.JPanel {
         sp.setVerticalScrollBar(new ModifiedScrollBar());
         sp.setHorizontalScrollBar(new ModifiedScrollBar());
         initEvent();
-        
+        init();
     }
 
     /**
@@ -86,22 +87,43 @@ public class GroupChatListAndSearch extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void init(){
+        groupList = new ArrayList<>();
+    }
+    
+    
     private void initEvent() {
         PublicEvent.getInstance().addEventGroupChatList(new EventGroupChatList() {
             @Override
             public void setData(ArrayList<NhomChat> groups, ArrayList<Boolean> roles) {
-                groups = groups;
+       
                 for (int i = 0; i < groups.size(); i++) {
+                    groupList.add(groups.get(i));
                     groupChatListPanel.add(new GroupCard(groups.get(i), roles.get(i)), "wrap");
                     refreshGroupChatListPanel();
                 }
+                System.out.println(groupList);
             }
 
             @Override
             public void newGroup(NhomChat group, boolean role) {
-                groups.add(group);
+                groupList.add(group);
                 groupChatListPanel.add(new GroupCard(group, role), "wrap");
                 refreshGroupChatListPanel();
+            }
+
+            @Override
+            public void setMember(ArrayList<ThanhVienNhomChat> members) {
+               for(int i=0;i< groupList.size();i++){
+                   var groupCard = (GroupCard)groupChatListPanel.getComponent(i);
+                   System.out.println("setMem " + groupCard.getGroup());
+                   System.out.println("List group " + groupList);
+                   System.out.println("Mmebers " + members);
+                   if(groupCard.getGroup().getIDNhom().equals(members.get(0).getIDNhom())){
+                       groupCard.setMemberList(members);
+                       return;
+                   }
+               }
             }
         });
     }

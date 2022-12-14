@@ -19,4 +19,5 @@ public interface EventGroupChat {
     public void deleteCurrentGroupData(NhomChat user);
     public void setAdmin(NhomChat group, ArrayList<TaiKhoan> users);
     public void setNewGroupName(NhomChat group, String newName);
+    public void requestMemberData(NhomChat group);
 }

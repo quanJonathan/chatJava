@@ -8,6 +8,7 @@ import com.microsoft.sqlserver.jdbc.StringUtils;
 import entity.BanBe;
 import entity.NhomChat;
 import entity.TaiKhoan;
+import entity.ThanhVienNhomChat;
 import entity.TinNhan;
 import event.PublicEvent;
 import java.io.BufferedReader;
@@ -350,7 +351,20 @@ public class Service implements Runnable {
                                             PublicEvent.getInstance().getEventGroupChat().receiveMessage(new NhomChat(groupID, groupName, null), mess);
                                             break;
                                         }
-
+                                        case "/groupMemberReceived":{
+                                            var object = new JSONArray(command.getString("object"));
+                                            ArrayList<ThanhVienNhomChat> members = new ArrayList<>();
+                                            for (int i = 0; i < object.length(); i++) {
+                                               var newObject = object.getJSONObject(i);
+                                               var groupId = newObject.getString("IDNhom");
+                                               var username = newObject.getString("username");
+                                               var role = newObject.getBoolean("chucNang");
+                                               var date = Timestamp.valueOf(newObject.getString("ngayThem"));
+                                               members.add(new ThanhVienNhomChat(groupId, username, role, date));
+                                            }
+                                            PublicEvent.getInstance().getEventGroupChatList().setMember(members);
+                                            break;
+                                        }
                                         case "/groupDataReceived": {
                                             var object = new JSONArray(command.getString("object"));
                                             ArrayList<TinNhan> messages = new ArrayList<>();

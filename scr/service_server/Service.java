@@ -278,7 +278,7 @@ public class Service implements Runnable {
                         } else {
                             sendMessage("/changePass", 0, new JSONObject());
                         }
-                    } else if (action.startsWith("resetPassword")) {
+                    } else if (action.startsWith("/resetPassword")) {
 
                     } else if (action.startsWith("/getChatList")) {
                         JSONObject object = new JSONObject(list[1]);
@@ -413,6 +413,25 @@ public class Service implements Runnable {
                                 .setGioiTinh(object.getBoolean("gioiTinh"))),
                                 0);
                         removeClient(name);
+                    } else if(action.equals("/createGroup")){
+                        JSONObject object = new JSONObject(list[1]);
+                        var groupObject = object.getJSONObject("group");
+                        JSONArray newObject = object.getJSONArray("members");
+                        
+                        var newGroup = new NhomChat(groupObject.getString("IDNhom"), groupObject.getString("tenNhom"), Timestamp.valueOf(groupObject.getString("ngayTao")));
+                        ArrayList<ThanhVienNhomChat> members = new ArrayList<>();
+                        
+                        for(int i=0;i<newObject.length();i++){
+                            var memberObject = newObject.getJSONObject(i);
+                            var idGroup = memberObject.getString("IDNhom");
+                            var username = memberObject.getString("username");
+                            var date = Timestamp.valueOf(memberObject.getString("ngayThem"));
+                            boolean role = memberObject.getBoolean("chucNang");
+                            members.add(new ThanhVienNhomChat(idGroup, username, role, date));
+                        }
+                        
+                        createGroup(newGroup, members);
+                        
                     } else if (action.equals("/getGroupChatList")) {
                         JSONObject object = new JSONObject(list[1]);
                         var name = object.getString("username");
@@ -496,6 +515,16 @@ public class Service implements Runnable {
                             }
                         }
                         writeGroupMessageToDb(mess, members);
+                    }else if (action.equals("/getMember")){
+                        JSONObject object = new JSONObject(list[1]);
+                        var groupID = object.getString("IDNhom");
+                        var groupName = object.getString("tenNhom");
+                        var memberArray = new JSONArray();
+                        var members = getGroupMember(groupID);
+                        for(ThanhVienNhomChat m: members){
+                            memberArray.put(m.JSONify());
+                        }
+                        sendManyObject("/groupMemberReceived", memberArray);
                     }
                 }
 
@@ -766,6 +795,11 @@ public class Service implements Runnable {
                 System.out.println(message);
                 return 0;
             }
+        }
+
+        private void createGroup(NhomChat newGroup, ArrayList<ThanhVienNhomChat> members) {
+            new DAO_NhomChat().insert(newGroup);
+            new DAO_NhomChat().insertMember(newGroup.getIDNhom(), members);
         }
     }
 
