@@ -6,11 +6,9 @@ package database;
 
 import com.microsoft.sqlserver.jdbc.SQLServerException;
 import entity.NhomChat;
-import entity.TaiKhoan;
 import entity.ThanhVienNhomChat;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 
 /**
@@ -168,5 +166,22 @@ public class DAO_NhomChat implements DAO<NhomChat> {
                 conditions
         ));
         return rs;
+    }
+    
+    public ArrayList<NhomChat> deleteMember(String id, ArrayList<ThanhVienNhomChat> members) {
+        try {
+            members.forEach(mem -> {
+                var q = "where username=N'" + mem.getUsername() + "' and idnhom='" + id + "'";
+                try {
+                    database_helper.delete(database_query_builder.delete(tableName2, q));
+                } catch (Exception ex) {
+                }
+
+            });
+            return new ArrayList<>();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 }

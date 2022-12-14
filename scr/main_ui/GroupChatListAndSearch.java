@@ -96,7 +96,8 @@ public class GroupChatListAndSearch extends javax.swing.JPanel {
         PublicEvent.getInstance().addEventGroupChatList(new EventGroupChatList() {
             @Override
             public void setData(ArrayList<NhomChat> groups, ArrayList<Boolean> roles) {
-       
+                groupList.clear();
+                groupChatListPanel.removeAll();
                 for (int i = 0; i < groups.size(); i++) {
                     groupList.add(groups.get(i));
                     groupChatListPanel.add(new GroupCard(groups.get(i), roles.get(i)), "wrap");

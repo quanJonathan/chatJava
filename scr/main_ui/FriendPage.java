@@ -27,7 +27,7 @@ public class FriendPage extends javax.swing.JPanel {
         sp2.setVerticalScrollBar(new ModifiedScrollBar());
         sp2.setHorizontalScrollBar(new ModifiedScrollBar());
         init();
-        
+
     }
 
     public void setFriendList(ArrayList<BanBe> friends) {
@@ -36,26 +36,29 @@ public class FriendPage extends javax.swing.JPanel {
 
     public void showAllFriend() {
         friendListPanel.removeAll();
-        for (BanBe b : friendList) {
-            friendListPanel.add(new FriendCard(b), "wrap");
+        try {
+            for (BanBe b : friendList) {
+                friendListPanel.add(new FriendCard(b), "wrap");
+            }
+        } catch (Throwable t) {
         }
         friendListPanel.repaint();
         friendListPanel.revalidate();
     }
-    
-    public void showAllFriendRequest(ArrayList<BanBe> friendRequest){
+
+    public void showAllFriendRequest(ArrayList<BanBe> friendRequest) {
         friendRequestListPanel.removeAll();
-         for(BanBe b: friendRequest){
-            friendRequestListPanel.add(new RequestCard(b), "wrap");         
+        for (BanBe b : friendRequest) {
+            friendRequestListPanel.add(new RequestCard(b), "wrap");
         }
         friendRequestListPanel.repaint();
         friendRequestListPanel.revalidate();
     }
-    
-    public void showAllSearch(ArrayList<BanBe> friendSearch){
+
+    public void showAllSearch(ArrayList<BanBe> friendSearch) {
         friendAddListPanel.removeAll();
-        for(BanBe b: friendSearch){
-            friendAddListPanel.add(new FriendSearchCard(b),"wrap");         
+        for (BanBe b : friendSearch) {
+            friendAddListPanel.add(new FriendSearchCard(b), "wrap");
         }
         friendAddListPanel.repaint();
         friendAddListPanel.revalidate();

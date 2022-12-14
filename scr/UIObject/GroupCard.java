@@ -8,10 +8,13 @@ import entity.NhomChat;
 import entity.TaiKhoan;
 import entity.ThanhVienNhomChat;
 import event.PublicEvent;
+import java.awt.Color;
 import static java.lang.Math.abs;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -28,12 +31,12 @@ public class GroupCard extends javax.swing.JPanel {
         initComponents();
         txtGroupName.setText(group.getTenNhom());
 
-        if (!role) {
-            txtGroupName.setEditable(false);
-        }
         this.group = group;
         this.role = role;
         showMember(false);
+        // deleteChatButton.setVisible(false);
+        txtGroupName2.setVisible(false);
+        sp1.setVisible(false);
 
         sp.setViewportView(listGroupMemberTable);
     }
@@ -50,7 +53,6 @@ public class GroupCard extends javax.swing.JPanel {
             adminSubPanel.setVisible(false);
         }
     }
-
 
     private void addRow(JTable table, int size) {
         var model = (DefaultTableModel) table.getModel();
@@ -97,10 +99,13 @@ public class GroupCard extends javax.swing.JPanel {
         sp = new javax.swing.JScrollPane();
         listGroupMemberTable = new javax.swing.JTable();
         adminSubPanel = new javax.swing.JPanel();
-        deleteGroupChatMemberButton = new javax.swing.JButton();
-        addAdminButton = new javax.swing.JButton();
+        updateAdminButton = new javax.swing.JButton();
+        removeMemberButton = new javax.swing.JButton();
+        addMemberButton = new javax.swing.JButton();
         renameGroupButton = new javax.swing.JButton();
-        renameGroupButton1 = new javax.swing.JButton();
+        txtGroupName2 = new javax.swing.JTextField();
+        sp1 = new javax.swing.JScrollPane();
+        listFriend = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(255, 255, 255));
         addMouseListener(new java.awt.event.MouseAdapter() {
@@ -111,14 +116,10 @@ public class GroupCard extends javax.swing.JPanel {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
+        txtGroupName.setEditable(false);
         txtGroupName.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         txtGroupName.setText("Tên nhóm");
         txtGroupName.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        txtGroupName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtGroupNameActionPerformed(evt);
-            }
-        });
 
         deleteChatButton.setText("Xóa");
         deleteChatButton.addActionListener(new java.awt.event.ActionListener() {
@@ -150,11 +151,12 @@ public class GroupCard extends javax.swing.JPanel {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtGroupName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(deleteChatButton)
-                    .addComponent(viewMemberButton)))
+                    .addComponent(viewMemberButton))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         adminPanel.setBackground(new java.awt.Color(255, 255, 255));
@@ -186,26 +188,87 @@ public class GroupCard extends javax.swing.JPanel {
             }
         });
         sp.setViewportView(listGroupMemberTable);
+        if (listGroupMemberTable.getColumnModel().getColumnCount() > 0) {
+            listGroupMemberTable.getColumnModel().getColumn(1).setMaxWidth(60);
+        }
 
         adminSubPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        deleteGroupChatMemberButton.setText("Xóa thành viên");
-        deleteGroupChatMemberButton.addActionListener(new java.awt.event.ActionListener() {
+        updateAdminButton.setText("Update Admin");
+        updateAdminButton.setToolTipText("Admin thành member và ngược lại");
+        updateAdminButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteGroupChatMemberButtonActionPerformed(evt);
+                updateAdminButtonActionPerformed(evt);
             }
         });
 
-        addAdminButton.setText("Update admin");
-        addAdminButton.addActionListener(new java.awt.event.ActionListener() {
+        removeMemberButton.setText("Xóa thành viên");
+        removeMemberButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addAdminButtonActionPerformed(evt);
+                removeMemberButtonActionPerformed(evt);
+            }
+        });
+
+        addMemberButton.setText("Thêm thành viên");
+        addMemberButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                addMemberButtonMouseEntered(evt);
+            }
+        });
+        addMemberButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addMemberButtonActionPerformed(evt);
             }
         });
 
         renameGroupButton.setText("Đổi tên");
+        renameGroupButton.setToolTipText("Nhập tên mới vào khung bên cạnh, sau đó bấm nút để đổi tên");
+        renameGroupButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                renameGroupButtonMouseEntered(evt);
+            }
+        });
+        renameGroupButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                renameGroupButtonActionPerformed(evt);
+            }
+        });
 
-        renameGroupButton1.setText("Thêm");
+        txtGroupName2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        txtGroupName2.setText("Tên nhóm");
+        txtGroupName2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+
+        listFriend.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "Tên", "Admin"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Boolean.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        listFriend.setToolTipText("Chọn thành viên, đánh dấu vào ô nếu là admin");
+        sp1.setViewportView(listFriend);
+        if (listFriend.getColumnModel().getColumnCount() > 0) {
+            listFriend.getColumnModel().getColumn(1).setMaxWidth(60);
+        }
 
         javax.swing.GroupLayout adminSubPanelLayout = new javax.swing.GroupLayout(adminSubPanel);
         adminSubPanel.setLayout(adminSubPanelLayout);
@@ -214,26 +277,39 @@ public class GroupCard extends javax.swing.JPanel {
             .addGroup(adminSubPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(adminSubPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(renameGroupButton, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(renameGroupButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(adminSubPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(deleteGroupChatMemberButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(addAdminButton, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(adminSubPanelLayout.createSequentialGroup()
+                        .addComponent(removeMemberButton, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(renameGroupButton, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtGroupName2, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(adminSubPanelLayout.createSequentialGroup()
+                        .addGroup(adminSubPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(sp1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addGroup(adminSubPanelLayout.createSequentialGroup()
+                                .addComponent(addMemberButton, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(updateAdminButton, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         adminSubPanelLayout.setVerticalGroup(
             adminSubPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(adminSubPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(adminSubPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(addAdminButton)
-                    .addComponent(renameGroupButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(8, 8, 8)
                 .addGroup(adminSubPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(deleteGroupChatMemberButton)
-                    .addComponent(renameGroupButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addComponent(removeMemberButton)
+                    .addComponent(renameGroupButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtGroupName2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(adminSubPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(adminSubPanelLayout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(addMemberButton, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(updateAdminButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(sp1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout adminPanelLayout = new javax.swing.GroupLayout(adminPanel);
@@ -244,14 +320,14 @@ public class GroupCard extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(adminPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(sp, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(adminSubPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(adminSubPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         adminPanelLayout.setVerticalGroup(
             adminPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(adminPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(sp, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(sp, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(adminSubPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -296,22 +372,20 @@ public class GroupCard extends javax.swing.JPanel {
         PublicEvent.getInstance().getEventGroupChat().setGroup(group);
     }//GEN-LAST:event_formMouseClicked
 
-    private void addAdminButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAdminButtonActionPerformed
-        ArrayList<TaiKhoan> users = new ArrayList<>();
+    private void removeMemberButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeMemberButtonActionPerformed
+        ArrayList<ThanhVienNhomChat> users = new ArrayList<>();
+        var selects = listGroupMemberTable.getSelectedRows();
+    }//GEN-LAST:event_removeMemberButtonActionPerformed
 
-        PublicEvent.getInstance().getEventGroupChat().setAdmin(group, users);
-    }//GEN-LAST:event_addAdminButtonActionPerformed
-
-    private void txtGroupNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGroupNameActionPerformed
-        if (role) {
-            String newName = txtGroupName.getText();
-            PublicEvent.getInstance().getEventGroupChat().setNewGroupName(group, newName);
+    private void updateAdminButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateAdminButtonActionPerformed
+        ArrayList<ThanhVienNhomChat> users = new ArrayList<>();
+        var selects = listGroupMemberTable.getSelectedRows();
+        for (int i = 0; i < selects.length; i++) {
+            var chucNang = (String) (listGroupMemberTable.getValueAt(selects[i], 1));
+            users.add(new ThanhVienNhomChat("", (String) (listGroupMemberTable.getValueAt(selects[i], 0)), !chucNang.equals("Admin"), new Date()));
         }
-    }//GEN-LAST:event_txtGroupNameActionPerformed
-
-    private void deleteGroupChatMemberButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteGroupChatMemberButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_deleteGroupChatMemberButtonActionPerformed
+        PublicEvent.getInstance().getEventGroupChat().setAdmin(group, users);
+    }//GEN-LAST:event_updateAdminButtonActionPerformed
 
     private void viewMemberButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewMemberButtonActionPerformed
         if (isClick == true) {
@@ -327,18 +401,58 @@ public class GroupCard extends javax.swing.JPanel {
         PublicEvent.getInstance().getEventGroupChat().requestMemberData(group);
     }//GEN-LAST:event_viewMemberButtonActionPerformed
 
+    private void renameGroupButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_renameGroupButtonMouseEntered
+        if (role && !txtGroupName2.isVisible()) {
+            txtGroupName2.setVisible(true);
+            txtGroupName2.setEditable(true);
+            txtGroupName2.setText(group.getTenNhom());
+            System.out.println("Hovered");
+            revalidate();
+            repaint();
+        }
+    }//GEN-LAST:event_renameGroupButtonMouseEntered
+
+    private void renameGroupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_renameGroupButtonActionPerformed
+        if (role) {
+            txtGroupName2.setVisible(false);
+            txtGroupName2.setEditable(false);
+            String newName = txtGroupName2.getText();
+            PublicEvent.getInstance().getEventGroupChat().setNewGroupName(group, newName);
+            revalidate();
+            repaint();
+        }
+    }//GEN-LAST:event_renameGroupButtonActionPerformed
+
+    private void addMemberButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addMemberButtonActionPerformed
+        ArrayList<ThanhVienNhomChat> users = new ArrayList<>();
+        var selects = listFriend.getSelectedRows();
+        
+        sp1.setVisible(false);
+        revalidate();
+        repaint();
+    }//GEN-LAST:event_addMemberButtonActionPerformed
+
+    private void addMemberButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addMemberButtonMouseEntered
+        sp1.setVisible(true);
+        revalidate();
+        repaint();
+    }//GEN-LAST:event_addMemberButtonMouseEntered
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addAdminButton;
+    private javax.swing.JButton addMemberButton;
     private javax.swing.JPanel adminPanel;
     private javax.swing.JPanel adminSubPanel;
     private javax.swing.JButton deleteChatButton;
-    private javax.swing.JButton deleteGroupChatMemberButton;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JTable listFriend;
     private javax.swing.JTable listGroupMemberTable;
+    private javax.swing.JButton removeMemberButton;
     private javax.swing.JButton renameGroupButton;
-    private javax.swing.JButton renameGroupButton1;
     private javax.swing.JScrollPane sp;
+    private javax.swing.JScrollPane sp1;
     private javax.swing.JTextField txtGroupName;
+    private javax.swing.JTextField txtGroupName2;
+    private javax.swing.JButton updateAdminButton;
     private javax.swing.JButton viewMemberButton;
     // End of variables declaration//GEN-END:variables
 

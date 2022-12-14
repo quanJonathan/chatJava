@@ -432,6 +432,25 @@ public class Service implements Runnable {
                         
                         createGroup(newGroup, members);
                         
+                    } else if(action.equals("/addNewAdmin")){
+                        JSONObject object = new JSONObject(list[1]);
+                        var groupObject = object.getJSONObject("group");
+                        JSONArray newObject = object.getJSONArray("members");
+                        
+                        var newGroup = new NhomChat(groupObject.getString("IDNhom"), groupObject.getString("tenNhom"), Timestamp.valueOf(groupObject.getString("ngayTao")));
+                        ArrayList<ThanhVienNhomChat> members = new ArrayList<>();
+                        
+                        for(int i=0;i<newObject.length();i++){
+                            var memberObject = newObject.getJSONObject(i);
+                            var idGroup = memberObject.getString("IDNhom");
+                            var username = memberObject.getString("username");
+                            var date = new Date(0);
+                            boolean role = memberObject.getBoolean("chucNang");
+                            members.add(new ThanhVienNhomChat(idGroup, username, role, date));
+                        }
+                        
+                        updateAdmin(newGroup, members);
+                        
                     } else if (action.equals("/getGroupChatList")) {
                         JSONObject object = new JSONObject(list[1]);
                         var name = object.getString("username");
@@ -465,6 +484,13 @@ public class Service implements Runnable {
                         var groupName = groupObject.getString("tenNhom");
                         var groupID = groupObject.getString("IDNhom");
                         getGroupData(new NhomChat(groupID, groupName, null), name);
+                    } else if (action.equals("/changeGroupName")) {
+                        JSONObject object = new JSONObject(list[1]);
+                        var newName = object.getString("newName");
+                        var groupObject = object.getJSONObject("group");
+                        var groupID = groupObject.getString("IDNhom");
+                        var date = convertTime(groupObject.getString("ngayTao"));
+                        new DAO_NhomChat().update(new NhomChat(groupID, newName, date));
                     } else if (action.equals("/groupChatSendMessage")) {
                         JSONObject object = new JSONObject(list[1]);
                         var groupObject = object.getJSONObject("group");
@@ -800,6 +826,14 @@ public class Service implements Runnable {
         private void createGroup(NhomChat newGroup, ArrayList<ThanhVienNhomChat> members) {
             new DAO_NhomChat().insert(newGroup);
             new DAO_NhomChat().insertMember(newGroup.getIDNhom(), members);
+        }
+        
+        private void updateAdmin(NhomChat newGroup, ArrayList<ThanhVienNhomChat> members) {
+            var dnc = new DAO_NhomChat();
+            members.forEach(mem -> {
+                dnc.updateAdmin(newGroup.getIDNhom(), mem.getUsername(), mem.getChucNang());
+
+            });
         }
     }
 

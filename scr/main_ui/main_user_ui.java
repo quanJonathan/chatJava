@@ -65,7 +65,7 @@ public class main_user_ui extends javax.swing.JFrame {
         readFriendList();
         readFriendRequestList();
 //        readChatList();
-        readGroupChatList();
+//        readGroupChatList();
 
         memberGroupCreate.setSelectionModel(new DefaultListSelectionModel() {
             @Override
@@ -268,14 +268,14 @@ public class main_user_ui extends javax.swing.JFrame {
             }
 
             @Override
-            public void setAdmin(NhomChat group, ArrayList<TaiKhoan> users) {
+            public void setAdmin(NhomChat group, ArrayList<ThanhVienNhomChat> users) {
                 JSONArray array = new JSONArray();
-                for (TaiKhoan tk : users) {
+                for (var tk : users) {
                     array.put(tk.JSONify());
                 }
                 var object = new JSONObject();
                 object.put("group", group.JSONify());
-                object.put("dsTk", array.toString());
+                object.put("members", array);
                 Service.getInstance().al.sendCommand("/addNewAdmin", object);
             }
 
@@ -283,7 +283,7 @@ public class main_user_ui extends javax.swing.JFrame {
             public void setNewGroupName(NhomChat group, String newName) {
                 var object = new JSONObject();
                 object.put("newName", newName);
-                object.put("group", group.JSONify().toString());
+                object.put("group", group.JSONify());
                 Service.getInstance().al.sendCommand("/changeGroupName", object);
             }
 
@@ -425,6 +425,7 @@ public class main_user_ui extends javax.swing.JFrame {
         setResizable(false);
 
         sideNavBar.setBackground(new java.awt.Color(255, 255, 255));
+        sideNavBar.setMaximumSize(new java.awt.Dimension(99, 753));
 
         homeTab.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-home-32.png"))); // NOI18N
         homeTab.setText("Home");
@@ -482,7 +483,7 @@ public class main_user_ui extends javax.swing.JFrame {
                 .addComponent(friendListTab)
                 .addGap(98, 98, 98)
                 .addComponent(groupTab)
-                .addContainerGap(237, Short.MAX_VALUE))
+                .addContainerGap(241, Short.MAX_VALUE))
         );
 
         jSplitPane1.setLeftComponent(sideNavBar);
@@ -742,8 +743,8 @@ public class main_user_ui extends javax.swing.JFrame {
                 .addGap(285, 285, 285)
                 .addGroup(homePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(homePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(initChangeUserNameButton, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
-                        .addComponent(initGroupCreateButton, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
+                        .addComponent(initChangeUserNameButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(initGroupCreateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(initChangePassButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(logoutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(90, 90, 90)
@@ -832,6 +833,7 @@ public class main_user_ui extends javax.swing.JFrame {
 
     private void groupTabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_groupTabMouseClicked
         readFriendList();
+        readGroupChatList();
         PublicEvent.getInstance().getEventMain().navigateToGroupChatPage();
     }//GEN-LAST:event_groupTabMouseClicked
 
