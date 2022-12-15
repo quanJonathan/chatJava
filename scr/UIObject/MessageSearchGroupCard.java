@@ -22,6 +22,8 @@ public class MessageSearchGroupCard extends javax.swing.JPanel {
     
     public MessageSearchGroupCard(TinNhan message, String tenNhom) {
         initComponents();
+        sp.setVerticalScrollBar(new ModifiedScrollBar());
+        sp.setHorizontalScrollBar(new ModifiedScrollBar());
         this.message = message;
         messageContent.setText(message.getNoiDung());
         lblUsername.setText("Người gửi: " + message.getNguoiGui());
@@ -32,7 +34,7 @@ public class MessageSearchGroupCard extends javax.swing.JPanel {
             lblUsername1.setText(tenNhom);
         }
         lblBeFriendDate.setText("Thời gian: " + message.getThoiGian().toString());
-        jScrollPane1.setVerticalScrollBar(new ModifiedScrollBar());
+        sp.setVerticalScrollBar(new ModifiedScrollBar());
     }
 
 
@@ -48,12 +50,11 @@ public class MessageSearchGroupCard extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         lblUsername = new javax.swing.JLabel();
         lblBeFriendDate = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        sp = new javax.swing.JScrollPane();
         messageContent = new javax.swing.JTextArea();
         lblUsername1 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -65,11 +66,11 @@ public class MessageSearchGroupCard extends javax.swing.JPanel {
         lblBeFriendDate.setText("Thời gian:");
         lblBeFriendDate.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
+        messageContent.setEditable(false);
         messageContent.setColumns(20);
-        messageContent.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         messageContent.setRows(5);
         messageContent.setText("noi dung tin nhan");
-        jScrollPane1.setViewportView(messageContent);
+        sp.setViewportView(messageContent);
 
         lblUsername1.setBackground(new java.awt.Color(255, 255, 255));
         lblUsername1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -83,7 +84,7 @@ public class MessageSearchGroupCard extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+                    .addComponent(sp, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(lblBeFriendDate, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -103,7 +104,7 @@ public class MessageSearchGroupCard extends javax.swing.JPanel {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(lblUsername1, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(sp, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblBeFriendDate)
                 .addContainerGap())
@@ -128,10 +129,10 @@ public class MessageSearchGroupCard extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblBeFriendDate;
     private javax.swing.JLabel lblUsername;
     private javax.swing.JLabel lblUsername1;
     private javax.swing.JTextArea messageContent;
+    private javax.swing.JScrollPane sp;
     // End of variables declaration//GEN-END:variables
 }

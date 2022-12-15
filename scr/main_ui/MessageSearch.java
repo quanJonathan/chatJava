@@ -4,6 +4,12 @@
  */
 package main_ui;
 
+import UIObject.MessageSearchGroupCard;
+import entity.TinNhan;
+import net.miginfocom.swing.MigLayout;
+import java.util.ArrayList;
+import swing.ModifiedScrollBar;
+
 /**
  *
  * @author HMBAO
@@ -15,6 +21,16 @@ public class MessageSearch extends javax.swing.JFrame {
      */
     public MessageSearch() {
         initComponents();
+        setLocationRelativeTo(null);
+        sp.setVerticalScrollBar(new ModifiedScrollBar());
+        sp.setHorizontalScrollBar(null);
+        searchPanel.setLayout(new MigLayout("wrap"));
+    }
+    
+    public void showSearchResult(ArrayList<TinNhan> messages){
+        for(var t: messages){
+            searchPanel.add(new MessageSearchGroupCard(t, ""));
+        }
     }
 
     /**
@@ -26,30 +42,30 @@ public class MessageSearch extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jPanel1 = new javax.swing.JPanel();
+        sp = new javax.swing.JScrollPane();
+        searchPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
 
-        jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
-        jScrollPane1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        sp.setBackground(new java.awt.Color(255, 255, 255));
+        sp.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        searchPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout searchPanelLayout = new javax.swing.GroupLayout(searchPanel);
+        searchPanel.setLayout(searchPanelLayout);
+        searchPanelLayout.setHorizontalGroup(
+            searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 506, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        searchPanelLayout.setVerticalGroup(
+            searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 486, Short.MAX_VALUE)
         );
 
-        jScrollPane1.setViewportView(jPanel1);
+        sp.setViewportView(searchPanel);
 
         jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -63,7 +79,7 @@ public class MessageSearch extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addComponent(sp)
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(173, 173, 173)
@@ -76,7 +92,7 @@ public class MessageSearch extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(sp, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -120,7 +136,7 @@ public class MessageSearch extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel searchPanel;
+    private javax.swing.JScrollPane sp;
     // End of variables declaration//GEN-END:variables
 }

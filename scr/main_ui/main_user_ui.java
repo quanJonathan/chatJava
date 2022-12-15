@@ -227,6 +227,10 @@ public class main_user_ui extends javax.swing.JFrame {
                 messages.forEach(item -> {
                     System.out.println(item);
                 });
+                
+                var messageSearch = new MessageSearch();
+                messageSearch.showSearchResult(messages);
+                messageSearch.setVisible(true);
             }
         });
 
