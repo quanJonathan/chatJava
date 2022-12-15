@@ -1,5 +1,6 @@
 package main_ui;
 
+import UIObject.GroupCard;
 import authentication_ui.LoginUI;
 import entity.BanBe;
 import entity.IDPrefix;
@@ -16,6 +17,8 @@ import java.awt.CardLayout;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JOptionPane;
@@ -199,6 +202,32 @@ public class main_user_ui extends javax.swing.JFrame {
                 readChatList();
 
             }
+
+            @Override
+            public void searchFromAUser(TaiKhoan banbe, String text) {
+                System.out.println("search query= " + text);
+                Service.getInstance().al.sendCommand("/getMessageSearch",
+                        new JSONObject().put("username", currentUser.getUsername())
+                                .put("usernameBanBe", banbe.getUsername())
+                                .put("text", text));
+            }
+
+            @Override
+            public void searchFromAllUser(String text) {
+                System.out.println("search query= " + text);
+                Service.getInstance().al.sendCommand("/getAllMessageSearch",
+                        new JSONObject().put("username", currentUser.getUsername())
+                                .put("text", text));
+            }
+
+            @Override
+            public void setSearchData(ArrayList<TinNhan> messages) {
+                System.out.println("");
+                System.out.println("search result: ");
+                messages.forEach(item -> {
+                    System.out.println(item);
+                });
+            }
         });
 
         PublicEvent.getInstance().addEventFriend(new EventFriend() {
@@ -207,6 +236,7 @@ public class main_user_ui extends javax.swing.JFrame {
                 friends = friendList;
                 friendListPage.setFriendList(friendList);
                 friendListPage.showAllFriend();
+
             }
 
             @Override
@@ -322,6 +352,30 @@ public class main_user_ui extends javax.swing.JFrame {
                 Service.getInstance().al.sendCommand("/getMember", group.JSONify());
             }
 
+            @Override
+            public void insertMember(String id, ArrayList<ThanhVienNhomChat> users) {
+                JSONArray array = new JSONArray();
+                for (var tk : users) {
+                    array.put(tk.JSONify());
+                }
+                Service.getInstance().al.sendCommand("/addMember", new JSONObject().put("group", id).put("user", array));
+                readFriendList();
+                readGroupChatList();
+                groupChatList.setFriend(friends);
+            }
+
+            @Override
+            public void removeMember(String id, ArrayList<ThanhVienNhomChat> users) {
+                JSONArray array = new JSONArray();
+                for (var tk : users) {
+                    array.put(tk.JSONify());
+                }
+                Service.getInstance().al.sendCommand("/removeMember", new JSONObject().put("group", id).put("user", array));
+                readFriendList();
+                readGroupChatList();
+                groupChatList.setFriend(friends);
+
+            }
         });
     }
 
@@ -368,6 +422,15 @@ public class main_user_ui extends javax.swing.JFrame {
 
     private void readFriendRequestList() {
         Service.getInstance().al.sendCommand("/getFriendRequestList", new JSONObject().put("username", currentUser.getUsername()));
+    }
+
+    private void setGroupFriendList() {
+        ArrayList<NhomChat> groups = groupChatList.getGroup();
+        System.out.println("group at main = " + groups);
+        for (int i = 0; i < groups.size(); i++) {
+            var groupCard = (GroupCard) groupChatList.getGroupChatListPanel().getComponent(i);
+            groupCard.setFriendList(friends);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -498,12 +561,11 @@ public class main_user_ui extends javax.swing.JFrame {
             .addGroup(groupPageLayout.createSequentialGroup()
                 .addComponent(groupChatList, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(groupChat, javax.swing.GroupLayout.PREFERRED_SIZE, 636, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(groupChat, javax.swing.GroupLayout.DEFAULT_SIZE, 734, Short.MAX_VALUE))
         );
         groupPageLayout.setVerticalGroup(
             groupPageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(groupChatList, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
+            .addComponent(groupChatList, javax.swing.GroupLayout.DEFAULT_SIZE, 757, Short.MAX_VALUE)
             .addGroup(groupPageLayout.createSequentialGroup()
                 .addComponent(groupChat, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
@@ -835,6 +897,8 @@ public class main_user_ui extends javax.swing.JFrame {
         readFriendList();
         readGroupChatList();
         PublicEvent.getInstance().getEventMain().navigateToGroupChatPage();
+
+        groupChatList.setFriend(friends);
     }//GEN-LAST:event_groupTabMouseClicked
 
     private void initGroupCreateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initGroupCreateButtonActionPerformed
@@ -914,16 +978,16 @@ public class main_user_ui extends javax.swing.JFrame {
         members.forEach(mem -> {
             System.out.println(mem);
         });
-        
+
         var memberArray = new JSONArray();
-        for(ThanhVienNhomChat t: members){
+        for (ThanhVienNhomChat t : members) {
             memberArray.put(t.JSONify());
         }
-        
+
         var object = new JSONObject();
         object.put("group", newGroup.JSONify());
         object.put("members", memberArray);
-        
+
         Service.getInstance().al.sendCommand("/createGroup", object);
     }//GEN-LAST:event_createGroupButtonActionPerformed
 

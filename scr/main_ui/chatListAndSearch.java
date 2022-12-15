@@ -91,9 +91,14 @@ public class chatListAndSearch extends javax.swing.JPanel {
 
         sp.setViewportView(chatListPanel);
 
-        txtUsernamSearch.setToolTipText("Nhập tên");
+        txtUsernamSearch.setToolTipText("Nhập tin nhắn cần tìm");
 
         searchButtonChat.setText("Tìm kiếm");
+        searchButtonChat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonChatActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -118,6 +123,20 @@ public class chatListAndSearch extends javax.swing.JPanel {
                 .addComponent(sp, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void searchButtonChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonChatActionPerformed
+        var text = txtUsernamSearch.getText();
+        if (text.strip().isEmpty()) {
+            return;
+        }
+        var query = text.strip().split("\\s+");
+        var s = new ArrayList<String>();
+        for (var word : query) {
+            s.add("noidung like N'%" + word + "%'");
+        }
+        text = "where " + String.join(" or ", s);
+        PublicEvent.getInstance().getEventChat().searchFromAllUser(text);
+    }//GEN-LAST:event_searchButtonChatActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel chatListPanel;

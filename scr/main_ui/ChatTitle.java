@@ -7,7 +7,9 @@ package main_ui;
 import entity.NhomChat;
 import forSubmitOnly.*;
 import entity.TaiKhoan;
+import event.PublicEvent;
 import java.awt.Color;
+import java.util.ArrayList;
 
 /**
  *
@@ -67,8 +69,8 @@ public class ChatTitle extends javax.swing.JPanel {
         lblStatus = new javax.swing.JLabel();
         lbName = new javax.swing.JLabel();
         layerSearch = new javax.swing.JLayeredPane();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        searchBar = new javax.swing.JTextField();
+        searchButton = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 5, 0, new java.awt.Color(51, 51, 51)));
@@ -86,12 +88,17 @@ public class ChatTitle extends javax.swing.JPanel {
 
         layerSearch.setLayout(new javax.swing.BoxLayout(layerSearch, javax.swing.BoxLayout.LINE_AXIS));
 
-        jTextField1.setToolTipText("Nhập tin nhắn");
-        jTextField1.setPreferredSize(new java.awt.Dimension(50, 26));
-        layerSearch.add(jTextField1);
+        searchBar.setToolTipText("Nhập tin nhắn cần tìm kiếm");
+        searchBar.setPreferredSize(new java.awt.Dimension(50, 26));
+        layerSearch.add(searchBar);
 
-        jButton1.setText("Tìm kiếm");
-        layerSearch.add(jButton1);
+        searchButton.setText("Tìm kiếm");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
+        layerSearch.add(searchButton);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -118,12 +125,26 @@ public class ChatTitle extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        var text = searchBar.getText();
+        if (text.strip().isEmpty()) {
+            return;
+        }
+        var query = text.strip().split("\\s+");
+        var s = new ArrayList<String>();
+        for (var word : query) {
+            s.add("noidung like N'%" + word + "%'");
+        }
+        text = "where " + String.join(" or ", s);
+        PublicEvent.getInstance().getEventChat().searchFromAUser(user, text);
+    }//GEN-LAST:event_searchButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JLayeredPane layer;
     private javax.swing.JLayeredPane layerSearch;
     private javax.swing.JLabel lbName;
     private javax.swing.JLabel lblStatus;
+    private javax.swing.JTextField searchBar;
+    private javax.swing.JButton searchButton;
     // End of variables declaration//GEN-END:variables
 }

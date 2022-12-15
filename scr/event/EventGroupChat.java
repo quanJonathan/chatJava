@@ -5,7 +5,6 @@
 package event;
 
 import entity.NhomChat;
-import entity.TaiKhoan;
 import entity.ThanhVienNhomChat;
 import entity.TinNhan;
 import java.util.ArrayList;
@@ -21,4 +20,6 @@ public interface EventGroupChat {
     public void setAdmin(NhomChat group, ArrayList<ThanhVienNhomChat> users);
     public void setNewGroupName(NhomChat group, String newName);
     public void requestMemberData(NhomChat group);
+    public void insertMember(String id, ArrayList<ThanhVienNhomChat> users);    
+    public void removeMember(String id, ArrayList<ThanhVienNhomChat> users);
 }

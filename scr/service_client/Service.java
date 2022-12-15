@@ -225,7 +225,7 @@ public class Service implements Runnable {
                                             }
                                             break;
                                         }
-                                        case "/register":{
+                                        case "/register": {
                                             var object = new JSONObject(command.getString("object"));
                                             if (result == 0) {
                                                 var error = object.getString("error");
@@ -332,6 +332,56 @@ public class Service implements Runnable {
                                             break;
                                         }
 
+                                        case "/messageSearchReceived": {
+                                            var object = new JSONArray(command.getString("object"));
+                                            ArrayList<TinNhan> messages = new ArrayList<>();
+                                            for (int i = 0; i < object.length(); i++) {
+                                                var newObject = object.getJSONObject(i);
+                                                var date = convertTime(newObject.getString("thoiGian"));
+                                                String sender = newObject.getString("nguoiGui");
+                                                String receiver = newObject.getString("nguoiNhan");
+                                                String id = newObject.getString("ID");
+                                                String text = newObject.getString("noiDung");
+                                                String idnhom;
+                                                try {
+                                                    idnhom = newObject.getString("IDNhom");
+                                                } catch (Throwable t) {
+                                                    idnhom = "";
+                                                }
+                                                String banSao = newObject.getString("banSao");
+                                                TinNhan tn = new TinNhan(id, date, text, sender, receiver, idnhom, banSao);
+                                                messages.add(tn);
+                                            }
+                                            System.out.println(messages);
+                                            PublicEvent.getInstance().getEventChat().setSearchData(messages);
+                                            break;
+                                        }
+
+                                        case "/allMessageSearchReceived": {
+                                            var object = new JSONArray(command.getString("object"));
+                                            ArrayList<TinNhan> messages = new ArrayList<>();
+                                            for (int i = 0; i < object.length(); i++) {
+                                                var newObject = object.getJSONObject(i);
+                                                var date = convertTime(newObject.getString("thoiGian"));
+                                                String sender = newObject.getString("nguoiGui");
+                                                String receiver = newObject.getString("nguoiNhan");
+                                                String id = newObject.getString("ID");
+                                                String text = newObject.getString("noiDung");
+                                                String idnhom;
+                                                try {
+                                                    idnhom = newObject.getString("IDNhom");
+                                                } catch (Throwable t) {
+                                                    idnhom = "";
+                                                }
+                                                String banSao = newObject.getString("banSao");
+                                                TinNhan tn = new TinNhan(id, date, text, sender, receiver, idnhom, banSao);
+                                                messages.add(tn);
+                                            }
+                                            System.out.println(messages);
+                                            PublicEvent.getInstance().getEventChat().setSearchData(messages);
+                                            break;
+                                        }
+
                                         case "/groupChatMessageReceived": {
                                             var object = command.getJSONObject("object");
                                             var groupObject = object.getJSONObject("group");
@@ -351,16 +401,16 @@ public class Service implements Runnable {
                                             PublicEvent.getInstance().getEventGroupChat().receiveMessage(new NhomChat(groupID, groupName, null), mess);
                                             break;
                                         }
-                                        case "/groupMemberReceived":{
+                                        case "/groupMemberReceived": {
                                             var object = new JSONArray(command.getString("object"));
                                             ArrayList<ThanhVienNhomChat> members = new ArrayList<>();
                                             for (int i = 0; i < object.length(); i++) {
-                                               var newObject = object.getJSONObject(i);
-                                               var groupId = newObject.getString("IDNhom");
-                                               var username = newObject.getString("username");
-                                               var role = newObject.getBoolean("chucNang");
-                                               var date = Timestamp.valueOf(newObject.getString("ngayThem"));
-                                               members.add(new ThanhVienNhomChat(groupId, username, role, date));
+                                                var newObject = object.getJSONObject(i);
+                                                var groupId = newObject.getString("IDNhom");
+                                                var username = newObject.getString("username");
+                                                var role = newObject.getBoolean("chucNang");
+                                                var date = Timestamp.valueOf(newObject.getString("ngayThem"));
+                                                members.add(new ThanhVienNhomChat(groupId, username, role, date));
                                             }
                                             PublicEvent.getInstance().getEventGroupChatList().setMember(members);
                                             break;

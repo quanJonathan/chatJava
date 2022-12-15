@@ -43,6 +43,36 @@ public class DAO_TinNhan implements DAO<TinNhan> {
             return new ArrayList<>();
         }
     }
+    
+    public ArrayList<TinNhan> searchFromAUser(String sender, String receiver, String text) {
+        try {
+            var condition = "inner join danhsachtinnhan on tinnhan.id = danhsachtinnhan.id " + text + " and bansao='" + sender + "' and idNhom is null " + " and((danhsachtinnhan.nguoigui = N'" + sender + "' and danhsachtinnhan.nguoinhan = N'" + receiver + "')" + " or (danhsachtinnhan.nguoinhan = N'" + sender + "'" + " and danhsachtinnhan.nguoigui = N'" + receiver + "')) ";
+            var rs = database_helper.select(database_query_builder.get(tableName, condition, "tinnhan.id", "tinnhan.thoiGian", "tinnhan.noidung", "danhsachtinnhan.nguoigui", "danhsachtinnhan.nguoinhan", "danhsachtinnhan.idnhom", "banSao"));
+            var ars = resultToList(rs);
+            ars.sort((TinNhan t1, TinNhan t2) -> t1.getThoiGian().compareTo(t2.getThoiGian()));
+            ars.forEach(item->{
+                System.out.println(item);
+            });
+            return ars;
+        } catch (Throwable ex) {
+            return new ArrayList<>();
+        }
+    }
+    
+    public ArrayList<TinNhan> searchFromAllUser(String sender, String text) {
+        try {
+            var condition = "inner join danhsachtinnhan on tinnhan.id = danhsachtinnhan.id " + text + " and bansao='" + sender + "' " + " and (danhsachtinnhan.nguoigui = N'" + sender + "'"  + " or danhsachtinnhan.nguoinhan = N'" + sender + "') ";
+            var rs = database_helper.select(database_query_builder.get(tableName, condition, "tinnhan.id", "tinnhan.thoiGian", "tinnhan.noidung", "danhsachtinnhan.nguoigui", "danhsachtinnhan.nguoinhan", "danhsachtinnhan.idnhom", "banSao"));
+            var ars = resultToList(rs);
+            ars.sort((TinNhan t1, TinNhan t2) -> t1.getThoiGian().compareTo(t2.getThoiGian()));
+            ars.forEach(item->{
+                System.out.println(item);
+            });
+            return ars;
+        } catch (Throwable ex) {
+            return new ArrayList<>();
+        }
+    }
 
     @Override
     public ArrayList<TinNhan> select(String condition) {

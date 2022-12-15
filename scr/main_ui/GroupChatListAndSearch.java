@@ -5,11 +5,13 @@
 package main_ui;
 
 import UIObject.GroupCard;
+import entity.BanBe;
 import entity.NhomChat;
 import entity.ThanhVienNhomChat;
 import event.EventGroupChatList;
 import event.PublicEvent;
 import java.util.ArrayList;
+import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import swing.ModifiedScrollBar;
 
@@ -20,6 +22,7 @@ import swing.ModifiedScrollBar;
 public class GroupChatListAndSearch extends javax.swing.JPanel {
 
     private ArrayList<NhomChat> groupList;
+    private ArrayList<BanBe> friends;
 
     public GroupChatListAndSearch() {
         initComponents();
@@ -87,11 +90,10 @@ public class GroupChatListAndSearch extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void init(){
+    private void init() {
         groupList = new ArrayList<>();
     }
-    
-    
+
     private void initEvent() {
         PublicEvent.getInstance().addEventGroupChatList(new EventGroupChatList() {
             @Override
@@ -102,6 +104,10 @@ public class GroupChatListAndSearch extends javax.swing.JPanel {
                     groupList.add(groups.get(i));
                     groupChatListPanel.add(new GroupCard(groups.get(i), roles.get(i)), "wrap");
                     refreshGroupChatListPanel();
+                }
+                for (int i = 0; i < groupList.size(); i++) {
+                    var groupCard = (GroupCard) groupChatListPanel.getComponent(i);
+                    groupCard.setFriendList(friends);
                 }
                 System.out.println(groupList);
             }
@@ -115,18 +121,30 @@ public class GroupChatListAndSearch extends javax.swing.JPanel {
 
             @Override
             public void setMember(ArrayList<ThanhVienNhomChat> members) {
-               for(int i=0;i< groupList.size();i++){
-                   var groupCard = (GroupCard)groupChatListPanel.getComponent(i);
-                   System.out.println("setMem " + groupCard.getGroup());
-                   System.out.println("List group " + groupList);
-                   System.out.println("Mmebers " + members);
-                   if(groupCard.getGroup().getIDNhom().equals(members.get(0).getIDNhom())){
-                       groupCard.setMemberList(members);
-                       return;
-                   }
-               }
+                for (int i = 0; i < groupList.size(); i++) {
+                    var groupCard = (GroupCard) groupChatListPanel.getComponent(i);
+                    System.out.println("setMem " + groupCard.getGroup());
+                    System.out.println("List group " + groupList);
+                    System.out.println("Mmebers " + members);
+                    if (groupCard.getGroup().getIDNhom().equals(members.get(0).getIDNhom())) {
+                        groupCard.setMemberList(members);
+                        return;
+                    }
+                }
             }
         });
+    }
+
+    public void setFriend(ArrayList<BanBe> friends) {
+        this.friends = friends;
+    }
+
+    public JPanel getGroupChatListPanel() {
+        return this.groupChatListPanel;
+    }
+
+    public ArrayList<NhomChat> getGroup() {
+        return this.groupList;
     }
 
     private void refreshGroupChatListPanel() {

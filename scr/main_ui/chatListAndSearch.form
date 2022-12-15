@@ -69,13 +69,16 @@
     </Container>
     <Component class="javax.swing.JTextField" name="txtUsernamSearch">
       <Properties>
-        <Property name="toolTipText" type="java.lang.String" value="Nh&#x1ead;p t&#xea;n"/>
+        <Property name="toolTipText" type="java.lang.String" value="Nh&#x1ead;p tin nh&#x1eaf;n c&#x1ea7;n t&#xec;m"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="searchButtonChat">
       <Properties>
         <Property name="text" type="java.lang.String" value="T&#xec;m ki&#x1ebf;m"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="searchButtonChatActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
