@@ -9,6 +9,7 @@ import forSubmitOnly.*;
 import entity.TaiKhoan;
 import event.PublicEvent;
 import java.awt.Color;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 /**
@@ -126,7 +127,7 @@ public class ChatTitle extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        var text = searchBar.getText();
+        var text = new String(searchBar.getText().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
         if (text.strip().isEmpty()) {
             return;
         }

@@ -12,6 +12,7 @@ import event.EventChatList;
 import event.EventGroupChatList;
 import event.PublicEvent;
 import java.awt.Component;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
@@ -125,7 +126,7 @@ public class chatListAndSearch extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchButtonChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonChatActionPerformed
-        var text = txtUsernamSearch.getText();
+        var text = new String(txtUsernamSearch.getText().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
         if (text.strip().isEmpty()) {
             return;
         }

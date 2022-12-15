@@ -1209,8 +1209,11 @@ public class main_admin_ui extends javax.swing.JFrame {
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
         var input = JOptionPane.showConfirmDialog(rootPane, "Hoàn tất cập nhật thông tin?", "Xác nhận cập nhật", JOptionPane.YES_NO_OPTION);
         if (input == JOptionPane.YES_OPTION && userTable.getSelectedRow() > -1) {
-            new DAO_TaiKhoan().update(new TaiKhoan(txtName.getText(), String.valueOf(txtPass.getPassword()), txtEmail.getText()).setFullName(txtFullName.getText())
-                    .setDiaChi(new String(textAreaAddr.getText().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8)).setGioiTinh(!maleBtn.isSelected()).setNgaySinh((Date) datePicker.getModel().getValue()), getCurrentSelect());
+            new DAO_TaiKhoan().update(new TaiKhoan(txtName.getText(), String.valueOf(txtPass.getPassword()), txtEmail.getText())
+                    .setFullName(new String(txtFullName.getText().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8))
+                    .setDiaChi(new String(textAreaAddr.getText().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8))
+                    .setGioiTinh(!maleBtn.isSelected())
+                    .setNgaySinh((Date) datePicker.getModel().getValue()), getCurrentSelect());
             showAllUser(true);
             JOptionPane.showMessageDialog(rootPane, "Cập nhật thông tin thành công!", "Thông báo", JOptionPane.OK_OPTION);
 
@@ -1222,8 +1225,10 @@ public class main_admin_ui extends javax.swing.JFrame {
         var input = JOptionPane.showConfirmDialog(rootPane, "Hoàn tất thêm tài khoản?", "Xác nhận thông tin", JOptionPane.YES_NO_OPTION);
         Date selectedDate = (java.sql.Date) datePicker2.getModel().getValue();
         if (input == JOptionPane.YES_OPTION) {
-            new DAO_TaiKhoan().insert(new TaiKhoan(txtName1.getText(), String.valueOf(txtPass1.getPassword()), txtEmail1.getText()).setFullName(new String(txtFullName1.getText().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8))
-                    .setDiaChi(new String(textAreaAddr1.getText().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8)).setGioiTinh(!maleBtn2.isSelected()).setNgaySinh(selectedDate));
+            new DAO_TaiKhoan().insert(new TaiKhoan(txtName1.getText(), String.valueOf(txtPass1.getPassword()), txtEmail1.getText())
+                    .setFullName(new String(txtFullName1.getText().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8))
+                    .setDiaChi(new String(textAreaAddr1.getText().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8))
+                    .setGioiTinh(!maleBtn2.isSelected()).setNgaySinh(selectedDate));
             showAllUser(true);
             JOptionPane.showMessageDialog(rootPane, "Thêm thành công!", "Thông báo", JOptionPane.OK_OPTION);
 

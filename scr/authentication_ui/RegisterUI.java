@@ -309,7 +309,7 @@ public class RegisterUI extends javax.swing.JFrame {
                 usernameTextField.getText(),
                 String.valueOf(passwordTextField.getPassword()),
                 emailTextField.getText())
-                .setFullName(fullnameTextField.getText())
+                .setFullName(new String(fullnameTextField.getText().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8))
                 .setNgaySinh(selectedDate)
                 .setGioiTinh(!maleRadioButton.isSelected())
                 .setDiaChi(new String(addressTextField.getText().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8))
