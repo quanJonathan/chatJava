@@ -253,15 +253,27 @@ public class Service implements Runnable {
                         var oldPass = object.getString("oldPass");
                         var user = object.getString("user");
 
-                        if (new DAO_TaiKhoan().select("where  password=N'" + oldPass + "' and username = N'" + user + "'").size() > 0) {
+                        if (!new DAO_TaiKhoan().select("where  password=N'" + oldPass + "' and username = N'" + user + "'").isEmpty()) {
                             try {
                                 var result = database_helper.insert("update taikhoan set password=N'" + newPass + "' where username = N'" + user + "'");
                                 sendMessage("/changePass", result, new JSONObject());
                             } catch (Exception ex) {
-                                Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         } else {
                             sendMessage("/changePass", 0, new JSONObject());
+                        }
+
+                    } else if (action.startsWith("/resetPass")) {
+                        JSONObject object = new JSONObject(list[1]);
+                        var oldPass = object.getString("password");
+                        var user = object.getString("user");
+
+                        try {
+                            var result = database_helper.insert("update taikhoan set password=N'" + oldPass + "' where username = N'" + user + "'");
+                            sendMessage("/resetPass", result, new JSONObject());
+                        } catch (Exception ex) {
+
+                            sendMessage("/resetPass", 0, new JSONObject());
                         }
 
                     } else if (action.startsWith("/changeUsername")) {
@@ -281,7 +293,19 @@ public class Service implements Runnable {
                             sendMessage("/changePass", 0, new JSONObject());
                         }
 
-                    } else if (action.startsWith("/resetPassword")) {
+                    } else if (action.startsWith("/sendPasswordResetCode")) {
+                        JSONObject object = new JSONObject(list[1]);
+                        var username = object.getString("user");
+                        var code = object.getString("code");
+                        var id = savePasswordResetCode(username, code);
+                        sendMessage("/resetPasswordID", 1, new JSONObject().put("id", id));
+
+                    } else if (action.startsWith("/checkPasswordResetCode")) {
+                        JSONObject object = new JSONObject(list[1]);
+                        var id = object.getString("id");
+                        var enterCode = object.getString("code");
+                        var result = checkPasswordResetCode(id, enterCode);
+                        sendMessage("/checkPasswordResetCodeReceived", result, new JSONObject().put("id", id));
 
                     } else if (action.startsWith("/getChatList")) {
                         JSONObject object = new JSONObject(list[1]);
@@ -332,14 +356,20 @@ public class Service implements Runnable {
                         JSONObject object = new JSONObject(list[1]);
                         TaiKhoan user = new TaiKhoan(object.getString("username"), "", "");
                         ArrayList<BanBe> friendList = getFriendList(user);
+                        JSONObject newObject = new JSONObject();
                         JSONArray array = new JSONArray();
-
+                        JSONArray status = new JSONArray();
+                        var dtk = new DAO_TaiKhoan();
                         for (BanBe b : friendList) {
                             var objectFriend = b.JSONify();
                             array.put(objectFriend);
+                            status.put(dtk.select("where username=N'" + b.getUsernameBanBe() + "'").get(0).getTrangThai());
                         }
+                        
+                        newObject.put("array", array);
+                        newObject.put("status", status);
 
-                        sendManyObject("/friendListReceived", array);
+                        sendMessage("/friendListReceived", 1, newObject);
 
                     } else if (action.startsWith("/getSearchFriendList")) {
                         JSONObject object = new JSONObject(list[1]);
@@ -431,13 +461,20 @@ public class Service implements Runnable {
                         var username = object.getString("username");
                         var text = object.getString("text");
                         var messages = searchAllMessage(username, text);
-                        JSONArray array = new JSONArray();
+                        JSONArray array = new JSONArray(), groupName = new JSONArray();
                         for (TinNhan tn : messages) {
+                            String gp;
+                            if (tn.getIDNhom() != null && !tn.getIDNhom().isEmpty()) {
+                                gp = new DAO_NhomChat().select("where idnhom='" + tn.getIDNhom() + "'").get(0).getTenNhom();
+                            } else {
+                                gp = "";
+                            }
                             var objectMessage = tn.JSONify();
                             array.put(objectMessage);
+                            groupName.put(gp);
                         }
 
-                        sendManyObject("/allMessageSearchReceived", array);
+                        sendMessage("/allMessageSearchReceived", 1, new JSONObject().put("array", array).put("groupName", groupName));
 
                     } else if (action.startsWith("/shutDown")) {
                         JSONObject object = new JSONObject(list[1]);
@@ -924,6 +961,23 @@ public class Service implements Runnable {
                 dnc.updateAdmin(newGroup.getIDNhom(), mem.getUsername(), mem.getChucNang());
 
             });
+        }
+
+        private String savePasswordResetCode(String username, String code) {
+            var id = IDPrefix.getIDCode();
+            new DAO_MatKhau().insert(new MaXacNhan(id, username, code, new java.util.Date(System.currentTimeMillis())));
+            return id;
+        }
+
+        private int checkPasswordResetCode(String id, String enterCode) {
+            try {
+                if (new DAO_MatKhau().selectWithID(id).get(0).getCode().equals(enterCode)) {
+                    return 1;
+                }
+                return 0;
+            } catch (Throwable t) {
+                return 0;
+            }
         }
     }
 

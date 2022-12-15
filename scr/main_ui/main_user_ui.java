@@ -221,7 +221,7 @@ public class main_user_ui extends javax.swing.JFrame {
             }
 
             @Override
-            public void setSearchData(ArrayList<TinNhan> messages) {
+            public void setSearchData(ArrayList<TinNhan> messages, ArrayList<String> names) {
                 System.out.println("");
                 System.out.println("search result: ");
                 messages.forEach(item -> {
@@ -229,16 +229,16 @@ public class main_user_ui extends javax.swing.JFrame {
                 });
                 
                 var messageSearch = new MessageSearch();
-                messageSearch.showSearchResult(messages);
+                messageSearch.showSearchResult(messages, names);
                 messageSearch.setVisible(true);
             }
         });
 
         PublicEvent.getInstance().addEventFriend(new EventFriend() {
             @Override
-            public void setData(ArrayList<BanBe> friendList) {
+            public void setData(ArrayList<BanBe> friendList, ArrayList<Integer> status) {
                 friends = friendList;
-                friendListPage.setFriendList(friendList);
+                friendListPage.setFriendList(friendList, status);
                 friendListPage.showAllFriend();
 
             }

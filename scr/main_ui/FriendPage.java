@@ -17,6 +17,7 @@ import java.util.ArrayList;
 public class FriendPage extends javax.swing.JPanel {
 
     private ArrayList<BanBe> friendList;
+    private ArrayList<Integer> statuses;
 
     public FriendPage() {
         initComponents();
@@ -30,8 +31,9 @@ public class FriendPage extends javax.swing.JPanel {
 
     }
 
-    public void setFriendList(ArrayList<BanBe> friends) {
+    public void setFriendList(ArrayList<BanBe> friends, ArrayList<Integer> status) {
         this.friendList = friends;
+        statuses = status;
     }
 
     public void showAllFriend() {
@@ -41,6 +43,10 @@ public class FriendPage extends javax.swing.JPanel {
                 friendListPanel.add(new FriendCard(b), "wrap");
             }
         } catch (Throwable t) {
+        }
+        for (int i = 0; i < friendList.size(); i++) {
+            var friendCard = (FriendCard) friendListPanel.getComponent(i);
+            friendCard.setStatus(statuses.get(i));
         }
         friendListPanel.repaint();
         friendListPanel.revalidate();

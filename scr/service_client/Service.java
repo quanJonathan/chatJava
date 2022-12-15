@@ -225,6 +225,7 @@ public class Service implements Runnable {
                                             }
                                             break;
                                         }
+
                                         case "/register": {
                                             var object = new JSONObject(command.getString("object"));
                                             if (result == 0) {
@@ -235,6 +236,21 @@ public class Service implements Runnable {
                                             }
                                             break;
                                         }
+
+                                        case "/resetPasswordID": {
+                                            var object = new JSONObject(command.getString("object"));
+                                            PublicEvent.getInstance().getEventForgetPass().setID(object.getString("id"));
+
+                                            break;
+                                        }
+                                        
+                                        case "/checkPasswordResetCodeReceived": {
+                                            var object = new JSONObject(command.getString("object"));
+                                            PublicEvent.getInstance().getEventForgetPass().codeChecked(object.getString("id"), (result == 1));
+
+                                            break;
+                                        }
+
                                         case "/newUserLogin": {
                                             var object = new JSONObject(command.getString("object"));
                                             TaiKhoan user = new TaiKhoan(object.getString("username"), object.getString("password"), object.getString("email"));
@@ -251,6 +267,11 @@ public class Service implements Runnable {
                                                 message = "Change password successfully";
                                             }
                                             PublicEvent.getInstance().getEventMain().showDialog(message, "Result");
+                                            break;
+                                        }
+                                        
+                                        case "/resetPass": {
+                                            PublicEvent.getInstance().getEventForgetPass().checkResult((result >= 0));
                                             break;
                                         }
 
@@ -353,13 +374,16 @@ public class Service implements Runnable {
                                                 messages.add(tn);
                                             }
                                             System.out.println(messages);
-                                            PublicEvent.getInstance().getEventChat().setSearchData(messages);
+                                            PublicEvent.getInstance().getEventChat().setSearchData(messages, new ArrayList<>());
                                             break;
                                         }
 
                                         case "/allMessageSearchReceived": {
-                                            var object = new JSONArray(command.getString("object"));
+                                            var objects = new JSONObject(command.getString("object"));
+                                            var object = objects.getJSONArray("array");
+                                            var groupName = objects.getJSONArray("groupName");
                                             ArrayList<TinNhan> messages = new ArrayList<>();
+                                            ArrayList<String> names = new ArrayList<>();
                                             for (int i = 0; i < object.length(); i++) {
                                                 var newObject = object.getJSONObject(i);
                                                 var date = convertTime(newObject.getString("thoiGian"));
@@ -376,9 +400,10 @@ public class Service implements Runnable {
                                                 String banSao = newObject.getString("banSao");
                                                 TinNhan tn = new TinNhan(id, date, text, sender, receiver, idnhom, banSao);
                                                 messages.add(tn);
+                                                names.add(groupName.getString(i));
                                             }
                                             System.out.println(messages);
-                                            PublicEvent.getInstance().getEventChat().setSearchData(messages);
+                                            PublicEvent.getInstance().getEventChat().setSearchData(messages, names);
                                             break;
                                         }
 
@@ -436,8 +461,12 @@ public class Service implements Runnable {
                                             break;
                                         }
                                         case "/friendListReceived": {
-                                            var object = new JSONArray(command.getString("object"));
+                                            var objects = new JSONObject(command.getString("object"));
+                                            var object = new JSONArray(objects.getJSONArray("array"));
+                                            var stat = new JSONArray(objects.getJSONArray("status"));
+
                                             ArrayList<BanBe> friendList = new ArrayList<>();
+                                            ArrayList<Integer> status = new ArrayList<>();
                                             for (int i = 0; i < object.length(); i++) {
                                                 var newObject = object.getJSONObject(i);
                                                 String main = newObject.getString("username");
@@ -453,9 +482,10 @@ public class Service implements Runnable {
                                                     friendList.add(b);
 
                                                 }
+                                                status.add(stat.getInt(i));
                                             }
                                             System.out.println(friendList);
-                                            PublicEvent.getInstance().getEventFriend().setData(friendList);
+                                            PublicEvent.getInstance().getEventFriend().setData(friendList, status);
                                             break;
                                         }
                                         case "/searchFriendListReceived": {

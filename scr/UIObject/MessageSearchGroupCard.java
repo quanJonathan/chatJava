@@ -28,10 +28,11 @@ public class MessageSearchGroupCard extends javax.swing.JPanel {
         messageContent.setText(message.getNoiDung());
         lblUsername.setText("Người gửi: " + message.getNguoiGui());
         if (tenNhom.isEmpty() || message.getIDNhom().isEmpty() || message.getIDNhom().equals("/") || message.getIDNhom().equals("\"\"")) {
-            lblUsername1.setVisible(false);
+            lblUsername1.setForeground(Color.white);
+            lblUsername1.setFocusable(false);
         }
         else {
-            lblUsername1.setText(tenNhom);
+            lblUsername1.setText("Nhóm: " + tenNhom);
         }
         lblBeFriendDate.setText("Thời gian: " + message.getThoiGian().toString());
         sp.setVerticalScrollBar(new ModifiedScrollBar());
@@ -97,17 +98,15 @@ public class MessageSearchGroupCard extends javax.swing.JPanel {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(lblUsername)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(lblUsername1, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(16, 16, 16)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblUsername)
+                    .addComponent(lblUsername1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(sp, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblBeFriendDate)
-                .addContainerGap())
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -121,9 +120,10 @@ public class MessageSearchGroupCard extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 

@@ -24,6 +24,6 @@ public interface EventChat {
 
     public void searchFromAllUser(String text);
     
-    public void setSearchData(ArrayList<TinNhan> messages);
+    public void setSearchData(ArrayList<TinNhan> messages, ArrayList<String> names);
 
 }

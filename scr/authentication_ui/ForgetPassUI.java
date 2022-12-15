@@ -4,6 +4,7 @@
  */
 package authentication_ui;
 
+import entity.IDPrefix;
 import event.EventForgetPass;
 import event.PublicEvent;
 import java.awt.CardLayout;
@@ -16,6 +17,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.swing.JOptionPane;
+import org.json.JSONObject;
 
 /**
  *
@@ -33,6 +35,8 @@ class MailConfig {
 
 public class ForgetPassUI extends javax.swing.JFrame {
 
+    String currentID = "";
+
     /**
      * Creates new form forgot_password_1
      */
@@ -48,6 +52,7 @@ public class ForgetPassUI extends javax.swing.JFrame {
         PublicEvent.getInstance().addEventForgetPass(new EventForgetPass() {
             @Override
             public void sendPasswordResetMail(String email, String username) {
+                service_client.Service.getInstance().run();
                 Properties props = new Properties();
                 props.put("mail.smtp.auth", "true");
                 props.put("mail.smtp.host", MailConfig.HOST_NAME);
@@ -63,27 +68,71 @@ public class ForgetPassUI extends javax.swing.JFrame {
                     MimeMessage message = new MimeMessage(session);
                     message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
                     message.setSubject("Reset Password from ChatJava");
-                    message.setText("""
-                                    Warning: DON'T share this passcode to anyone!
-                                    Your username is """ + username + 
-                                    """
-                                    Your passcode is: 12347845.
-                                    Please enter this passcode in the application to reset your password!""");
+                    var code = IDPrefix.getIDMatKhau();
+                    sendCode(username, code);
+                    message.setText("Warning: DON'T share this passcode to anyone!\nYour username is " + username + "\nYour passcode is: " + code + ".\n"
+                            + " Please enter this passcode in the application to reset your password!");
                     Transport.send(message);
                     System.out.println("Message sent successfully");
                 } catch (MessagingException e) {
 
                 } finally {
-                    String code = JOptionPane.showInputDialog(rootPane, "Vui lòng nhập mã code đã gửi tới email\n" + email, "Nhập code", JOptionPane.QUESTION_MESSAGE);
-                    if (!code.isEmpty()) {
-                        cardLayout.show(jPanel2, "resetCard");
-                    }
+                    JOptionPane.showConfirmDialog(rootPane, "Vui lòng kiểm tra và nhập mã code đã gửi tới email\n" + email, "Thông báo", JOptionPane.CLOSED_OPTION);
+                    cardLayout.show(jPanel2, "codeCard");
                 }
             }
 
             @Override
             public void goback() {
                 new LoginUI().setVisible(true);
+            }
+
+            @Override
+            public void sendCode(String username, String code) {
+                service_client.Service.getInstance().al.sendCommand("/sendPasswordResetCode", new JSONObject().put("user", username).put("code", code));
+            }
+
+            @Override
+            public void codeChecked(String id, boolean checked) {
+                if (currentID.equals(id)) {
+                    if (checked) {
+                        JOptionPane.showConfirmDialog(rootPane, "Bạn đã nhập đúng code!", "Thông báo", JOptionPane.CLOSED_OPTION);
+                        cardLayout.show(jPanel2, "resetCard");
+                    } else {
+                        JOptionPane.showMessageDialog(rootPane, "Bạn đã nhập SAI code! Vui lòng kiểm tra lại.", "Lỗi", JOptionPane.CLOSED_OPTION);
+                    }
+                }
+            }
+
+            @Override
+            public void sendEnterCode(String username, String enterCode) {
+                service_client.Service.getInstance().al.sendCommand("/checkPasswordResetCode", new JSONObject()
+                        .put("user", username)
+                        .put("code", enterCode)
+                        .put("id", !currentID.isEmpty() ? currentID : ""));
+            }
+
+            @Override
+            public void setID(String id) {
+                currentID = id;
+            }
+
+            @Override
+            public void sendPassword(String username, String password) {
+                service_client.Service.getInstance().al.sendCommand("/resetPass", new JSONObject()
+                        .put("user", username)
+                        .put("password", password));
+            }
+
+            @Override
+            public void checkResult(boolean b) {
+                if (b) {
+                    JOptionPane.showConfirmDialog(rootPane, "Đặt lại mật khẩu thành công!", "Thông báo", JOptionPane.CLOSED_OPTION);
+                } else {
+                    JOptionPane.showMessageDialog(rootPane, "Có lỗi xảy ra", "Thông báo", JOptionPane.CLOSED_OPTION);
+
+                }
+                cardLayout.show(jPanel2, "formCard");
             }
         });
     }
@@ -107,6 +156,11 @@ public class ForgetPassUI extends javax.swing.JFrame {
         usernameText = new javax.swing.JTextField();
         emailSendingButton = new javax.swing.JButton();
         goback = new javax.swing.JButton();
+        codePanel = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
+        txtCode = new javax.swing.JTextField();
+        continueButton = new javax.swing.JButton();
+        goback2 = new javax.swing.JButton();
         resetPanel = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         txtNewPass = new javax.swing.JTextField();
@@ -200,6 +254,57 @@ public class ForgetPassUI extends javax.swing.JFrame {
         );
 
         jPanel2.add(formPanel, "formCard");
+
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jLabel6.setText("Nhập mã xác nhận:");
+
+        txtCode.setToolTipText("Enter username");
+
+        continueButton.setText("Tiếp tục");
+        continueButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                continueButtonActionPerformed(evt);
+            }
+        });
+
+        goback2.setText("Quay lại");
+        goback2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                goback2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout codePanelLayout = new javax.swing.GroupLayout(codePanel);
+        codePanel.setLayout(codePanelLayout);
+        codePanelLayout.setHorizontalGroup(
+            codePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(codePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(codePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtCode)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
+                    .addGroup(codePanelLayout.createSequentialGroup()
+                        .addGap(41, 41, 41)
+                        .addGroup(codePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(goback2, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                            .addComponent(continueButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        codePanelLayout.setVerticalGroup(
+            codePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(codePanelLayout.createSequentialGroup()
+                .addGap(49, 49, 49)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(70, 70, 70)
+                .addComponent(continueButton)
+                .addGap(18, 18, 18)
+                .addComponent(goback2)
+                .addContainerGap())
+        );
+
+        jPanel2.add(codePanel, "codeCard");
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         jLabel4.setText("Vui lòng nhập lại:");
@@ -301,10 +406,14 @@ public class ForgetPassUI extends javax.swing.JFrame {
     }//GEN-LAST:event_emailSendingButtonActionPerformed
 
     private void doneButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doneButtonActionPerformed
+        if (!txtNewPass.getText().equals(txtNewPassAgain.getText())) {
+            JOptionPane.showMessageDialog(rootPane, "Mật khẩu nhập lại không đúng.", "Thông báo", JOptionPane.CLOSED_OPTION);
+            return;
+        }
+
         var input = JOptionPane.showConfirmDialog(rootPane, "Xác nhận đặt lại mật khẩu?", "Thông báo", JOptionPane.OK_CANCEL_OPTION);
         if (input == JOptionPane.OK_OPTION) {
-            JOptionPane.showConfirmDialog(rootPane, "Đặt lại mật khẩu thành công!", "Thông báo", JOptionPane.CLOSED_OPTION);
-            cardLayout.show(jPanel2, "formCard");
+            PublicEvent.getInstance().getEventForgetPass().sendPassword(usernameText.getText(), txtNewPass.getText());
         }
     }//GEN-LAST:event_doneButtonActionPerformed
 
@@ -314,6 +423,17 @@ public class ForgetPassUI extends javax.swing.JFrame {
             cardLayout.show(jPanel2, "formCard");
         }
     }//GEN-LAST:event_goback1ActionPerformed
+
+    private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueButtonActionPerformed
+        PublicEvent.getInstance().getEventForgetPass().sendEnterCode(usernameText.getText(), txtCode.getText());
+    }//GEN-LAST:event_continueButtonActionPerformed
+
+    private void goback2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goback2ActionPerformed
+        var input = JOptionPane.showConfirmDialog(rootPane, "Hủy nhận đặt lại mật khẩu?", "Xác nhận", JOptionPane.OK_CANCEL_OPTION);
+        if (input == JOptionPane.OK_OPTION) {
+            cardLayout.show(jPanel2, "formCard");
+        }
+    }//GEN-LAST:event_goback2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -355,20 +475,25 @@ public class ForgetPassUI extends javax.swing.JFrame {
 
     CardLayout cardLayout;
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel codePanel;
+    private javax.swing.JButton continueButton;
     private javax.swing.JButton doneButton;
     private javax.swing.JButton emailSendingButton;
     private javax.swing.JTextField emailText;
     private javax.swing.JPanel formPanel;
     private javax.swing.JButton goback;
     private javax.swing.JButton goback1;
+    private javax.swing.JButton goback2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel resetPanel;
+    private javax.swing.JTextField txtCode;
     private javax.swing.JTextField txtNewPass;
     private javax.swing.JTextField txtNewPassAgain;
     private javax.swing.JTextField usernameText;

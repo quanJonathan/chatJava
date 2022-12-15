@@ -29,13 +29,20 @@ public class FriendCard extends javax.swing.JPanel {
         lblBeFriendDate.setText("Ngày kết bạn: " + user.getNgayKetBan().toString());
     }
     
-    public void setStatus(){
-          if(1 == 1){
-            lblStatus.setText("Active now");
-            lblStatus.setForeground(new java.awt.Color(40, 147, 59));
-        }else{
-             lblStatus.setText("Offline");
-             lblStatus.setForeground(new Color(160, 160, 160));
+    public void setStatus(int active){
+        switch (active) {
+            case 1 -> {
+                lblStatus.setText("Active now");
+                lblStatus.setForeground(new java.awt.Color(40, 147, 59));
+            }
+            case -1 -> {
+                lblStatus.setText("Locked");
+                lblStatus.setForeground(Color.YELLOW);
+            }
+            default -> {
+                lblStatus.setText("Offline");
+                lblStatus.setForeground(new Color(160, 160, 160));
+            }
         }
     }
 

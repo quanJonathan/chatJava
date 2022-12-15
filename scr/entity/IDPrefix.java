@@ -14,6 +14,8 @@ public class IDPrefix {
 
     public static final String IDTinNhan = "msg";
     public static final String IDNhomChat = "grp";
+        public static final String IDCode = "cde";
+
     public static final int length = 10;
     
     public static String getIDTinNhan() {
@@ -22,5 +24,13 @@ public class IDPrefix {
     
     public static String getIDNhomChat() {
         return StringRandomizer.GetStringWithPrefix(IDNhomChat, IDPrefix.length - 3);
+    }
+    
+    public static String getIDMatKhau() {
+        return StringRandomizer.GetStringWithPrefix("", length);
+    }
+    
+    public static String getIDCode() {
+        return StringRandomizer.GetStringWithPrefix(IDCode, IDPrefix.length - 3);
     }
 }

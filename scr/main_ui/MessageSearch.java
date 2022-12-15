@@ -27,9 +27,12 @@ public class MessageSearch extends javax.swing.JFrame {
         searchPanel.setLayout(new MigLayout("wrap"));
     }
     
-    public void showSearchResult(ArrayList<TinNhan> messages){
-        for(var t: messages){
-            searchPanel.add(new MessageSearchGroupCard(t, ""));
+    public void showSearchResult(ArrayList<TinNhan> messages, ArrayList<String> names){
+        for(int i = 0; i < messages.size(); i++){
+            searchPanel.add(new MessageSearchGroupCard(messages.get(i),names.isEmpty() ? "" : names.get(i)));
+        }
+        if (messages.size() > 0) {
+            noResultLb.setVisible(false);
         }
     }
 
@@ -44,9 +47,9 @@ public class MessageSearch extends javax.swing.JFrame {
 
         sp = new javax.swing.JScrollPane();
         searchPanel = new javax.swing.JPanel();
+        noResultLb = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
 
         sp.setBackground(new java.awt.Color(255, 255, 255));
@@ -54,15 +57,24 @@ public class MessageSearch extends javax.swing.JFrame {
 
         searchPanel.setBackground(new java.awt.Color(255, 255, 255));
 
+        noResultLb.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        noResultLb.setText("Không có kết quả nào!");
+
         javax.swing.GroupLayout searchPanelLayout = new javax.swing.GroupLayout(searchPanel);
         searchPanel.setLayout(searchPanelLayout);
         searchPanelLayout.setHorizontalGroup(
             searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 506, Short.MAX_VALUE)
+            .addGroup(searchPanelLayout.createSequentialGroup()
+                .addGap(127, 127, 127)
+                .addComponent(noResultLb)
+                .addContainerGap(142, Short.MAX_VALUE))
         );
         searchPanelLayout.setVerticalGroup(
             searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 486, Short.MAX_VALUE)
+            .addGroup(searchPanelLayout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addComponent(noResultLb)
+                .addContainerGap(444, Short.MAX_VALUE))
         );
 
         sp.setViewportView(searchPanel);
@@ -136,6 +148,7 @@ public class MessageSearch extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel noResultLb;
     private javax.swing.JPanel searchPanel;
     private javax.swing.JScrollPane sp;
     // End of variables declaration//GEN-END:variables

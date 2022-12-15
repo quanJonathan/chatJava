@@ -6,56 +6,58 @@ package database;
 
 import com.microsoft.sqlserver.jdbc.SQLServerException;
 import entity.BanBe;
+import entity.MaXacNhan;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author ADMIN
- */
-public class DAO_BanBe implements DAO<BanBe> {
+public class DAO_MatKhau implements DAO<MaXacNhan> {
 
-    final String tableName = "DanhSachBanBe";
-
-    public DAO_BanBe() {
-    }
+    String tableName = "MaXacNhan";
 
     @Override
-    public ArrayList<BanBe> selectAll() {
+    public ArrayList<MaXacNhan> selectAll() {
         return select("");
     }
 
     @Override
-    public ArrayList<BanBe> select(String condition) {
+    public ArrayList<MaXacNhan> select(String condition) {
         try {
             var rs = database_helper.select(database_query_builder.get(tableName, condition, ""));
             return resultToList(rs);
         } catch (Throwable ex) {
             return new ArrayList<>();
-        }
-    }
+        }    }
+    
+    public ArrayList<MaXacNhan> selectWithID(String id) {
+        try {
+            var rs = database_helper.select(database_query_builder.get(tableName, "where id='" + id + "'", ""));
+            return resultToList(rs);
+        } catch (Throwable ex) {
+            return new ArrayList<>();
+        }    }
 
     @Override
-    public ArrayList<BanBe> resultToList(ResultSet rs) throws SQLException {
-        var result = new ArrayList<BanBe>();
+    public ArrayList<MaXacNhan> resultToList(ResultSet rs) throws SQLException {
+        var result = new ArrayList<MaXacNhan>();
         while (rs.next()) {
             if (rs.getMetaData().getColumnCount() == 1) {
-                result.add(new BanBe(rs.getNString(1), "", new Date(0)));
+                //result.add(new MaXacNhan(rs.getNString(1), "", new Date(0)));
             } else {
-                result.add(new BanBe(
+                result.add(new MaXacNhan(
                         rs.getNString(1),
                         rs.getNString(2),
-                        rs.getTimestamp(3)));
+                        rs.getNString(3),
+                        rs.getTimestamp(4)));
             }
         }
         return result;
     }
 
     @Override
-    public ArrayList<BanBe> insert(BanBe t) {
+    public ArrayList<MaXacNhan> insert(MaXacNhan t) {
         String insertQuery = t.toDelimitedList();
 
         try {
@@ -72,20 +74,13 @@ public class DAO_BanBe implements DAO<BanBe> {
     }
 
     @Override
-    public int delete(BanBe bb) {
-        return delete(" where (username = '" + bb.getUsernameChinh() + "' and usernamebanbe = '" + bb.getUsernameBanBe() + "') or"
-                + " (username = '" + bb.getUsernameBanBe() + "' and usernamebanbe = '" + bb.getUsernameChinh() + "')");
-    }
-
-    public int delete(String conditions) {
-        var rs = database_helper.delete(database_query_builder.delete(tableName,
-                conditions
-        ));
-        return rs;
+    public ArrayList<MaXacNhan> update(MaXacNhan t) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public ArrayList<BanBe> update(BanBe t) {
+    public int delete(MaXacNhan t) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
 }
