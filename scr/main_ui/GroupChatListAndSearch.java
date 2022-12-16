@@ -10,6 +10,7 @@ import entity.NhomChat;
 import entity.ThanhVienNhomChat;
 import event.EventGroupChatList;
 import event.PublicEvent;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
@@ -65,6 +66,11 @@ public class GroupChatListAndSearch extends javax.swing.JPanel {
         txtUsernamSearch.setToolTipText("Nhập tên");
 
         searchButtonChat.setText("Tìm kiếm");
+        searchButtonChat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonChatActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -89,6 +95,20 @@ public class GroupChatListAndSearch extends javax.swing.JPanel {
                 .addComponent(sp, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void searchButtonChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonChatActionPerformed
+        var text = new String(txtUsernamSearch.getText().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
+        if (text.strip().isEmpty()) {
+            return;
+        }
+        var query = text.strip().split("\\s+");
+        var s = new ArrayList<String>();
+        for (var word : query) {
+            s.add("noidung like N'%" + word + "%'");
+        }
+        text = "where " + String.join(" or ", s);
+        PublicEvent.getInstance().getEventChat().searchFromAllUser(text);
+    }//GEN-LAST:event_searchButtonChatActionPerformed
 
     private void init() {
         groupList = new ArrayList<>();

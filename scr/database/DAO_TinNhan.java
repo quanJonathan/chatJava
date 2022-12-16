@@ -5,6 +5,7 @@
 package database;
 
 import com.microsoft.sqlserver.jdbc.SQLServerException;
+import entity.IDPrefix;
 import entity.TinNhan;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -35,7 +36,7 @@ public class DAO_TinNhan implements DAO<TinNhan> {
             var rs = database_helper.select(database_query_builder.get(tableName, condition, "tinnhan.id", "tinnhan.thoiGian", "tinnhan.noidung", "danhsachtinnhan.nguoigui", "danhsachtinnhan.nguoinhan", "danhsachtinnhan.idnhom", "banSao"));
             var ars = resultToList(rs);
             ars.sort((TinNhan t1, TinNhan t2) -> t1.getThoiGian().compareTo(t2.getThoiGian()));
-            ars.forEach(item->{
+            ars.forEach(item -> {
                 System.out.println(item);
             });
             return ars;
@@ -43,14 +44,19 @@ public class DAO_TinNhan implements DAO<TinNhan> {
             return new ArrayList<>();
         }
     }
-    
+
     public ArrayList<TinNhan> searchFromAUser(String sender, String receiver, String text) {
         try {
-            var condition = "inner join danhsachtinnhan on tinnhan.id = danhsachtinnhan.id " + text + " and bansao='" + sender + "' and idNhom is null " + " and((danhsachtinnhan.nguoigui = N'" + sender + "' and danhsachtinnhan.nguoinhan = N'" + receiver + "')" + " or (danhsachtinnhan.nguoinhan = N'" + sender + "'" + " and danhsachtinnhan.nguoigui = N'" + receiver + "')) ";
+            String condition;
+            if (receiver.startsWith(IDPrefix.IDNhomChat)) {
+                condition = "inner join danhsachtinnhan on tinnhan.id = danhsachtinnhan.id " + text + " and bansao='" + sender + "' and idNhom ='" + receiver + "'";
+            } else {
+                condition = "inner join danhsachtinnhan on tinnhan.id = danhsachtinnhan.id " + text + " and bansao='" + sender + "' and idNhom is null " + " and((danhsachtinnhan.nguoigui = N'" + sender + "' and danhsachtinnhan.nguoinhan = N'" + receiver + "')" + " or (danhsachtinnhan.nguoinhan = N'" + sender + "'" + " and danhsachtinnhan.nguoigui = N'" + receiver + "')) ";
+            }
             var rs = database_helper.select(database_query_builder.get(tableName, condition, "tinnhan.id", "tinnhan.thoiGian", "tinnhan.noidung", "danhsachtinnhan.nguoigui", "danhsachtinnhan.nguoinhan", "danhsachtinnhan.idnhom", "banSao"));
             var ars = resultToList(rs);
             ars.sort((TinNhan t1, TinNhan t2) -> t1.getThoiGian().compareTo(t2.getThoiGian()));
-            ars.forEach(item->{
+            ars.forEach(item -> {
                 System.out.println(item);
             });
             return ars;
@@ -58,14 +64,14 @@ public class DAO_TinNhan implements DAO<TinNhan> {
             return new ArrayList<>();
         }
     }
-    
+
     public ArrayList<TinNhan> searchFromAllUser(String sender, String text) {
         try {
-            var condition = "inner join danhsachtinnhan on tinnhan.id = danhsachtinnhan.id " + text + " and bansao='" + sender + "' " + " and (danhsachtinnhan.nguoigui = N'" + sender + "'"  + " or danhsachtinnhan.nguoinhan = N'" + sender + "') ";
+            var condition = "inner join danhsachtinnhan on tinnhan.id = danhsachtinnhan.id " + text + " and bansao='" + sender + "' " + " and (danhsachtinnhan.nguoigui = N'" + sender + "'" + " or danhsachtinnhan.nguoinhan = N'" + sender + "') ";
             var rs = database_helper.select(database_query_builder.get(tableName, condition, "tinnhan.id", "tinnhan.thoiGian", "tinnhan.noidung", "danhsachtinnhan.nguoigui", "danhsachtinnhan.nguoinhan", "danhsachtinnhan.idnhom", "banSao"));
             var ars = resultToList(rs);
             ars.sort((TinNhan t1, TinNhan t2) -> t1.getThoiGian().compareTo(t2.getThoiGian()));
-            ars.forEach(item->{
+            ars.forEach(item -> {
                 System.out.println(item);
             });
             return ars;
@@ -126,7 +132,7 @@ public class DAO_TinNhan implements DAO<TinNhan> {
             database_helper.insert(database_query_builder.insert(tableName2,
                     insertQuery
             ));
-            
+
             insertQuery = messageCopy.toDelimitedList2();
 
             database_helper.insert(database_query_builder.insert(tableName2,
