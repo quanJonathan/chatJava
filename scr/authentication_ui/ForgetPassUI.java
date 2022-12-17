@@ -18,6 +18,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.swing.JOptionPane;
 import org.json.JSONObject;
+import service_client.Service;
 
 /**
  *
@@ -53,6 +54,11 @@ public class ForgetPassUI extends javax.swing.JFrame {
             @Override
             public void sendPasswordResetMail(String email, String username) {
                 service_client.Service.getInstance().run();
+                 if (!Service.getInstance().isServerRunning()) {
+                    JOptionPane.showMessageDialog(rootPane, "Server is not available!");
+                    dispose();
+                    return;
+                }
                 Properties props = new Properties();
                 props.put("mail.smtp.auth", "true");
                 props.put("mail.smtp.host", MailConfig.HOST_NAME);
