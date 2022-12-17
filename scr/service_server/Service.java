@@ -213,8 +213,11 @@ public class Service implements Runnable {
                                 sendMessage(list[0], result, userObject);
                                 userConnect(user.getUsername());
 //                               
-                            } else {
+                            } else if(result == 0){
                                 sendMessage(list[0], result, new JSONObject().put("error", "Wrong credentials"));
+                                shutDown();
+                            }else{
+                                sendMessage(list[0], 0, new JSONObject().put("error", "Account has been blocked"));
                                 shutDown();
                             }
 
@@ -365,7 +368,7 @@ public class Service implements Runnable {
                             array.put(objectFriend);
                             status.put(dtk.select("where username=N'" + b.getUsernameBanBe() + "'").get(0).getTrangThai());
                         }
-                        
+
                         newObject.put("array", array);
                         newObject.put("status", status);
 
@@ -728,7 +731,10 @@ public class Service implements Runnable {
 
             var queryResult = daoAcc.select("where Email='" + username + "'" + " and password='" + password + "'");
             if (!queryResult.isEmpty()) {
-                System.out.println("login succesfully");
+                if (queryResult.get(0).getTrangThai() == -1) {
+                    System.out.println("this account is block");
+                    return -1;
+                }
                 return 1;
             } else {
                 System.out.println("Wrong username/password");

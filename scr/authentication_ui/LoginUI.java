@@ -99,9 +99,10 @@ public class LoginUI extends javax.swing.JFrame {
         forgetPassButton = new javax.swing.JLabel();
         logInButton = new javax.swing.JButton();
         signUpButton = new javax.swing.JButton();
-        javax.swing.JLabel errorPanel = new javax.swing.JLabel();
+        errorPanel = new javax.swing.JLabel();
         passwordTextField = new javax.swing.JPasswordField();
         lblError = new javax.swing.JLabel();
+        checkBox = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -167,6 +168,12 @@ public class LoginUI extends javax.swing.JFrame {
             }
         });
 
+        checkBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -191,10 +198,13 @@ public class LoginUI extends javax.swing.JFrame {
                                             .addComponent(logInButton)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                             .addComponent(signUpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(forgetPassButton, javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(passwordTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addContainerGap(54, Short.MAX_VALUE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(forgetPassButton, javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(passwordTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(checkBox)))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblError)
@@ -213,7 +223,9 @@ public class LoginUI extends javax.swing.JFrame {
                 .addGap(12, 12, 12)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(passwordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(passwordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(checkBox, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(9, 9, 9)
                 .addComponent(forgetPassButton)
                 .addGap(18, 18, 18)
@@ -231,9 +243,7 @@ public class LoginUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -243,35 +253,43 @@ public class LoginUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void logInButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logInButtonMouseClicked
-        // PublicEvent.getInstance().getEventLogin().login();
-    }//GEN-LAST:event_logInButtonMouseClicked
+    private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
+        logInButton.requestFocus();
+    }//GEN-LAST:event_formFocusGained
 
-    private void signUpButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_signUpButtonMouseClicked
-        this.dispose();
-    }//GEN-LAST:event_signUpButtonMouseClicked
+    private void passwordTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_passwordTextFieldActionPerformed
 
     private void signUpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signUpButtonActionPerformed
         PublicEvent.getInstance().getEventLogin().goRegister();
     }//GEN-LAST:event_signUpButtonActionPerformed
 
-    private void forgetPassButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_forgetPassButtonMouseClicked
+    private void signUpButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_signUpButtonMouseClicked
         this.dispose();
-        PublicEvent.getInstance().getEventLogin().forgetPass();
-    }//GEN-LAST:event_forgetPassButtonMouseClicked
-
-    private void passwordTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_passwordTextFieldActionPerformed
+    }//GEN-LAST:event_signUpButtonMouseClicked
 
     private void logInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logInButtonActionPerformed
         PublicEvent.getInstance().getEventLogin().login();
         // JOptionPane.showMessageDialog(rootPane, "Hoàn tất đăng nhập", "Thông báo", JOptionPane.OK_OPTION);
     }//GEN-LAST:event_logInButtonActionPerformed
 
-    private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
-        logInButton.requestFocus();
-    }//GEN-LAST:event_formFocusGained
+    private void logInButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logInButtonMouseClicked
+        // PublicEvent.getInstance().getEventLogin().login();
+    }//GEN-LAST:event_logInButtonMouseClicked
+
+    private void forgetPassButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_forgetPassButtonMouseClicked
+        this.dispose();
+        PublicEvent.getInstance().getEventLogin().forgetPass();
+    }//GEN-LAST:event_forgetPassButtonMouseClicked
+
+    private void checkBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxActionPerformed
+        if (checkBox.isSelected()) {
+            passwordTextField.setEchoChar((char) 0); //password = JPasswordField
+        } else {
+            passwordTextField.setEchoChar('*');
+        }
+    }//GEN-LAST:event_checkBoxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -313,6 +331,8 @@ public class LoginUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox checkBox;
+    private javax.swing.JLabel errorPanel;
     private javax.swing.JLabel forgetPassButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
