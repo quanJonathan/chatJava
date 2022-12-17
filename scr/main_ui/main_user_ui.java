@@ -489,6 +489,7 @@ public class main_user_ui extends javax.swing.JFrame {
         chat = new main_ui.Chat();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("ChatJava");
         setResizable(false);
 
         sideNavBar.setBackground(new java.awt.Color(255, 255, 255));

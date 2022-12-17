@@ -22,8 +22,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -356,6 +354,7 @@ public class main_admin_ui extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Administration System");
         setBounds(new java.awt.Rectangle(0, 0, 900, 500));
         setResizable(false);
 
@@ -1155,16 +1154,23 @@ public class main_admin_ui extends javax.swing.JFrame {
         if (index == -1) {
             return;
         }
-        var input = JOptionPane.showConfirmDialog(rootPane, "Khóa " + userTable.getSelectedRowCount() + " tài khoản?", "Xác nhận khóa tài khoản", JOptionPane.YES_NO_CANCEL_OPTION);
+        var input = JOptionPane.showConfirmDialog(rootPane, "Khóa/Mở khóa " + userTable.getSelectedRowCount() + " tài khoản?", "Xác nhận khóa tài khoản", JOptionPane.YES_NO_CANCEL_OPTION);
         if (input == JOptionPane.YES_OPTION) {
             int[] rows = userTable.getSelectedRows();
             for (int i = 0; i < rows.length; i++) {
                 try {
-                    database_helper.insert("update taikhoan set trangthai='-1' where username=N'" + userTable.getValueAt(rows[i], 0) + "'");
+                    if (((String) userTable.getValueAt(rows[i], 3)).equals("Locked")) {
+                        database_helper.insert("update taikhoan set trangthai='0' where username=N'" + userTable.getValueAt(rows[i], 0) + "'");
+
+                    } else {
+                        database_helper.insert("update taikhoan set trangthai='-1' where username=N'" + userTable.getValueAt(rows[i], 0) + "'");
+
+                    }
                 } catch (Exception ex) {
                 }
             }
         }
+        showAllUser(true);
 
     }//GEN-LAST:event_btnLockAccountActionPerformed
 
