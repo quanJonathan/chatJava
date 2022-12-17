@@ -432,7 +432,7 @@ public class Service implements Runnable {
                         BanBe bb = new BanBe(
                                 object.getString("username"),
                                 object.getString("usernameBanBe"),
-                                convertTime(object.getString("ngayKetBan"))
+                                new java.util.Date(0)
                         );
                         unfriend(bb);
 

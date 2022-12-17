@@ -4,12 +4,8 @@
  */
 package UIObject;
 
-import database.DAO_BanBe;
 import entity.BanBe;
-import entity.TaiKhoan;
 import event.PublicEvent;
-import java.awt.Color;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -99,12 +95,18 @@ public class RequestCard extends javax.swing.JPanel {
 
     private void btnAcceptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcceptActionPerformed
         PublicEvent.getInstance().getEventFriend().addFriend(this.user.getUsernameChinh());
+        this.setVisible(false);
         removeAll();
+        revalidate();
+        repaint();
     }//GEN-LAST:event_btnAcceptActionPerformed
 
     private void btnRejectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRejectActionPerformed
         PublicEvent.getInstance().getEventFriend().unfriend(this.user);
+        this.setVisible(false);
         removeAll();
+        revalidate();
+        repaint();
     }//GEN-LAST:event_btnRejectActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

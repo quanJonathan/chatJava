@@ -245,9 +245,7 @@ public class main_user_ui extends javax.swing.JFrame {
 
             @Override
             public void unfriend(BanBe user) {
-                if (!user.getUsernameChinh().equals(currentUser.getUsername())) {
-                    user = new BanBe(currentUser.getUsername(), user.getUsernameChinh(), user.getNgayKetBan());
-                }
+                user = new BanBe(currentUser.getUsername(), user.getUsernameBanBe(), user.getNgayKetBan());
                 Service.getInstance().al.sendCommand("/unfriend", user.JSONify());
                 readFriendList();
             }
