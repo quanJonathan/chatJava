@@ -243,7 +243,7 @@ public class Service implements Runnable {
 
                                             break;
                                         }
-                                        
+
                                         case "/checkPasswordResetCodeReceived": {
                                             var object = new JSONObject(command.getString("object"));
                                             PublicEvent.getInstance().getEventForgetPass().codeChecked(object.getString("id"), (result == 1));
@@ -269,7 +269,21 @@ public class Service implements Runnable {
                                             PublicEvent.getInstance().getEventMain().showDialog(message, "Result");
                                             break;
                                         }
-                                        
+
+                                        case "/findAccount": {
+                                            var object = new JSONObject(command.getString("object"));
+                                            if (result == 0) {
+                                                PublicEvent.getInstance().getEventForgetPass().accountResult("", false);
+                                            } else {
+                                                var email = object.getString("email");
+                                                var user = object.getString("user");
+
+                                                PublicEvent.getInstance().getEventForgetPass().accountResult(email, true);
+                                            }
+
+                                            break;
+                                        }
+
                                         case "/resetPass": {
                                             PublicEvent.getInstance().getEventForgetPass().checkResult((result >= 0));
                                             break;

@@ -27,7 +27,7 @@
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="0" pref="77" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="81" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -98,15 +98,19 @@
                               <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                               <Component id="emailText" max="32767" attributes="0"/>
                               <Component id="jLabel3" alignment="0" min="-2" pref="106" max="-2" attributes="0"/>
-                              <Component id="usernameText" alignment="0" max="32767" attributes="0"/>
                               <Component id="emailSendingButton" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
                               <Component id="goback" min="-2" pref="83" max="-2" attributes="0"/>
                           </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="usernameText" min="-2" pref="117" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="findAccount" min="-2" pref="49" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace pref="16" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -120,8 +124,11 @@
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="usernameText" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="usernameText" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="findAccount" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
                       <Component id="emailSendingButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="goback" min="-2" max="-2" attributes="0"/>
@@ -141,8 +148,8 @@
             </Component>
             <Component class="javax.swing.JTextField" name="emailText">
               <Properties>
-                <Property name="text" type="java.lang.String" value="bebaoboy2@gmail.com"/>
-                <Property name="toolTipText" type="java.lang.String" value="Enter email"/>
+                <Property name="editable" type="boolean" value="false"/>
+                <Property name="toolTipText" type="java.lang.String" value="Nh&#x1ead;p username tr&#x1b0;&#x1edb;c"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel2">
@@ -157,10 +164,14 @@
               <Properties>
                 <Property name="toolTipText" type="java.lang.String" value="Enter username"/>
               </Properties>
+              <Events>
+                <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="usernameTextFocusGained"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="emailSendingButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="G&#x1eed;i email &#x111;&#x1eb7;t l&#x1ea1;i m&#x1ead;t kh&#x1ea9;u"/>
+                <Property name="toolTipText" type="java.lang.String" value="Vui l&#xf2;ng nh&#x1ead;p username"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="emailSendingButtonActionPerformed"/>
@@ -172,6 +183,14 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gobackActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="findAccount">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="T&#xec;m"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="findAccountActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

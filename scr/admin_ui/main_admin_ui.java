@@ -1140,7 +1140,9 @@ public class main_admin_ui extends javax.swing.JFrame {
         if (userTable.getSelectedRow() == -1) {
             return;
         }
-        var result = new DAO_BanBe().select("where username=N'" + getCurrentSelect() + "' order by ngayketban desc");
+        var result = new DAO_BanBe().select("b1 where username='" + getCurrentSelect() + "' and UsernameBanBe in (\n"
+                    + "	select Username from danhsachbanbe b2 where b2.UsernameBanBe = b1.Username\n"
+                    + ") order by ngayketban desc");
         addRow(friendTable, result.size());
         for (int i = 0; i < result.size(); i++) {
             friendTable.setValueAt(result.get(i).getUsernameBanBe(), i, 0);

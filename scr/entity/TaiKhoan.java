@@ -87,7 +87,7 @@ public class TaiKhoan extends Serializable{
 
     @Override
     public String toDelimitedList() {
-        return String.format("N'%s', '%s', '%s', '%s', '%s', '%b', N'%s', '%d'",
+        return String.format("N'%s', '%s', N'%s', '%s', '%s', '%b', N'%s', '%d'",
                 username,
                 password,
                 fullName,

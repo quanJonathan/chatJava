@@ -213,10 +213,10 @@ public class Service implements Runnable {
                                 sendMessage(list[0], result, userObject);
                                 userConnect(user.getUsername());
 //                               
-                            } else if(result == 0){
+                            } else if (result == 0) {
                                 sendMessage(list[0], result, new JSONObject().put("error", "Wrong credentials"));
                                 shutDown();
-                            }else{
+                            } else {
                                 sendMessage(list[0], 0, new JSONObject().put("error", "Account has been blocked"));
                                 shutDown();
                             }
@@ -264,6 +264,21 @@ public class Service implements Runnable {
                             }
                         } else {
                             sendMessage("/changePass", 0, new JSONObject());
+                        }
+
+                    } else if (action.startsWith("/findAccount")) {
+                        JSONObject object = new JSONObject(list[1]);
+                        var user = object.getString("user");
+                        var acc = new DAO_TaiKhoan().select("where username = N'" + user + "'");
+                        if (!acc.isEmpty()) {
+                            try {
+                                sendMessage("/findAccount", 1, new JSONObject()
+                                        .put("user", acc.get(0).getUsername())
+                                        .put("email", acc.get(0).getEmail()));
+                            } catch (Exception ex) {
+                            }
+                        } else {
+                            sendMessage("/findAccount", 0, new JSONObject());
                         }
 
                     } else if (action.startsWith("/resetPass")) {

@@ -37,6 +37,7 @@ class MailConfig {
 public class ForgetPassUI extends javax.swing.JFrame {
 
     String currentID = "";
+    boolean accountFound = false;
 
     /**
      * Creates new form forgot_password_1
@@ -46,6 +47,7 @@ public class ForgetPassUI extends javax.swing.JFrame {
         cardLayout = (CardLayout) jPanel2.getLayout();
         cardLayout.show(jPanel2, "formCard");
         setLocationRelativeTo(null);
+        emailSendingButton.setEnabled(false);
         init();
     }
 
@@ -53,8 +55,8 @@ public class ForgetPassUI extends javax.swing.JFrame {
         PublicEvent.getInstance().addEventForgetPass(new EventForgetPass() {
             @Override
             public void sendPasswordResetMail(String email, String username) {
-                service_client.Service.getInstance().run();
-                 if (!Service.getInstance().isServerRunning()) {
+
+                if (!Service.getInstance().isServerRunning()) {
                     JOptionPane.showMessageDialog(rootPane, "Server is not available!");
                     dispose();
                     return;
@@ -140,6 +142,29 @@ public class ForgetPassUI extends javax.swing.JFrame {
                 }
                 cardLayout.show(jPanel2, "formCard");
             }
+
+            @Override
+            public void findAccount(String username) {
+                if (service_client.Service.getInstance().al == null) {
+                    service_client.Service.getInstance().run();
+                }
+                service_client.Service.getInstance().al.sendCommand("/findAccount", new JSONObject()
+                        .put("user", username));
+            }
+
+            @Override
+            public void accountResult(String email, boolean b) {
+                if (b) {
+                    emailText.setText(email);
+                    accountFound = true;
+                    emailSendingButton.setEnabled(true);
+                } else {
+                    accountFound = false;
+                    emailText.setText("");
+                    emailSendingButton.setEnabled(false);
+                    JOptionPane.showMessageDialog(rootPane, "Tài khoản không tồn tại.\nVui lòng kiểm tra username!", "Lỗi", JOptionPane.CLOSED_OPTION);
+                }
+            }
         });
     }
 
@@ -162,6 +187,7 @@ public class ForgetPassUI extends javax.swing.JFrame {
         usernameText = new javax.swing.JTextField();
         emailSendingButton = new javax.swing.JButton();
         goback = new javax.swing.JButton();
+        findAccount = new javax.swing.JButton();
         codePanel = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         txtCode = new javax.swing.JTextField();
@@ -201,15 +227,21 @@ public class ForgetPassUI extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         jLabel3.setText("Username");
 
-        emailText.setText("bebaoboy2@gmail.com");
-        emailText.setToolTipText("Enter email");
+        emailText.setEditable(false);
+        emailText.setToolTipText("Nhập username trước");
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         jLabel2.setText("Email");
 
         usernameText.setToolTipText("Enter username");
+        usernameText.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                usernameTextFocusGained(evt);
+            }
+        });
 
         emailSendingButton.setText("Gửi email đặt lại mật khẩu");
+        emailSendingButton.setToolTipText("Vui lòng nhập username");
         emailSendingButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 emailSendingButtonActionPerformed(evt);
@@ -220,6 +252,13 @@ public class ForgetPassUI extends javax.swing.JFrame {
         goback.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 gobackActionPerformed(evt);
+            }
+        });
+
+        findAccount.setText("Tìm");
+        findAccount.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                findAccountActionPerformed(evt);
             }
         });
 
@@ -234,12 +273,15 @@ public class ForgetPassUI extends javax.swing.JFrame {
                         .addComponent(jLabel2)
                         .addComponent(emailText)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(usernameText)
                         .addComponent(emailSendingButton))
                     .addGroup(formPanelLayout.createSequentialGroup()
                         .addGap(41, 41, 41)
-                        .addComponent(goback, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                        .addComponent(goback, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(formPanelLayout.createSequentialGroup()
+                        .addComponent(usernameText, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(findAccount, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         formPanelLayout.setVerticalGroup(
             formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -251,8 +293,10 @@ public class ForgetPassUI extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(usernameText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(40, 40, 40)
+                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(usernameText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(findAccount))
+                .addGap(39, 39, 39)
                 .addComponent(emailSendingButton)
                 .addGap(18, 18, 18)
                 .addComponent(goback)
@@ -383,7 +427,7 @@ public class ForgetPassUI extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(55, 55, 55)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 77, Short.MAX_VALUE))
+                .addGap(0, 81, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -398,11 +442,16 @@ public class ForgetPassUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void gobackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gobackActionPerformed
+        accountFound = false;
         this.dispose();
         PublicEvent.getInstance().getEventForgetPass().goback();
     }//GEN-LAST:event_gobackActionPerformed
 
     private void emailSendingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailSendingButtonActionPerformed
+        if (!accountFound || service_client.Service.getInstance().al == null) {
+            JOptionPane.showMessageDialog(rootPane, "Tài khoản không tồn tại.\nVui lòng kiểm tra username!", "Lỗi", JOptionPane.CLOSED_OPTION);
+            return;
+        }
         var email = emailText.getText();
         var username = usernameText.getText();
         var input = JOptionPane.showConfirmDialog(rootPane, "Xác nhận email đặt lại mật khẩu?", "Thông báo", JOptionPane.YES_NO_OPTION);
@@ -420,6 +469,7 @@ public class ForgetPassUI extends javax.swing.JFrame {
         var input = JOptionPane.showConfirmDialog(rootPane, "Xác nhận đặt lại mật khẩu?", "Thông báo", JOptionPane.OK_CANCEL_OPTION);
         if (input == JOptionPane.OK_OPTION) {
             PublicEvent.getInstance().getEventForgetPass().sendPassword(usernameText.getText(), txtNewPass.getText());
+            accountFound = false;
         }
     }//GEN-LAST:event_doneButtonActionPerformed
 
@@ -427,6 +477,7 @@ public class ForgetPassUI extends javax.swing.JFrame {
         var input = JOptionPane.showConfirmDialog(rootPane, "Hủy nhận đặt lại mật khẩu?", "Xác nhận", JOptionPane.OK_CANCEL_OPTION);
         if (input == JOptionPane.OK_OPTION) {
             cardLayout.show(jPanel2, "formCard");
+            accountFound = false;
         }
     }//GEN-LAST:event_goback1ActionPerformed
 
@@ -438,8 +489,17 @@ public class ForgetPassUI extends javax.swing.JFrame {
         var input = JOptionPane.showConfirmDialog(rootPane, "Hủy nhận đặt lại mật khẩu?", "Xác nhận", JOptionPane.OK_CANCEL_OPTION);
         if (input == JOptionPane.OK_OPTION) {
             cardLayout.show(jPanel2, "formCard");
+            accountFound = false;
         }
     }//GEN-LAST:event_goback2ActionPerformed
+
+    private void findAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findAccountActionPerformed
+        PublicEvent.getInstance().getEventForgetPass().findAccount(usernameText.getText());
+    }//GEN-LAST:event_findAccountActionPerformed
+
+    private void usernameTextFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_usernameTextFocusGained
+        emailSendingButton.setEnabled(false);
+    }//GEN-LAST:event_usernameTextFocusGained
 
     /**
      * @param args the command line arguments
@@ -486,6 +546,7 @@ public class ForgetPassUI extends javax.swing.JFrame {
     private javax.swing.JButton doneButton;
     private javax.swing.JButton emailSendingButton;
     private javax.swing.JTextField emailText;
+    private javax.swing.JButton findAccount;
     private javax.swing.JPanel formPanel;
     private javax.swing.JButton goback;
     private javax.swing.JButton goback1;
