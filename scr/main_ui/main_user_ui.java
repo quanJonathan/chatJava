@@ -199,6 +199,7 @@ public class main_user_ui extends javax.swing.JFrame {
                 object.put("user", currentUser.getUsername());
                 Service.getInstance().al.sendCommand("/deleteChatHistory", object);
                 chatList.refreshChatListPanel();
+                chatList.removeUser(user);
                 readChatList();
 
             }

@@ -75,6 +75,10 @@ public class RegisterUI extends javax.swing.JFrame {
             @Override
             public void showDialog(String result, String title){
                 JOptionPane.showConfirmDialog(rootPane, result, title, JOptionPane.OK_CANCEL_OPTION);
+                if (Service.getInstance().isServerRunning()) {
+                    Service.getInstance().shutDown();
+                    return;
+                }
             }
 
         });

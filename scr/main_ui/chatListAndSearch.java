@@ -47,7 +47,7 @@ public class chatListAndSearch extends javax.swing.JPanel {
     }
     
     public void removeAllData(){
-        if(userAccounts.isEmpty()){
+        if(!userAccounts.isEmpty()){
             userAccounts.clear();
         }
     }

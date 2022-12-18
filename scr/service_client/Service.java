@@ -229,7 +229,7 @@ public class Service implements Runnable {
                                         case "/register": {
                                             var object = new JSONObject(command.getString("object"));
                                             if (result == 0) {
-                                                var error = object.getString("error");
+                           
                                                 PublicEvent.getInstance().getEventRegister().showDialog("Register failed", "Register");
                                             } else {
                                                 PublicEvent.getInstance().getEventRegister().showDialog("Register successfully", "Register");
