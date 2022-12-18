@@ -48,7 +48,7 @@ public class main_user_ui extends javax.swing.JFrame {
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                Service.getInstance().al.sendCommand("/shutDown", currentUser.JSONify());
+                Service.getInstance().al.sendCommand("/shutDown", currentUser.JSONify().put("logInTime", Service.getInstance().al.getLogInTime()));
             }
         });
 
@@ -924,7 +924,7 @@ public class main_user_ui extends javax.swing.JFrame {
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
         var input = JOptionPane.showConfirmDialog(rootPane, "Đăng xuất tải khoản?", "Xác nhận", JOptionPane.YES_NO_OPTION);
         if (input == JOptionPane.YES_OPTION) {
-            Service.getInstance().al.sendCommand("/logout", currentUser.JSONify());
+            Service.getInstance().al.sendCommand("/logout", currentUser.JSONify().put("logInTime", Service.getInstance().al.getLogInTime()));
             this.dispose();
             new LoginUI().setVisible(true);
         }

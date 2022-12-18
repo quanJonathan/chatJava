@@ -131,6 +131,8 @@ public class Service implements Runnable {
         private Socket client;
         public boolean isLogin = false;
         private Thread alThread;
+            private Timestamp logInTime;
+
 
         public ActionListener(Socket client) {
             this.client = client;
@@ -186,6 +188,10 @@ public class Service implements Runnable {
             }
             return "";
         }
+        
+        public Timestamp getLogInTime() {
+            return logInTime != null ? logInTime : new Timestamp(System.currentTimeMillis());
+        }
 
         public void getCommandLoop() {
             System.out.println("LOOP IN" + Thread.currentThread().getId());
@@ -220,7 +226,7 @@ public class Service implements Runnable {
                                                 user.setDiaChi(object.getString("diaChi"));
                                                 user.setTrangThai(1);
                                                 System.out.println(username + " login successfully");
-
+                                                logInTime = new Timestamp(System.currentTimeMillis());
                                                 PublicEvent.getInstance().getEventLogin().goLogin(user, username + " login successfully");
                                             }
                                             break;

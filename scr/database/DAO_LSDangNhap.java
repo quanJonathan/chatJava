@@ -38,6 +38,15 @@ public class DAO_LSDangNhap implements DAO<LichSuDangNhap>{
             return new ArrayList<>();
         }
     }
+    
+    public ArrayList<LichSuDangNhap> selectLatest(String username) {
+        try {
+            var rs = database_helper.select("select top(1) * from lichsudangnhap where username='" + username + "' order by ngaydangnhap asc");
+            return resultToList(rs);
+        } catch (Throwable ex) {
+            return new ArrayList<>();
+        }
+    }
 
     @Override
     public ArrayList<LichSuDangNhap> resultToList(ResultSet rs) throws SQLException {

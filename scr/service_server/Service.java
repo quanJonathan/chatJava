@@ -207,7 +207,7 @@ public class Service implements Runnable {
                                 JSONObject userObject = user.JSONify();
 
                                 Date time = new Date(System.currentTimeMillis());
-                                writeLoginHistory(user, time);
+                                // writeLoginHistory(user.getUsername(), time);
 
                                 connectionsWithName.replace(client, user);
                                 sendMessage(list[0], result, userObject);
@@ -228,6 +228,7 @@ public class Service implements Runnable {
                     } else if (action.startsWith("/logout")) {
                         JSONObject object = new JSONObject(list[1]);
                         String name = object.getString("username");
+                        var t = convertTime(object.getString("logInTime"));
 
                         userDisconnect(name);
                         removeClient(name);
@@ -237,6 +238,7 @@ public class Service implements Runnable {
                                 .setGioiTinh(object.getBoolean("gioiTinh"))
                                 .setTrangThai(0)),
                                 0);
+                        writeLoginHistory(name, t);
 
                     } else if (action.startsWith("/register")) {
                         JSONObject object = new JSONObject(list[1]);
@@ -497,12 +499,14 @@ public class Service implements Runnable {
                     } else if (action.startsWith("/shutDown")) {
                         JSONObject object = new JSONObject(list[1]);
                         var name = object.getString("username");
+                        var t = convertTime(object.getString("logInTime"));
                         updateStatus((new TaiKhoan(name, object.getString("password"), object.getString("email"))
                                 .setFullName(object.getString("fullName"))
                                 .setDiaChi(object.getString("diaChi"))
                                 .setGioiTinh(object.getBoolean("gioiTinh"))),
                                 0);
                         removeClient(name);
+                        writeLoginHistory(name, t);
 
                     } else if (action.equals("/createGroup")) {
                         JSONObject object = new JSONObject(list[1]);
@@ -601,9 +605,12 @@ public class Service implements Runnable {
                         TinNhan mess = new TinNhan(id, time, text, sender, receiver, idGroup, sender);
 
                         var members = getGroupMember(groupID);
+                        writeGroupMessageToDb(mess, members);
+
                         for (int i = 0; i < members.size(); i++) {
-                            if (members.get(i).getUsername() == sender) {
+                            if (members.get(i).getUsername() == null ? sender == null : members.get(i).getUsername().equals(sender)) {
                                 members.remove(i);
+                                break;
                             }
                         }
 
@@ -633,7 +640,6 @@ public class Service implements Runnable {
                                 }
                             }
                         }
-                        writeGroupMessageToDb(mess, members);
 
                     } else if (action.equals("/getMember")) {
                         JSONObject object = new JSONObject(list[1]);
@@ -657,7 +663,7 @@ public class Service implements Runnable {
                             var memberObject = newObject.getJSONObject(i);
                             var idGroup = memberObject.getString("IDNhom");
                             var username = memberObject.getString("username");
-                            var date = new Date(0);
+                            var date = new Date(System.currentTimeMillis());
                             boolean role = memberObject.getBoolean("chucNang");
                             members.add(new ThanhVienNhomChat(idGroup, username, role, date));
                         }
@@ -902,7 +908,10 @@ public class Service implements Runnable {
             return dao_nc.selectAllGroupOfAUser(name);
         }
 
-        private void writeLoginHistory(TaiKhoan user, Date time) {
+        private void writeLoginHistory(String user, Timestamp t) {
+            var dls = new DAO_LSDangNhap();
+
+            dls.insert(new LichSuDangNhap(user, t, new Timestamp(System.currentTimeMillis())));
 
         }
 
