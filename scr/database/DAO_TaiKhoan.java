@@ -136,5 +136,11 @@ public class DAO_TaiKhoan implements DAO<TaiKhoan> {
         ));
         return rs;
     }
+    
+    public int deleteUser(String user) {
+    database_helper.delete("delete danhsachbanbe where username='" + user + "' or usernameBanBe='" + user + "'" );
+    var rs = database_helper.delete("delete taikhoan where username='" + user + "'");
+    return rs;
+}
 
 }

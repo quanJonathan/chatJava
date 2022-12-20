@@ -1285,11 +1285,10 @@ public class main_admin_ui extends javax.swing.JFrame {
         var input = JOptionPane.showConfirmDialog(rootPane, "Xóa " + userTable.getSelectedRowCount() + " tài khoản?", "Xác nhận xóa tài khoản", JOptionPane.YES_NO_CANCEL_OPTION);
         if (input == JOptionPane.YES_OPTION) {
             var dtk = new DAO_TaiKhoan();
-            DefaultTableModel model = (DefaultTableModel) this.userTable.getModel();
             int[] rows = userTable.getSelectedRows();
             for (int i = 0; i < rows.length; i++) {
-                dtk.delete("where username=N'" + userTable.getValueAt(rows[i], 0) + "'");
-                model.removeRow(rows[i] - i);
+                System.out.println(userTable.getValueAt(rows[i], 0));
+                dtk.deleteUser(userTable.getValueAt(rows[i], 0).toString());
             }
             showAllUser(true);
         }
